@@ -10,7 +10,7 @@ namespace CM.Models
         {
             Comments = new List<CocktailComment>();
             Ratings = new List<CocktailRating>();
-            Cocktails = new List<BarCocktails>();
+            Cocktails = new List<BarCocktail>();
         }
         public Guid Id { get; set; }
         [Required]
@@ -23,7 +23,7 @@ namespace CM.Models
         public bool IsDeleted { get; set; }
         public ICollection<CocktailComment> Comments { get; set; }
         public ICollection<CocktailRating> Ratings { get; set; }
-        public ICollection<BarCocktails> Cocktails { get; set; }
+        public ICollection<BarCocktail> Cocktails { get; set; }
         //TODO Image?
     }
 }

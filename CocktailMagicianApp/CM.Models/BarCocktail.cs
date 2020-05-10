@@ -2,7 +2,7 @@
 
 namespace CM.Models
 {
-    public class BarCocktails
+    public class BarCocktail
     {
         public Guid BarId { get; set; }
         public Bar Bar { get; set; }

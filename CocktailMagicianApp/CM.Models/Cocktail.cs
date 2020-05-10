@@ -12,7 +12,7 @@ namespace CM.Models
             Ingredients = new List<CocktailIngredient>();
             Comments = new List<CocktailComment>();
             Ratings = new List<CocktailRating>();
-            Bars = new List<BarCocktails>();
+            Bars = new List<BarCocktail>();
         }
         public Guid Id { get; set; }
         [Required]
@@ -23,6 +23,6 @@ namespace CM.Models
         public ICollection<CocktailIngredient> Ingredients { get; set; }
         public ICollection<CocktailComment> Comments { get; set; }
         public ICollection<CocktailRating> Ratings { get; set; }
-        public ICollection<BarCocktails> Bars { get; set; }
+        public ICollection<BarCocktail> Bars { get; set; }
     }
 }
