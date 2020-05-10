@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
 using System.Text;
 
 namespace CM.Models
@@ -23,6 +24,7 @@ namespace CM.Models
         public ICollection<CocktailIngredient> Ingredients { get; set; }
         public ICollection<CocktailComment> Comments { get; set; }
         public ICollection<CocktailRating> Ratings { get; set; }
+        public double? AverageRating => Ratings.Average(r => r.Score);
         public ICollection<BarCocktail> Bars { get; set; }
     }
 }
