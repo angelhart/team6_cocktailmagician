@@ -12,6 +12,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using CM.Data;
+using CM.DTOs.Mappers.Contracts;
+using CM.DTOs.Mappers;
 
 namespace CM.Web
 {
@@ -35,6 +37,12 @@ namespace CM.Web
                 .AddEntityFrameworkStores<CMContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+
+            services.AddScoped<ICocktailMapper, CocktailMapper>();
+            services.AddScoped<IBarMapper, BarMapper>();
+            services.AddScoped<IIngredientMapper, IngredientMapper>();
+            services.AddScoped<IUserMapper, UserMapper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
