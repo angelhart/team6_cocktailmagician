@@ -19,7 +19,7 @@ namespace CM.Data.Configurations
                 .HasForeignKey(cc => cc.CocktailId)
                 .OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(cc => cc.AppUser)
-                .WithMany(au => au.Comments)
+                .WithMany(au => au.CocktailComments)
                 .HasForeignKey(cc => cc.AppUserId)
                 .OnDelete(DeleteBehavior.Restrict);
         }

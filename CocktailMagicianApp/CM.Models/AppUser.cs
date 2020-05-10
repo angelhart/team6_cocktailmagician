@@ -10,7 +10,7 @@ namespace CM.Models
         public ICollection<BarRating> BarRatings { get; set; }
         public ICollection<BarComment> BarComments { get; set; }
 
-        public ICollection<CocktailRating> CoctailRatings { get; set; }
+        public ICollection<CocktailRating> CocktailRatings { get; set; }
         public ICollection<CocktailComment> CocktailComments { get; set; }
         
         public DateTime? DeletedOn { get; set; }

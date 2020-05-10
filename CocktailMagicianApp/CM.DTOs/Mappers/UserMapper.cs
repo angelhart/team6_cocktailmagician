@@ -31,7 +31,7 @@ namespace CM.DTOs.Mappers
                 BarComments = user.BarComments
                             .Select(comment => _barMapper.CreateBarCommentDTO(comment)).ToList(),
 
-                CoctailRatings = user.CoctailRatings
+                CoctailRatings = user.CocktailRatings
                             .Select(rating => _cocktailMapper.CreateCocktailRatingDTO(rating)).ToList(),
                 CocktailComments = user.CocktailComments
                             .Select(comment => _cocktailMapper.CreateCocktailCommentDTO(comment)).ToList()
