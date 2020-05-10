@@ -13,6 +13,21 @@ namespace CM.Data
         {
         }
 
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<Address> Addresses { get; set; }
+        public DbSet<Ingredient> Ingredients { get; set; }
+
+        public DbSet<Bar> Bars { get; set; }
+        public DbSet<BarRating> BarRatings { get; set; }
+        public DbSet<BarComment> BarComments { get; set; }
+        public DbSet<BarCocktail> BarCocktails { get; set; }
+
+        public DbSet<Cocktail> Cocktails { get; set; }
+        public DbSet<CocktailRating> CocktailRatings { get; set; }
+        public DbSet<CocktailComment> CocktailComments { get; set; }
+        public DbSet<CocktailIngredient> CocktailIngredients { get; set; }
+
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
