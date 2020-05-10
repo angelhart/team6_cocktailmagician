@@ -7,8 +7,12 @@ namespace CM.Models
 {
     public class AppUser : IdentityUser<Guid>
     {
-        public ICollection<CocktailRating> Ratings { get; set; }
-        public ICollection<CocktailComment> Comments { get; set; }
+        public ICollection<BarRating> BarRatings { get; set; }
+        public ICollection<BarComment> BarComments { get; set; }
+
+        public ICollection<CocktailRating> CoctailRatings { get; set; }
+        public ICollection<CocktailComment> CocktailComments { get; set; }
+        
         public DateTime? DeletedOn { get; set; }
         public bool IsDeleted { get; set; }
         //TODO Image?
