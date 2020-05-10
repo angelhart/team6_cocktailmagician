@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using CM.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace CM.Data
 {
-    public class CMContext : IdentityDbContext
+    public class CMContext : IdentityDbContext<AppUser, AppRole, Guid>
     {
         public CMContext(DbContextOptions options) : base(options)
         {
