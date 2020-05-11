@@ -20,11 +20,14 @@ namespace CM.Models
         [MinLength(1)]
         [MaxLength(256)]
         public string Name { get; set; }
+        public string Recipe { get; set; }
         public bool IsUnlisted { get; set; }
         public ICollection<CocktailIngredient> Ingredients { get; set; }
         public ICollection<CocktailComment> Comments { get; set; }
         public ICollection<CocktailRating> Ratings { get; set; }
+        // AverageRating ignored in configuration
         public double? AverageRating => Ratings.Average(r => r.Score);
         public ICollection<BarCocktail> Bars { get; set; }
+        // TODO: picture
     }
 }

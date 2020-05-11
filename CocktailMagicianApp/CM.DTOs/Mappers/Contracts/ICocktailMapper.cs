@@ -8,5 +8,6 @@ namespace CM.DTOs.Mappers.Contracts
         CocktailCommentDTO CreateCocktailCommentDTO(CocktailComment comment);
         CocktailIngredientDTO CreateCocktailIngredientDTO(CocktailIngredient ingredient);
         CocktailRatingDTO CreateCocktailRatingDTO(CocktailRating rating);
+        Cocktail CreateCocktail(CocktailDTO dto);
     }
 }

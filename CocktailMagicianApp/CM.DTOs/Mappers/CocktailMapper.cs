@@ -13,6 +13,8 @@ namespace CM.DTOs.Mappers
             {
                 Id = cocktail.Id,
                 Name = cocktail.Name,
+                Recipe = cocktail.Recipe,
+                IsUnlisted = cocktail.IsUnlisted,
                 AverageRating = cocktail.AverageRating,
                 Bars = cocktail.Bars
                         .Select(b => CreateCocktailBarDTO(b))
@@ -23,6 +25,28 @@ namespace CM.DTOs.Mappers
                 Ingredients = cocktail.Ingredients
                         .Select(i => CreateCocktailIngredientDTO(i))
                         .ToList()
+            };
+        }
+
+        public CocktailSearchDTO CreateCocktailSearchDTO(Cocktail cocktail)
+        {
+            return new CocktailSearchDTO
+            {
+                Id = cocktail.Id,
+                Name = cocktail.Name,
+                Ingredients = cocktail.Ingredients
+                                .Select(i => i.Ingredient.Name)
+                                .ToList()
+            };
+        }
+
+        public Cocktail CreateCocktail(CocktailDTO dto)
+        {
+            return new Cocktail
+            {
+                Name = dto.Name,
+                Recipe = dto.Recipe,
+                // TODO: picture
             };
         }
 
@@ -44,8 +68,8 @@ namespace CM.DTOs.Mappers
         {
             return new CocktailCommentDTO
             {
-                CocktailId = comment.CocktailId,
-                CocktailName = comment.Cocktail?.Name,
+                //CocktailId = comment.CocktailId,
+                //CocktailName = comment.Cocktail?.Name,
                 UserId = comment.AppUserId,
                 UserName = comment.AppUser?.UserName,
                 CommentedOn = comment.CommentedOn,

@@ -1,6 +1,12 @@
-﻿namespace CM.DTOs
+﻿using System;
+
+namespace CM.DTOs
 {
-    public class HomePageCocktailDTO
+    public class CocktailHomePageDTO
     {
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        // TODO: picture
+        public double Rating { get; set; }
     }
 }
