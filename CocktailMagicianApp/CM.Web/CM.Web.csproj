@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\CM.Data\CM.Data.csproj" />
+    <ProjectReference Include="..\CM.DTOs\CM.DTOs.csproj" />
   </ItemGroup>
 
 </Project>
