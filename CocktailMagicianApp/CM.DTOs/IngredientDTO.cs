@@ -13,5 +13,6 @@ namespace CM.DTOs
         public Guid Id { get; set; }
         public string Name { get; set; }
         public ICollection<IngredientCocktailDTO> Cocktails { get; set; }
+        // TODO: picture
     }
 }

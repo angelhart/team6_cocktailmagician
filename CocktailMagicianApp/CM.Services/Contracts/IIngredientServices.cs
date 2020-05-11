@@ -9,7 +9,9 @@ namespace CM.Services.Contracts
 {
     public interface IIngredientServices
     {
-        Task<ICollection<CocktailIngredientDTO>> AddIngredientsToCocktail(Guid cocktailId, ICollection<CocktailIngredientDTO> ingredients);
-        Task<ICollection<CocktailIngredientDTO>> UpdateIngredients(Guid cocktailId, ICollection<CocktailIngredientDTO> ingredients);
+        Task<ICollection<CocktailIngredientDTO>> AddIngredientsToCocktailAsync(Guid cocktailId, ICollection<CocktailIngredientDTO> ingredients);
+        Task<IngredientDTO> CreateIngredientAsync(IngredientDTO dto);
+        Task<IngredientDTO> GetIngredientDetailsAsync(Guid id);
+        Task<ICollection<CocktailIngredientDTO>> UpdateCocktailIngredientsAsync(Guid cocktailId, ICollection<CocktailIngredientDTO> ingredients);
     }
 }

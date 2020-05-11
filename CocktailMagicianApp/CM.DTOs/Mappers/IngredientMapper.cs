@@ -18,6 +18,7 @@ namespace CM.DTOs.Mappers
                 Cocktails = ingredient.Cocktails
                             .Select(c => CreateIngredientCocktailDTO(c))
                             .ToList()
+                // TODO: picture
             };
         }
 
@@ -30,5 +31,13 @@ namespace CM.DTOs.Mappers
             };
         }
 
+        public Ingredient CreateIngredient(IngredientDTO dto)
+        {
+            return new Ingredient
+            {
+                Name = dto.Name
+                // TODO: picture
+            };
+        }
     }
 }
