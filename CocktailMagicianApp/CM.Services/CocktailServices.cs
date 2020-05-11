@@ -29,9 +29,9 @@ namespace CM.Services
             this._ingredientServices = ingredientServices;
         }
 
-        private async Task<Cocktail> GetCocktail(Guid cocktailId, bool isAdmin = false)
+        private async Task<Cocktail> GetCocktailAsync(Guid id, bool isAdmin = false)
         {
-            if (cocktailId == null)
+            if (id == null)
                 throw new ArgumentNullException("Cocktail ID can't be null.");
 
             var cocktail = await _context.Cocktails
@@ -40,7 +40,7 @@ namespace CM.Services
                                              .ThenInclude(com => com.AppUser)
                                          .Include(c => c.Ingredients)
                                              .ThenInclude(i => i.Ingredient)
-                                         .FirstOrDefaultAsync(c => c.Id == cocktailId);
+                                         .FirstOrDefaultAsync(c => c.Id == id);
 
             if (cocktail == null)
                 throw new KeyNotFoundException("No cocktail found with the specified ID.");
@@ -57,28 +57,21 @@ namespace CM.Services
         /// <param name="isAdmin">Checks if caller method is permited to retrieve unlisted cocktail.</param>
         /// <param name="cocktailId">ID of the cocktail.</param>
         /// <returns><see cref="CocktailDTO"/></returns>
-        public async Task<CocktailDTO> GetCocktailDetails(Guid cocktailId, bool isAdmin = false)
+        public async Task<CocktailDTO> GetCocktailDetailsAsync(Guid cocktailId, bool isAdmin = false)
         {
-            var cocktail = await GetCocktail(cocktailId, isAdmin);
+            var cocktail = await GetCocktailAsync(cocktailId, isAdmin);
 
-            var output = GetCocktailDetails(cocktail);
+            var outputDto = _cocktailMapper.CreateCocktailDTO(cocktail);
 
-            return output;
-        }
-
-        private CocktailDTO GetCocktailDetails(Cocktail cocktail)
-        {
-            var output = _cocktailMapper.CreateCocktailDTO(cocktail);
-
-            return output;
+            return outputDto;
         }
 
         /// <summary>
         /// Adds new entry in Cocktails table and its ingredients in CocktailIngredients table.
         /// </summary>
         /// <param name="dto">Carries the data from which to create the new cocktail.</param>
-        /// <returns>Full details using <see cref="GetCocktailDetails"/>.</returns>
-        public async Task<CocktailDTO> CreateCocktail(CocktailDTO dto)
+        /// <returns><see cref="CocktailDTO"/>.</returns>
+        public async Task<CocktailDTO> CreateCocktailAsync(CocktailDTO dto)
         {
             var nameExists = await _context.Cocktails.AnyAsync(c => c.Name == dto.Name);
             if (nameExists)
@@ -88,11 +81,11 @@ namespace CM.Services
             await _context.Cocktails.AddAsync(cocktail);
             await _context.SaveChangesAsync();
 
-            await _ingredientServices.AddIngredientsToCocktail(cocktail.Id, dto.Ingredients);
+            await _ingredientServices.AddIngredientsToCocktailAsync(cocktail.Id, dto.Ingredients);
 
-            var output = await GetCocktailDetails(cocktail.Id);
+            var outputDto = await GetCocktailDetailsAsync(cocktail.Id);
 
-            return output;
+            return outputDto;
         }
 
         /// <summary>
@@ -101,18 +94,21 @@ namespace CM.Services
         /// <param name="cocktailId">ID of the cocktail.</param>
         /// <param name="dto">Carries the updated data.</param>
         /// <param name="isAdmin">Checks if caller method is permited to retrieve unlisted cocktail.</param>
-        /// <returns>Full details using <see cref="GetCocktailDetails"/>.</returns>
-        public async Task<CocktailDTO> UpdateCocktail(Guid cocktailId, CocktailDTO dto, bool isAdmin = false)
+        /// <returns><see cref="CocktailDTO"/>.</returns>
+        public async Task<CocktailDTO> UpdateCocktailAsync(CocktailDTO dto, bool isAdmin = false)
         {
-            var cocktail = await GetCocktail(cocktailId, isAdmin);
+            var cocktail = await GetCocktailAsync(dto.Id, isAdmin);
 
             cocktail.Name = dto.Name;
             cocktail.Recipe = dto.Recipe;
             // TODO: cocktail.Picture
-            await _ingredientServices.UpdateIngredients(cocktailId, dto.Ingredients);
+            await _ingredientServices.UpdateCocktailIngredientsAsync(dto.Id, dto.Ingredients);
 
-            var output = await GetCocktailDetails(cocktail);
-            return output;
+            _context.Cocktails.Update(cocktail);
+            await _context.SaveChangesAsync();
+
+            var outputDto = _cocktailMapper.CreateCocktailDTO(cocktail);
+            return outputDto;
         }
 
         /// <summary>
@@ -122,23 +118,23 @@ namespace CM.Services
         /// <param name="isUnlisted">The new state variable</param>
         /// <param name="isAdmin">Checks if caller method is permited to retrieve unlisted cocktail.</param>
         /// <returns></returns>
-        public async Task<CocktailDTO> CocktailListing(Guid cocktailId, bool isUnlisted, bool isAdmin = false)
+        public async Task<CocktailDTO> CocktailListingAsync(Guid cocktailId, bool isUnlisted, bool isAdmin = false)
         {
-            var cocktail = await GetCocktail(cocktailId, isAdmin);
+            var cocktail = await GetCocktailAsync(cocktailId, isAdmin);
 
             cocktail.IsUnlisted = isUnlisted;
             await _context.SaveChangesAsync();
 
-            var output = GetCocktailDetails(cocktail);
-            return output;
+            var outputDto = _cocktailMapper.CreateCocktailDTO(cocktail);
+            return outputDto;
         }
 
-        public async Task<ICollection<CocktailHomePageDTO>> GetTopCocktails(int ammount = 3)
+        public async Task<ICollection<CocktailHomePageDTO>> GetTopCocktailsAsync(int ammount = 3)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<CocktailSearchDTO>> SearchCocktails()
+        public async Task<ICollection<CocktailSearchDTO>> SearchCocktailsAsync()
         {
             throw new NotImplementedException();
         }
