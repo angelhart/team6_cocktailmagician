@@ -33,12 +33,10 @@ namespace CM.Data
         {
             builder.ApplyConfiguration(new AddressConfiguration());
 
-            builder.ApplyConfiguration(new BarConfiguration());
             builder.ApplyConfiguration(new BarCocktailConfiguration());
             builder.ApplyConfiguration(new BarCommentConfiguration());
             builder.ApplyConfiguration(new BarRatingConfiguration());
 
-            builder.ApplyConfiguration(new CocktailConfiguration());
             builder.ApplyConfiguration(new CocktailIngredientConfiguration());
             builder.ApplyConfiguration(new CocktailCommentConfiguration());
             builder.ApplyConfiguration(new CocktailIngredientConfiguration());
