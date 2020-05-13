@@ -20,6 +20,7 @@ namespace CM.Models
         [MinLength(1)]
         [MaxLength(256)]
         public string Name { get; set; }
+        public string ImagePath { get; set; }
         public bool IsUnlisted { get; set; }
         public ICollection<CocktailIngredient> Ingredients { get; set; }
         public ICollection<CocktailComment> Comments { get; set; }

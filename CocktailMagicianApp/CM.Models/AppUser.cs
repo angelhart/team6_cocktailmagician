@@ -15,6 +15,6 @@ namespace CM.Models
         
         public DateTime? DeletedOn { get; set; }
         public bool IsDeleted { get; set; }
-        //TODO Image?
+        public string ImagePath { get; set; }
     }
 }

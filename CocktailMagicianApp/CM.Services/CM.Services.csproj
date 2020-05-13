@@ -8,4 +8,8 @@
     <Folder Include="Providers\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\CM.DTOs\CM.DTOs.csproj" />
+  </ItemGroup>
+
 </Project>

@@ -13,20 +13,23 @@ namespace CM.Models
             Ratings = new List<BarRating>();
             Cocktails = new List<BarCocktail>();
         }
+
         public Guid Id { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Please Enter Name")]
         [MinLength(1)]
         [MaxLength(256)]
         public string Name { get; set; }
         public Address Address { get; set; }
         public string Phone { get; set; }
+        public string ImagePath { get; set; }
+
         public bool IsUnlisted { get; set; }
         public DateTime? DeletedOn { get; set; }
         public bool IsDeleted { get; set; }
+
         public ICollection<BarComment> Comments { get; set; }
         public ICollection<BarRating> Ratings { get; set; }
         public double? AverageRating => Ratings.Average(r => r.Score);
         public ICollection<BarCocktail> Cocktails { get; set; }
-        //TODO Image?
     }
 }

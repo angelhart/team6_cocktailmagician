@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace CM.Data.Configurations
 {
-	public class BarRatingConfiguration
-	{
+	public class BarRatingConfiguration : IEntityTypeConfiguration<BarRating>
+    {
         public void Configure(EntityTypeBuilder<BarRating> builder)
         {
             builder.HasKey(barRating => new { barRating.BarId, barRating.AppUserId });

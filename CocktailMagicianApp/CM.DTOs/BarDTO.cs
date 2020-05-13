@@ -15,6 +15,6 @@ namespace CM.DTOs
         public ICollection<BarCommentDTO> Comments { get; set; }
         public double? AverageRating { get; set; }
         public ICollection<BarCocktailDTO> Cocktails { get; set; }
-        //TODO Image
+        public string ImagePath { get; set; }
     }
 }
