@@ -8,9 +8,9 @@ namespace CM.Services.Contracts
 {
     public interface ICocktailServices
     {
-        Task<CocktailDTO> CocktailListingAsync(Guid cocktailId, bool isUnlisted, bool isAdmin = false);
+        Task<CocktailDTO> ChangeListingAsync(Guid cocktailId, bool isUnlisted);
         Task<CocktailDTO> CreateCocktailAsync(CocktailDTO dto);
         Task<CocktailDTO> GetCocktailDetailsAsync(Guid cocktailId, bool isAdmin = false);
-        Task<CocktailDTO> UpdateCocktailAsync(CocktailDTO dto, bool isAdmin = false);
+        Task<CocktailDTO> UpdateCocktailAsync(CocktailDTO dto);
     }
 }

@@ -4,6 +4,7 @@ using CM.DTOs.Mappers;
 using CM.DTOs.Mappers.Contracts;
 using CM.Models;
 using CM.Services.Contracts;
+using CM.Services.Providers;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
@@ -29,7 +30,7 @@ namespace CM.Services
             this._ingredientServices = ingredientServices;
         }
 
-        private async Task<Cocktail> GetCocktailAsync(Guid id, bool isAdmin = false)
+        private async Task<Cocktail> GetCocktailAsync(Guid id, bool allowUnlisted = false)
         {
             if (id == null)
                 throw new ArgumentNullException("Cocktail ID can't be null.");
@@ -45,7 +46,7 @@ namespace CM.Services
             if (cocktail == null)
                 throw new KeyNotFoundException("No cocktail found with the specified ID.");
 
-            if (cocktail.IsUnlisted && !isAdmin)
+            if (cocktail.IsUnlisted && !allowUnlisted)
                 throw new UnauthorizedAccessException("Only administrators can access details of unlisted cocktails.");
 
             return cocktail;
@@ -54,12 +55,12 @@ namespace CM.Services
         /// <summary>
         /// Gets full details for a single cocktail if it's listed, or unlisted and queried by admin.
         /// </summary>
-        /// <param name="isAdmin">Checks if caller method is permited to retrieve unlisted cocktail.</param>
+        /// <param name="allowUnlisted">Checks if caller method is permited to retrieve unlisted cocktail.</param>
         /// <param name="cocktailId">ID of the cocktail.</param>
         /// <returns><see cref="CocktailDTO"/></returns>
-        public async Task<CocktailDTO> GetCocktailDetailsAsync(Guid cocktailId, bool isAdmin = false)
+        public async Task<CocktailDTO> GetCocktailDetailsAsync(Guid cocktailId, bool allowUnlisted = false)
         {
-            var cocktail = await GetCocktailAsync(cocktailId, isAdmin);
+            var cocktail = await GetCocktailAsync(cocktailId, allowUnlisted);
 
             var outputDto = _cocktailMapper.CreateCocktailDTO(cocktail);
 
@@ -93,11 +94,11 @@ namespace CM.Services
         /// </summary>
         /// <param name="cocktailId">ID of the cocktail.</param>
         /// <param name="dto">Carries the updated data.</param>
-        /// <param name="isAdmin">Checks if caller method is permited to retrieve unlisted cocktail.</param>
+        /// <param name="allowUnlisted">Checks if caller method is permited to retrieve unlisted cocktail.</param>
         /// <returns><see cref="CocktailDTO"/>.</returns>
-        public async Task<CocktailDTO> UpdateCocktailAsync(CocktailDTO dto, bool isAdmin = false)
+        public async Task<CocktailDTO> UpdateCocktailAsync(CocktailDTO dto)
         {
-            var cocktail = await GetCocktailAsync(dto.Id, isAdmin);
+            var cocktail = await GetCocktailAsync(dto.Id, allowUnlisted: true);
 
             cocktail.Name = dto.Name;
             cocktail.Recipe = dto.Recipe;
@@ -115,26 +116,62 @@ namespace CM.Services
         /// Changes the unlisted state of a cocktail.
         /// </summary>
         /// <param name="cocktailId">ID of the cocktail.</param>
-        /// <param name="isUnlisted">The new state variable</param>
-        /// <param name="isAdmin">Checks if caller method is permited to retrieve unlisted cocktail.</param>
+        /// <param name="state">The new state for property.</param>
+        /// <param name="allowUnlisted">Checks if caller method is permited to retrieve unlisted cocktail.</param>
         /// <returns></returns>
-        public async Task<CocktailDTO> CocktailListingAsync(Guid cocktailId, bool isUnlisted, bool isAdmin = false)
+        public async Task<CocktailDTO> ChangeListingAsync(Guid cocktailId, bool state)
         {
-            var cocktail = await GetCocktailAsync(cocktailId, isAdmin);
+            var cocktail = await GetCocktailAsync(cocktailId, allowUnlisted: true);
 
-            cocktail.IsUnlisted = isUnlisted;
+            cocktail.IsUnlisted = state;
             await _context.SaveChangesAsync();
 
             var outputDto = _cocktailMapper.CreateCocktailDTO(cocktail);
             return outputDto;
         }
 
-        public async Task<ICollection<CocktailHomePageDTO>> GetTopCocktailsAsync(int ammount = 3)
+        /// <summary>
+        /// Retrieves the highest rated cocktails.
+        /// </summary>
+        /// <param name="ammount">The number of cocktails to retrieve.</param>
+        /// <returns><see cref="ICollection<<see cref="CocktailHomePageDTO"/>>"/></returns>
+        public async Task<ICollection<CocktailDTO>> GetTopCocktailsAsync(int ammount = 3)
+        {
+            var topCocktails = await _context.Cocktails
+                                     .OrderByDescending(c => c.AverageRating)
+                                     .Take(ammount)
+                                     .Select(c => _cocktailMapper.CreateCocktailDTO(c))
+                                     .ToListAsync();
+
+            return topCocktails;
+        }
+
+        public async Task<PaginatedList<CocktailSearchDTO>> SearchCocktailsAsync(string searchString, string sortBy, string sortOrder, int pageNumber, int pageSize)
+        {
+            var cocktails = _context.Cocktails
+                                    .Include(c => c.Ingredients)
+                                        .ThenInclude(ci => ci.Ingredient)
+                                    .AsQueryable();
+            
+            cocktails = await FilterCocktailsAsync(searchString);
+            cocktails = await SortCocktailsAsync(sortBy, sortOrder);
+
+            var pagedCocktailDTOs = await PageCocktailsAsync(cocktails, pageNumber, pageSize);
+
+            return pagedCocktailDTOs;
+        }
+
+        private async Task<IQueryable<Cocktail>> FilterCocktailsAsync(string searchString)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<ICollection<CocktailSearchDTO>> SearchCocktailsAsync()
+        private async Task<IQueryable<Cocktail>> SortCocktailsAsync(string sortBy, string sortOrder)
+        {
+            throw new NotImplementedException();
+        }
+
+        private async Task<PaginatedList<CocktailSearchDTO>> PageCocktailsAsync(IQueryable<Cocktail> cocktails, int pageNumber, int pageSize)
         {
             throw new NotImplementedException();
         }
