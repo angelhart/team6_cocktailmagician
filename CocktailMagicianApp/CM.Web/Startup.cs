@@ -14,6 +14,7 @@ using Microsoft.Extensions.Hosting;
 using CM.Data;
 using CM.DTOs.Mappers.Contracts;
 using CM.DTOs.Mappers;
+using CM.Models;
 
 namespace CM.Web
 {
@@ -33,7 +34,7 @@ namespace CM.Web
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
             // TODO: Change user
-            services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<CMContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();

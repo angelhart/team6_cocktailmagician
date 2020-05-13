@@ -39,7 +39,7 @@ namespace CM.Data
 
             builder.ApplyConfiguration(new CocktailIngredientConfiguration());
             builder.ApplyConfiguration(new CocktailCommentConfiguration());
-            builder.ApplyConfiguration(new CocktailIngredientConfiguration());
+            builder.ApplyConfiguration(new CocktailRatingConfiguration());
 
             base.OnModelCreating(builder);
         }
