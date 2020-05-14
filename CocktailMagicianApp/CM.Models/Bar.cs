@@ -22,6 +22,7 @@ namespace CM.Models
         public Address Address { get; set; }
         public string Phone { get; set; }
         public string ImagePath { get; set; }
+        public string Details { get; set; }
 
         public bool IsUnlisted { get; set; }
         public DateTime? DeletedOn { get; set; }
