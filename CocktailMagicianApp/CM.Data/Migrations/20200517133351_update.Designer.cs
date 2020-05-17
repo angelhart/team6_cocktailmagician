@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CM.Data.Migrations
 {
     [DbContext(typeof(CMContext))]
-    [Migration("20200513114916_initial")]
-    partial class initial
+    [Migration("20200517133351_update")]
+    partial class update
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,10 +30,7 @@ namespace CM.Data.Migrations
                     b.Property<Guid>("BarId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("City")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("CountryId")
+                    b.Property<Guid>("CityId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Street")
@@ -44,9 +41,25 @@ namespace CM.Data.Migrations
                     b.HasIndex("BarId")
                         .IsUnique();
 
-                    b.HasIndex("CountryId");
+                    b.HasIndex("CityId");
 
                     b.ToTable("Addresses");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("73f2c4c2-78ae-45ab-b82c-b06a48271a6d"),
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            CityId = new Guid("320b050b-82f1-494c-9add-91ab28bf98dd"),
+                            Street = "79-81 MACDOUGAL ST"
+                        },
+                        new
+                        {
+                            Id = new Guid("dfaa43d9-d6d8-4a15-bda9-48823fa4b886"),
+                            BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"),
+                            CityId = new Guid("0eea5eb5-6151-41be-ac73-b35e056ca97e"),
+                            Street = "Mayfair W1K 2AL"
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.AppRole", b =>
@@ -158,14 +171,14 @@ namespace CM.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("DeletedOn")
-                        .HasColumnType("datetime2");
+                    b.Property<Guid>("AddressID")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
 
                     b.Property<bool>("IsUnlisted")
                         .HasColumnType("bit");
@@ -181,6 +194,26 @@ namespace CM.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Bars");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            AddressID = new Guid("73f2c4c2-78ae-45ab-b82c-b06a48271a6d"),
+                            Details = "Weaving tradition with modernity, there’s something heart-warming about the story of Dante. When Linden Pride, Nathalie Hudson and Naren Young took over this Greenwich Village site 100 years after it first opened they could see the things that made this fading Italian café once great could be relevant again. At the heart of their mission was to renew the bar, while being authentic to its roots and appealing to the Greenwich Village community. So the classical décor was given a lift, and in came refined but wholesome Italian food, aperitivos and cocktails. There is a whole list of Negronis to make your way through, but that’s OK because Dante is an all-day restaurant-bar. The Garibaldi too is a must-order. Made with Campari and ‘fluffy’ orange juice, it has brought this once-dusty drink back to life. The measure of a bar is the experience of its customers – in hospitality, drinks and food Dante has the fundamentals down to a fine art, earning the deserved title of The World's Best Bar 2019, sponsored by Perrier.",
+                            IsUnlisted = false,
+                            Name = "Dante",
+                            Phone = "(212) 982-5275"
+                        },
+                        new
+                        {
+                            Id = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"),
+                            AddressID = new Guid("4ecac9dc-31df-4b89-93b5-5550d2608ede"),
+                            Details = "No matter the workings of the cocktail world around it, the Connaught Bar stays true to its principles – artful drinks and graceful service in a stylish setting. Under the watchful gaze of Ago Perrone, the hotel’s director of mixology, the bar moves forward with an effortless glide. Last year marked 10 years since designer David Collins unveiled the bar’s elegant Cubist interior and in celebration it launched its own gin, crafted in the building by none other than Perrone himself. It’s already the most called-for spirit on the showpiece trolley that clinks between the bar’s discerning guests, serving personalised Martinis. The latest cocktail menu, Vanguard, has upped the invention – Number 11 is an embellished Vesper served in Martini glasses hand-painted every day in house, while the Gate No.1 is a luscious blend of spirits, wines and jam. But of course, the Connaught Masterpieces isn’t a chapter easily overlooked. Along with the Dry Martini, the Bloody Mary is liquid perfection and the Mulatta Daisy is Perrone’s own classic, in and out of the bar. In 2019, Connaught Bar earns the title of The Best Bar in Europe, sponsored by Michter's.",
+                            IsUnlisted = false,
+                            Name = "Connaught Bar",
+                            Phone = "+44 (0)20 7499 7070"
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.BarCocktail", b =>
@@ -196,6 +229,23 @@ namespace CM.Data.Migrations
                     b.HasIndex("CocktailId");
 
                     b.ToTable("BarCocktails");
+
+                    b.HasData(
+                        new
+                        {
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            CocktailId = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015")
+                        },
+                        new
+                        {
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            CocktailId = new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9")
+                        },
+                        new
+                        {
+                            BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"),
+                            CocktailId = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea")
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.BarComment", b =>
@@ -239,6 +289,39 @@ namespace CM.Data.Migrations
                     b.ToTable("BarRatings");
                 });
 
+            modelBuilder.Entity("CM.Models.City", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CountryId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId");
+
+                    b.ToTable("Cities");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("320b050b-82f1-494c-9add-91ab28bf98dd"),
+                            CountryId = new Guid("4828b9db-cd3a-487f-9782-7a23653ff99a"),
+                            Name = "New York"
+                        },
+                        new
+                        {
+                            Id = new Guid("0eea5eb5-6151-41be-ac73-b35e056ca97e"),
+                            CountryId = new Guid("4ecac9dc-31df-4b89-93b5-5550d2608ede"),
+                            Name = "London"
+                        });
+                });
+
             modelBuilder.Entity("CM.Models.Cocktail", b =>
                 {
                     b.Property<Guid>("Id")
@@ -259,6 +342,26 @@ namespace CM.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Cocktails");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"),
+                            IsUnlisted = false,
+                            Name = "Loch Lomond"
+                        },
+                        new
+                        {
+                            Id = new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"),
+                            IsUnlisted = false,
+                            Name = "Strawberry Lemonade"
+                        },
+                        new
+                        {
+                            Id = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"),
+                            IsUnlisted = false,
+                            Name = "Rum Milk Punch"
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.CocktailComment", b =>
@@ -336,6 +439,18 @@ namespace CM.Data.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Countries");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("4828b9db-cd3a-487f-9782-7a23653ff99a"),
+                            Name = "USA"
+                        },
+                        new
+                        {
+                            Id = new Guid("4ecac9dc-31df-4b89-93b5-5550d2608ede"),
+                            Name = "UK"
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.Ingredient", b =>
@@ -401,12 +516,10 @@ namespace CM.Data.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<System.Guid>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ProviderDisplayName")
                         .HasColumnType("nvarchar(max)");
@@ -442,12 +555,10 @@ namespace CM.Data.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(128)")
-                        .HasMaxLength(128);
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Value")
                         .HasColumnType("nvarchar(max)");
@@ -465,9 +576,9 @@ namespace CM.Data.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("CM.Models.Country", "Country")
+                    b.HasOne("CM.Models.City", "City")
                         .WithMany("Adresses")
-                        .HasForeignKey("CountryId")
+                        .HasForeignKey("CityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -514,6 +625,15 @@ namespace CM.Data.Migrations
                         .WithMany("Ratings")
                         .HasForeignKey("BarId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("CM.Models.City", b =>
+                {
+                    b.HasOne("CM.Models.Country", "Country")
+                        .WithMany("Cities")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

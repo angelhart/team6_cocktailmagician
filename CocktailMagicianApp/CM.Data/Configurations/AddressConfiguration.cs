@@ -13,6 +13,7 @@ namespace CM.Data.Configurations
                 .WithOne(bar => bar.Address)
                 .HasForeignKey<Address>(address => address.BarId)
                 .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(address => address.City);
         }
     }
 }

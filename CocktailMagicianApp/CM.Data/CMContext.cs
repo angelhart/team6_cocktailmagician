@@ -1,4 +1,5 @@
 ﻿using CM.Data.Configurations;
+using CM.Data.Seeder;
 using CM.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ namespace CM.Data
         }
 
         public DbSet<Country> Countries { get; set; }
+        public DbSet<City> Cities { get; set; }
         public DbSet<Address> Addresses { get; set; }
         public DbSet<Ingredient> Ingredients { get; set; }
 
@@ -32,6 +34,7 @@ namespace CM.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.ApplyConfiguration(new AddressConfiguration());
+            builder.ApplyConfiguration(new CityConfiguration());
 
             builder.ApplyConfiguration(new BarCocktailConfiguration());
             builder.ApplyConfiguration(new BarCommentConfiguration());
@@ -40,6 +43,8 @@ namespace CM.Data
             builder.ApplyConfiguration(new CocktailIngredientConfiguration());
             builder.ApplyConfiguration(new CocktailCommentConfiguration());
             builder.ApplyConfiguration(new CocktailRatingConfiguration());
+
+            builder.Seed();
 
             base.OnModelCreating(builder);
         }
