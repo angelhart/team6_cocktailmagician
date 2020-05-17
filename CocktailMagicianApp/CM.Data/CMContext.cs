@@ -1,4 +1,5 @@
-﻿using CM.Models;
+﻿using CM.Data.Configurations;
+using CM.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -31,6 +32,15 @@ namespace CM.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.ApplyConfiguration(new BarCocktailConfiguration());
+            builder.ApplyConfiguration(new BarCommentConfiguration());
+            builder.ApplyConfiguration(new BarRatingConfiguration());
+
+            builder.ApplyConfiguration(new CocktailIngredientConfiguration());
+            builder.ApplyConfiguration(new CocktailCommentConfiguration());
+            builder.ApplyConfiguration(new CocktailRatingConfiguration());
+
         }
     }
 }
