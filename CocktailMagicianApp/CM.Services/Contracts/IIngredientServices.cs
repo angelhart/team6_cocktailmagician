@@ -1,5 +1,6 @@
 ﻿using CM.DTOs;
 using CM.Models;
+using CM.Services.Providers;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -11,7 +12,7 @@ namespace CM.Services.Contracts
     {
         Task<IngredientDTO> CreateIngredientAsync(IngredientDTO dto);
         Task<IngredientDTO> DeleteIngredientAsync(Guid id);
-        Task<ICollection<IngredientDTO>> GetAllIngredientsAsync();
+        Task<PaginatedList<IngredientDTO>> PageIngredientsAsync(string searchString, int pageNumber = 1, int pageSize = 10);
         Task<IngredientDTO> GetIngredientDetailsAsync(Guid id);
         Task<IngredientDTO> UpdateIngredientAsync(IngredientDTO dto);
     }

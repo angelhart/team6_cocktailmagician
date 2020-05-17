@@ -3,6 +3,8 @@ using CM.DTOs;
 using CM.DTOs.Mappers.Contracts;
 using CM.Models;
 using CM.Services.Contracts;
+using CM.Services.Providers;
+using CM.Services.Providers.Contracts;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
@@ -18,12 +20,14 @@ namespace CM.Services
     {
         private readonly CMContext _context;
         private readonly IIngredientMapper _ingredientMapper;
+        //private readonly IPaginatedList _paginatedList;
 
         public IngredientServices(CMContext context,
                                   IIngredientMapper ingredientMapper)
         {
             this._context = context ?? throw new ArgumentNullException(nameof(context));
             this._ingredientMapper = ingredientMapper ?? throw new ArgumentNullException(nameof(ingredientMapper));
+            //this._paginatedList = paginatedList ?? throw new ArgumentNullException(nameof(ingredientMapper)); 
         }
 
         private async Task<Ingredient> GetIngredientAsync(Guid id)
@@ -114,13 +118,23 @@ namespace CM.Services
             return outputDto;
         }
 
-        public async Task<ICollection<IngredientDTO>> GetAllIngredientsAsync()
+        /// <summary>
+        /// Get the ingredients to show on the selected page.
+        /// </summary>
+        /// <param name="searchString">Filter by name condition.</param>
+        /// <param name="pageNumber">The required page of the paginated list.</param>
+        /// <param name="pageSize">Number of ingredients per page.</param>
+        /// <returns><see cref="PaginatedList<<see cref="IngredientDTO"/>>"/></returns>
+        public async Task<PaginatedList<IngredientDTO>> PageIngredientsAsync(string searchString, int pageNumber = 1, int pageSize = 10)
         {
-            var ingredients = await _context.Ingredients
+            var ingredients = _context.Ingredients
+                                      .Where(i => i.Name.Contains(searchString ?? ""))
                                       .Include(i => i.Cocktails)
-                                      .Select(i => _ingredientMapper.CreateIngredientDTO(i))
-                                      .ToListAsync();
-            return ingredients;
+                                      .Select(i => _ingredientMapper.CreateIngredientDTO(i));
+
+            var outputDtos = await PaginatedList<IngredientDTO>.CreateAsync(ingredients, pageNumber, pageSize);
+
+            return outputDtos;
         }
     }
 }
