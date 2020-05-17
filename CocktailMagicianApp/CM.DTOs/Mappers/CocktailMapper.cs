@@ -81,7 +81,7 @@ namespace CM.DTOs.Mappers
         {
             return new CocktailIngredientDTO
             {
-                IngredientId = ingredient.IngredientId,
+                Id = ingredient.IngredientId,
                 Name = ingredient.Ingredient?.Name,
                 Ammount = ingredient.Ammount,
                 Unit = ingredient.Unit.ToString()
