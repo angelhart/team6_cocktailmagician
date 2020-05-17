@@ -15,6 +15,8 @@ using CM.Data;
 using CM.DTOs.Mappers.Contracts;
 using CM.DTOs.Mappers;
 using CM.Models;
+using CM.Services;
+using CM.Services.Contracts;
 
 namespace CM.Web
 {
@@ -33,9 +35,14 @@ namespace CM.Web
             services.AddDbContext<CMContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            // TODO: Change user
-            services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<CMContext>();
+            //services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
+            //    .AddEntityFrameworkStores<CMContext>();
+
+            services.AddIdentity<AppUser, AppRole>(options => options.SignIn.RequireConfirmedAccount = false)
+                .AddEntityFrameworkStores<CMContext>()
+                .AddDefaultUI() // Consider commenting out this as it was missing in master
+                .AddDefaultTokenProviders();
+
             services.AddControllersWithViews();
             services.AddRazorPages();
 
@@ -44,6 +51,11 @@ namespace CM.Web
             services.AddScoped<IBarMapper, BarMapper>();
             services.AddScoped<IIngredientMapper, IngredientMapper>();
             services.AddScoped<IUserMapper, UserMapper>();
+            services.AddScoped<IAddressMapper, AddressMapper>();
+
+            services.AddScoped<IBarServices, BarServices>();
+            services.AddScoped<IAddressServices, AddressServices>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -1,0 +1,73 @@
+﻿@model BarViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Bar</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+		<form asp-action="Create">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<div class="form-group">
+				<label asp-for="Name" class="control-label"></label>
+				<input asp-for="Name" class="form-control" />
+				<span asp-validation-for="Name" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="CountryID" class="control-label"></label>
+				<select asp-for="CountryID" class="form-control" asp-items="@(new SelectList(ViewBag.ListOfCountries, "Id", "Name"))"></select>
+				<span asp-validation-for="Country" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="CityID" class="control-label"></label>
+				<select asp-for="CityID" class="form-control" asp-items="@(new SelectList(string.Empty, "Id", "Name"))"></select>
+				<span asp-validation-for="City" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Street" class="control-label"></label>
+				<input asp-for="Street" class="form-control" />
+				<span asp-validation-for="Street" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Phone" class="control-label"></label>
+				<input asp-for="Phone" class="form-control" />
+				<span asp-validation-for="Phone" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="ImagePath" class="control-label"></label>
+				<input asp-for="ImagePath" class="form-control" />
+				<span asp-validation-for="ImagePath" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<label asp-for="Details" class="control-label"></label>
+				<input asp-for="Details" class="form-control" />
+				<span asp-validation-for="Details" class="text-danger"></span>
+			</div>
+			<div class="form-group">
+				<input type="submit" value="Create" class="btn btn-primary" />
+			</div>
+
+			<script src="~/lib/jquery/dist/jquery.js"></script>
+			<script type="text/javascript">
+				$(document).ready(function () {
+					var items = "<option value ='0'>Select</option>";
+					$('#CityID').html(items);
+				});
+			</script>
+
+		</form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
