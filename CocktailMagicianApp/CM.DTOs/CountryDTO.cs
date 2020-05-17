@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 
-namespace CM.Models
+namespace CM.DTOs
 {
-	public class Country
+	public class CountryDTO
 	{
 		public Guid Id { get; set; }
 		public string Name { get; set; }
-
-		public ICollection<City> Cities { get; set; }
-}
+		public ICollection<CityDTO> Cities { get; set; }
+	}
 }
