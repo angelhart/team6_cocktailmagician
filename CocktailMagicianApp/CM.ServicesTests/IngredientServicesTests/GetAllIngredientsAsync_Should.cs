@@ -39,6 +39,7 @@ namespace CM.ServicesTests.IngredientServicesTests
             var result = await sut.GetAllIngredientsAsync();
             var expected = await assertContext.Ingredients.ToListAsync();
 
+            Assert.AreNotEqual(0, expected.Count);
             Assert.AreEqual(expected.Count, result.Count);
         }
 
@@ -61,7 +62,7 @@ namespace CM.ServicesTests.IngredientServicesTests
 
             var result = await sut.GetAllIngredientsAsync();
             var expected = await assertContext.Ingredients.ToListAsync();
-
+            Assert.AreEqual(0, expected.Count);
             Assert.AreEqual(expected.Count, result.Count);
         }
     }

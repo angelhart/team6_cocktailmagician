@@ -19,15 +19,12 @@ namespace CM.Services
     {
         private readonly CMContext _context;
         private readonly ICocktailMapper _cocktailMapper;
-        private readonly IIngredientServices _ingredientServices;
 
         public CocktailServices(CMContext cmContext,
-                                ICocktailMapper cocktailMapper,
-                                IIngredientServices ingredientServices)
+                                ICocktailMapper cocktailMapper)
         {
             this._context = cmContext;
             this._cocktailMapper = cocktailMapper;
-            this._ingredientServices = ingredientServices;
         }
 
         private async Task<Cocktail> GetCocktailAsync(Guid id, bool allowUnlisted = false)
@@ -82,11 +79,16 @@ namespace CM.Services
             await _context.Cocktails.AddAsync(cocktail);
             await _context.SaveChangesAsync();
 
-            await _ingredientServices.AddIngredientsToCocktailAsync(cocktail.Id, dto.Ingredients);
+            await UpdateIngredientsAsync(cocktail.Id, dto.Ingredients);
 
             var outputDto = await GetCocktailDetailsAsync(cocktail.Id);
 
             return outputDto;
+        }
+
+        private Task<CocktailDTO> UpdateIngredientsAsync(Guid id, ICollection<CocktailIngredientDTO> ingredients)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -103,7 +105,7 @@ namespace CM.Services
             cocktail.Name = dto.Name;
             cocktail.Recipe = dto.Recipe;
             // TODO: cocktail.Picture
-            await _ingredientServices.UpdateCocktailIngredientsAsync(dto.Id, dto.Ingredients);
+            await UpdateIngredientsAsync(cocktail.Id, dto.Ingredients);
 
             _context.Cocktails.Update(cocktail);
             await _context.SaveChangesAsync();
@@ -138,6 +140,7 @@ namespace CM.Services
         public async Task<ICollection<CocktailDTO>> GetTopCocktailsAsync(int ammount = 3)
         {
             var topCocktails = await _context.Cocktails
+                                     .Where(c => !c.IsUnlisted)
                                      .OrderByDescending(c => c.AverageRating)
                                      .Take(ammount)
                                      .Select(c => _cocktailMapper.CreateCocktailDTO(c))
@@ -146,19 +149,33 @@ namespace CM.Services
             return topCocktails;
         }
 
-        public async Task<PaginatedList<CocktailSearchDTO>> SearchCocktailsAsync(string searchString, string sortBy, string sortOrder, int pageNumber, int pageSize)
+        /// <summary>
+        /// Returns paged results of searched cocktails.
+        /// </summary>
+        /// <param name="searchString"></param>
+        /// <param name="sortBy"></param>
+        /// <param name="sortOrder"></param>
+        /// <param name="pageNumber"></param>
+        /// <param name="pageSize"></param>
+        /// <returns></returns>
+        public async Task<PaginatedList<CocktailSearchDTO>> SearchCocktailsAsync(string searchString,
+                                                                                 string sortBy, string sortOrder, int pageNumber, int pageSize)
         {
-            var cocktails = _context.Cocktails
-                                    .Include(c => c.Ingredients)
-                                        .ThenInclude(ci => ci.Ingredient)
-                                    .AsQueryable();
-            
+            var cocktails = _context.Cocktails.AsQueryable();
+
             cocktails = await FilterCocktailsAsync(searchString);
             cocktails = await SortCocktailsAsync(sortBy, sortOrder);
 
-            var pagedCocktailDTOs = await PageCocktailsAsync(cocktails, pageNumber, pageSize);
+            cocktails = cocktails.Where(s => s.IsUnlisted == true);
 
-            return pagedCocktailDTOs;
+            cocktails = cocktails.Include(c => c.Ingredients)
+                                    .ThenInclude(ci => ci.Ingredient);
+
+            var pagedCocktails = await PaginatedList<Cocktail>.CreateAsync(cocktails, pageNumber, pageSize);//await PageCocktailsAsync(cocktails, pageNumber, pageSize);
+
+            var outputDto = (PaginatedList<CocktailSearchDTO>)pagedCocktails.Select(c => _cocktailMapper.CreateCocktailSearchDTO(c)).ToList();
+
+            return outputDto;
         }
 
         private async Task<IQueryable<Cocktail>> FilterCocktailsAsync(string searchString)
@@ -171,8 +188,9 @@ namespace CM.Services
             throw new NotImplementedException();
         }
 
-        private async Task<PaginatedList<CocktailSearchDTO>> PageCocktailsAsync(IQueryable<Cocktail> cocktails, int pageNumber, int pageSize)
+        private async Task<PaginatedList<Cocktail>> PageCocktailsAsync(IQueryable<Cocktail> cocktails, int pageNumber, int pageSize)
         {
+            await PaginatedList<Cocktail>.CreateAsync(cocktails, pageNumber, pageSize);
             throw new NotImplementedException();
         }
     }

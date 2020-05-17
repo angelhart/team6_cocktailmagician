@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,21 +18,18 @@ namespace CM.Services
     {
         private readonly CMContext _context;
         private readonly IIngredientMapper _ingredientMapper;
-        private readonly IIngredientServices _ingredientServices;
 
         public IngredientServices(CMContext context,
-                                  IIngredientMapper ingredientMapper,
-                                  IIngredientServices ingredientServices)
+                                  IIngredientMapper ingredientMapper)
         {
-            this._context = context;
-            this._ingredientMapper = ingredientMapper;
-            this._ingredientServices = ingredientServices;
+            this._context = context ?? throw new ArgumentNullException(nameof(context));
+            this._ingredientMapper = ingredientMapper ?? throw new ArgumentNullException(nameof(ingredientMapper));
         }
 
         private async Task<Ingredient> GetIngredientAsync(Guid id)
         {
-            if (id == null)
-                throw new ArgumentNullException("Ingredient ID can't be null.");
+            //if (id == null)
+            //    throw new ArgumentNullException("Ingredient ID can't be null.");
 
             var ingredient = await _context.Ingredients
                                      .Include(i => i.Cocktails)
@@ -116,14 +114,13 @@ namespace CM.Services
             return outputDto;
         }
 
-        public async Task<ICollection<CocktailIngredientDTO>> AddIngredientsToCocktailAsync(Guid cocktailId, ICollection<CocktailIngredientDTO> ingredients)
+        public async Task<ICollection<IngredientDTO>> GetAllIngredientsAsync()
         {
-            throw new NotImplementedException();
-        }
-
-        public async Task<ICollection<CocktailIngredientDTO>> UpdateCocktailIngredientsAsync(Guid cocktailId, ICollection<CocktailIngredientDTO> ingredients)
-        {
-            throw new NotImplementedException();
+            var ingredients = await _context.Ingredients
+                                      .Include(i => i.Cocktails)
+                                      .Select(i => _ingredientMapper.CreateIngredientDTO(i))
+                                      .ToListAsync();
+            return ingredients;
         }
     }
 }
