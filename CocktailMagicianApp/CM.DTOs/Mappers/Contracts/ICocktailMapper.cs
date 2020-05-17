@@ -1,4 +1,5 @@
 ﻿using CM.Models;
+using System;
 
 namespace CM.DTOs.Mappers.Contracts
 {
@@ -10,5 +11,6 @@ namespace CM.DTOs.Mappers.Contracts
         CocktailRatingDTO CreateCocktailRatingDTO(CocktailRating rating);
         Cocktail CreateCocktail(CocktailDTO dto);
         CocktailSearchDTO CreateCocktailSearchDTO(Cocktail cocktail);
+        CocktailIngredient CreateCocktailIngredient(Guid cocktailId, CocktailIngredientDTO dto);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using CM.DTOs.Mappers.Contracts;
 using CM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -81,10 +82,21 @@ namespace CM.DTOs.Mappers
         {
             return new CocktailIngredientDTO
             {
-                Id = ingredient.IngredientId,
-                Name = ingredient.Ingredient?.Name,
+                IngredientId = ingredient.IngredientId,
+                IngredientName = ingredient.Ingredient?.Name,
                 Ammount = ingredient.Ammount,
                 Unit = ingredient.Unit.ToString()
+            };
+        }
+
+        public CocktailIngredient CreateCocktailIngredient(Guid cocktailId, CocktailIngredientDTO dto)
+        {
+            return new CocktailIngredient
+            {
+                IngredientId = dto.IngredientId,
+                CocktailId = cocktailId,
+                Ammount = dto.Ammount,
+                Unit = Enum.Parse<Unit>(dto.Unit, true),
             };
         }
 
