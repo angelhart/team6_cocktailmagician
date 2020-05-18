@@ -13,8 +13,7 @@ using System.Threading.Tasks;
 
 namespace CM.ServicesTests.IngredientServicesTests
 {
-    // Since method is private, tests carried out via GetIngredientDetailsAsync(Guid id)
-
+    // This tests also test the behaviour of GetIngredientAsync(Guid id)
     [TestClass]
     public class GetIngredientDetailsAsync_Should
     {

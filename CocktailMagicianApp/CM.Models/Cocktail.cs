@@ -26,7 +26,7 @@ namespace CM.Models
         public ICollection<CocktailComment> Comments { get; set; }
         public ICollection<CocktailRating> Ratings { get; set; }
         // AverageRating ignored in configuration
-        public double? AverageRating => Ratings.Average(r => r.Score);
+        public double? AverageRating { get; set; } // => Ratings.Average(r => r.Score);
         public ICollection<BarCocktail> Bars { get; set; }
         // TODO: picture
     }

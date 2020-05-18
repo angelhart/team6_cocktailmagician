@@ -21,8 +21,4 @@
     <ProjectReference Include="..\CM.Services\CM.Services.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="CocktailServicesTests\" />
-  </ItemGroup>
-
 </Project>

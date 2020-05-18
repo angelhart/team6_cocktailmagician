@@ -29,8 +29,8 @@ namespace CM.Services
 
         private async Task<Cocktail> GetCocktailAsync(Guid id, bool allowUnlisted = false)
         {
-            if (id == null)
-                throw new ArgumentNullException("Cocktail ID can't be null.");
+            //if (id == null)
+            //    throw new ArgumentNullException("Cocktail ID can't be null.");
 
             var cocktail = await _context.Cocktails
                                          .Include(c => c.Bars)

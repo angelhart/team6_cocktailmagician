@@ -41,7 +41,7 @@ namespace CM.ServicesTests.IngredientServicesTests
             var result = await sut.DeleteIngredientAsync(inputId);
             var countAfterDelete = await assertContext.Ingredients.CountAsync();
             //Assert.IsInstanceOfType(result, typeof(IngredientDTO));
-            Assert.AreEqual(countAfterDelete, countBeforeDelete - 1);
+            Assert.AreEqual(countBeforeDelete - 1, countAfterDelete);
         }
 
         [TestMethod]
