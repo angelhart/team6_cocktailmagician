@@ -51,9 +51,9 @@ namespace CM.ServicesTests.IngredientServicesTests
         }
 
         [TestMethod]
-        public async Task Throw_When_NameExists()
+        public async Task Throw_When_IngredientNameExists()
         {
-            var options = Utility.GetOptions(nameof(Throw_When_NameExists));
+            var options = Utility.GetOptions(nameof(Throw_When_IngredientNameExists));
             await Utility.ArrangeContextAsync(options);
 
             var mockMapper = new Mock<IIngredientMapper>();

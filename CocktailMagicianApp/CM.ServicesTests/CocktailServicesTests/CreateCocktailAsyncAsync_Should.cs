@@ -44,6 +44,13 @@ namespace CM.ServicesTests.CocktailServicesTests
                                          .ToList(),
                       });
 
+            mockMapper.Setup(x => x.CreateCocktailIngredient(It.IsAny<Guid>(), It.IsAny<CocktailIngredientDTO>()))
+                      .Returns<Guid, CocktailIngredientDTO>((guid, dto) => new CocktailIngredient
+                      {
+                          CocktailId = guid,
+                          IngredientId = dto.IngredientId
+                      });
+
             var input = new CocktailDTO
             {
                 Name = "New Name",
@@ -69,7 +76,7 @@ namespace CM.ServicesTests.CocktailServicesTests
         [TestMethod]
         public async Task Throw_When_NameExists()
         {
-            var options = Utility.GetOptions(nameof(ReturnDto_When_Created));
+            var options = Utility.GetOptions(nameof(Throw_When_NameExists));
             await Utility.ArrangeContextAsync(options);
 
             var mockMapper = new Mock<ICocktailMapper>();

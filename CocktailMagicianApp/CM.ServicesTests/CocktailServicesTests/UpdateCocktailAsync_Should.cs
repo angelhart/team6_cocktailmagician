@@ -30,6 +30,7 @@ namespace CM.ServicesTests.CocktailServicesTests
                       {
                           Id = c.Id,
                           Name = c.Name,
+                          Recipe = c.Recipe,
                           Ingredients = c.Ingredients
                                          .Select(i => new CocktailIngredientDTO
                                          {
@@ -38,10 +39,18 @@ namespace CM.ServicesTests.CocktailServicesTests
                                          .ToList(),
                       });
 
+            mockMapper.Setup(x => x.CreateCocktailIngredient(It.IsAny<Guid>(), It.IsAny<CocktailIngredientDTO>()))
+                      .Returns<Guid, CocktailIngredientDTO>((guid, dto) => new CocktailIngredient
+                      {
+                          CocktailId = guid,
+                          IngredientId = dto.IngredientId
+                      });
+
             var updatedDto = new CocktailDTO
             {
-                Id = Guid.Parse("e8601248-4de3-4ccb-ab20-563926dedbd5"),  // cocktail B has ingredients A and C
+                Id = Guid.Parse("e8601248-4de3-4ccb-ab20-563926dedbd5"),  // cocktail B has ingredients A and B
                 Name = "New Name", // name change
+                Recipe = "New recipe",
                 Ingredients = new List<CocktailIngredientDTO>
                 {
                     // should keep only ingredient A after update
@@ -59,7 +68,10 @@ namespace CM.ServicesTests.CocktailServicesTests
             var expected = await assertContext.Cocktails.FirstOrDefaultAsync(c => c.Name == updatedDto.Name);
             Assert.IsNotNull(expected);
             Assert.AreEqual(expected.Id, result.Id);
+            Assert.AreEqual(updatedDto.Recipe, result.Recipe);
             Assert.AreEqual(updatedDto.Ingredients.Count, result.Ingredients.Count);
+            Assert.AreEqual(updatedDto.Ingredients.ToList()[0].IngredientId,
+                            result.Ingredients.ToList()[0].IngredientId);
         }
     }
 }

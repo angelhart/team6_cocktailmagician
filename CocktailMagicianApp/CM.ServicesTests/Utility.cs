@@ -50,13 +50,6 @@ namespace CM.ServicesTests
                              Score = 4
                         }
                     },
-                    Ingredients = new List<CocktailIngredient>
-                    {
-                        new CocktailIngredient
-                        {
-                            IngredientId = Guid.Parse("eb5d7135-f194-4443-a5ff-cc955396648e") // ingredient A
-                        }
-                    },
                     AverageRating = 9 / 2d
                 },
                 new Cocktail
@@ -76,17 +69,6 @@ namespace CM.ServicesTests
                              Score = 1
                         }
                     },
-                    Ingredients = new List<CocktailIngredient>
-                    {
-                        new CocktailIngredient
-                        {
-                            IngredientId = Guid.Parse("eb5d7135-f194-4443-a5ff-cc955396648e") // ingredient A
-                        },
-                        new CocktailIngredient
-                        {
-                            IngredientId = Guid.Parse("bce99872-9407-47a3-b3fc-50cb707cb19c") // ingredient C
-                        }
-                    },
                     AverageRating = 3 / 2d
                 },
                 new Cocktail // unlisted
@@ -103,16 +85,10 @@ namespace CM.ServicesTests
                         new CocktailRating
                         {
                              AppUser = user2,
-                             Score = 2
+                             Score = 0
                         }
                     },
-                    Ingredients = new List<CocktailIngredient>
-                    {
-                        new CocktailIngredient
-                        {
-                            IngredientId = Guid.Parse("966528b9-0ab8-4330-8974-b1bb9709ae74") // ingredient B
-                        }
-                    },
+                    AverageRating = 1.5,
                     IsUnlisted = true // unlisted
                 },
             };

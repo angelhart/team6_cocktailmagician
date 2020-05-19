@@ -34,6 +34,7 @@ namespace CM.Services
 
             var cocktail = await _context.Cocktails
                                          .Include(c => c.Bars)
+                                         .Include(c => c.Ratings)
                                          .Include(c => c.Comments)
                                              .ThenInclude(com => com.AppUser)
                                          .Include(c => c.Ingredients)
@@ -62,12 +63,15 @@ namespace CM.Services
             await _context.SaveChangesAsync();
         }
         
-        private IQueryable<CocktailDTO> SortCocktails(IQueryable<CocktailDTO> cocktails, string sortBy, string sortOrder)
+        private IQueryable<Cocktail> SortCocktails(IQueryable<Cocktail> cocktails, string sortBy, string sortOrder)
         {
             return sortBy switch
             {
-                "rating" => string.IsNullOrEmpty(sortOrder) ? cocktails.OrderBy(c => c.AverageRating) :
-                                                              cocktails.OrderByDescending(c => c.AverageRating),
+                "rating" => string.IsNullOrEmpty(sortOrder) ? cocktails.OrderBy(c => c.AverageRating)
+                                                                       .ThenBy(c => c.Name) :
+                                                              cocktails.OrderByDescending(c => c.AverageRating)
+                                                                       .ThenBy(c => c.Name),
+
                 _ => string.IsNullOrEmpty(sortOrder) ? cocktails.OrderBy(c => c.Name) :
                                                        cocktails.OrderByDescending(c => c.Name),
             };
@@ -137,14 +141,14 @@ namespace CM.Services
         /// Changes the unlisted state of a cocktail.
         /// </summary>
         /// <param name="cocktailId">ID of the cocktail.</param>
-        /// <param name="state">The new state for property.</param>
+        /// <param name="newState">The new state for property.</param>
         /// <param name="allowUnlisted">Checks if caller method is permited to retrieve unlisted cocktail.</param>
         /// <returns></returns>
-        public async Task<CocktailDTO> ChangeListingAsync(Guid cocktailId, bool state)
+        public async Task<CocktailDTO> ChangeListingAsync(Guid cocktailId, bool newState)
         {
             var cocktail = await GetCocktailAsync(cocktailId, allowUnlisted: true);
 
-            cocktail.IsUnlisted = state;
+            cocktail.IsUnlisted = newState;
             await _context.SaveChangesAsync();
 
             var outputDto = _cocktailMapper.CreateCocktailDTO(cocktail);
@@ -152,7 +156,7 @@ namespace CM.Services
         }
 
         /// <summary>
-        /// Retrieves the highest rated cocktails.
+        /// Retrieves the highest rated, listed cocktails.
         /// </summary>
         /// <param name="ammount">The number of cocktails to retrieve.</param>
         /// <returns><see cref="ICollection<<see cref="CocktailHomePageDTO"/>>"/></returns>
@@ -178,9 +182,9 @@ namespace CM.Services
         /// <param name="pageSize">Number of ingredients per page.</param>
         /// <param name="allowUnlisted">Set to true to include cocktails that are unlisted.</param>
         /// <returns><see cref="PaginatedList<<see cref="CocktailDTO"/>>"/></returns>
-        public async Task<PaginatedList<CocktailDTO>> PageCocktailsAsync(string searchString,
-                                                                         string sortBy,
-                                                                         string sortOrder,
+        public async Task<PaginatedList<CocktailDTO>> PageCocktailsAsync(string searchString = "",
+                                                                         string sortBy = "",
+                                                                         string sortOrder = "",
                                                                          int pageNumber = 1,
                                                                          int pageSize = 10,
                                                                          bool allowUnlisted = false)
@@ -190,15 +194,16 @@ namespace CM.Services
                                         .ThenInclude(i => i.Ingredient)
                                     .Include(c => c.Ratings)
                                     .Where(c => (!c.IsUnlisted || allowUnlisted)
-                                                && c.Name.Contains(searchString)
-                                                || c.Ingredients.Any(ci => ci.Ingredient.Name.Contains(searchString)))
-                                    .Select(c => _cocktailMapper.CreateCocktailDTO(c));
+                                                && (c.Name.Contains(searchString)
+                                                || c.Ingredients.Any(ci => ci.Ingredient.Name.Contains(searchString))));
 
             cocktails = SortCocktails(cocktails, sortBy, sortOrder);
 
-            var pagedCocktails = await PaginatedList<CocktailDTO>.CreateAsync(cocktails, pageNumber, pageSize);
+            var dtos = cocktails.Select(c => _cocktailMapper.CreateCocktailDTO(c));
 
-            return pagedCocktails;
+            var pagedDtos = await PaginatedList<CocktailDTO>.CreateAsync(dtos, pageNumber, pageSize);
+            
+            return pagedDtos;
         }
 
     }

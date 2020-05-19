@@ -25,9 +25,11 @@ namespace CM.Models
         public ICollection<CocktailIngredient> Ingredients { get; set; }
         public ICollection<CocktailComment> Comments { get; set; }
         public ICollection<CocktailRating> Ratings { get; set; }
-        // AverageRating ignored in configuration
         public double? AverageRating { get; set; } // => Ratings.Average(r => r.Score);
         public ICollection<BarCocktail> Bars { get; set; }
+        
         // TODO: picture
+
+        // prop DateTime LastRated - to resolve same rating conflicts for top spot?
     }
 }
