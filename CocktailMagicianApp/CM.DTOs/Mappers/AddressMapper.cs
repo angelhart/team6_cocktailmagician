@@ -26,7 +26,7 @@ namespace CM.DTOs.Mappers
 			{
 				Id = country.Id,
 				Name = country.Name,
-				Cities = country.Cities.Select(city => CreateCityDTO(city)).ToList()
+				//Cities = country.Cities.Select(city => CreateCityDTO(city)).ToList()
 			};
 		}
 

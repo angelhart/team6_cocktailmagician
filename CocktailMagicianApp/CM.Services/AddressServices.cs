@@ -28,8 +28,10 @@ namespace CM.Services
         /// <returns>ICollection</returns>
         public async Task<IEnumerable<CountryDTO>> GetAllCountriesAsync()
         {
-            var countries = _context.Countries;
-            var countriesDTO = await countries.Select(country => this._addressMapper.CreateCountryDTO(country)).ToListAsync();
+            var countriesDTO = await _context.Countries
+                .Select(country => this._addressMapper
+                .CreateCountryDTO(country))
+                .ToListAsync();
 
             return countriesDTO;
         }
@@ -42,7 +44,8 @@ namespace CM.Services
         {
             var citiesDTO = await _context.Cities
                     .Where(city => city.Country.Id == countryId)
-                    .Select(city => this._addressMapper.CreateCityDTO(city))
+                    .Select(city => this._addressMapper
+                    .CreateCityDTO(city))
                     .ToListAsync();
             
             return citiesDTO;

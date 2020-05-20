@@ -102,7 +102,34 @@ namespace CM.Services
 		/// <returns>BarDTO</returns>
 		public async Task<BarDTO> CreateBarAsync(BarDTO barDTO)
 		{
-			throw new NotImplementedException();
+			//TODO ModelsFactory
+			try
+			{
+				var address = new Address
+				{
+					CityId = barDTO.Address.CityId,
+					Street = barDTO.Address.Street,
+				};
+				var bar = new Bar
+				{
+					Name = barDTO.Name,
+					Phone = barDTO.Phone,
+					ImagePath = barDTO.ImagePath,
+					Details = barDTO.Details,
+					Address = address,
+				};
+
+				_context.Bars.Add(bar);
+				_context.Addresses.Add(address);
+				await _context.SaveChangesAsync();
+
+				//TODO Ntoast notif
+				return barDTO;
+			}
+			catch (Exception)
+			{
+				throw new ArgumentException();
+			}
 		}
 
 	}

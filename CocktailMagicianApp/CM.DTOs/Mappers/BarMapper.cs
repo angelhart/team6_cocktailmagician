@@ -14,6 +14,8 @@ namespace CM.DTOs.Mappers
         {
             _addressMapper = addressMapper ?? throw new ArgumentNullException(nameof(_addressMapper));
         }
+
+
         public BarDTO CreateBarDTO(Bar bar)
         {
             return new BarDTO
@@ -48,7 +50,6 @@ namespace CM.DTOs.Mappers
                 Text = barComment.Text
             };
         }
-
 
         public BarRatingDTO CreateBarRatingDTO(BarRating rating)
         {

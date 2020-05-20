@@ -42,23 +42,30 @@ namespace CM.Web.Controllers
             return View(barsViewModel); 
         }
 
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            throw new NotImplementedException();
 
-            //if (id == null)
-            //{
-            //    return NotFound();
-            //}
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-            //var bar = await _context.Bars
-            //    .FirstOrDefaultAsync(m => m.Id == id);
-            //if (bar == null)
-            //{
-            //    return NotFound();
-            //}
+            var barDTO = await this._barServices.GetBarAsync(id);
 
-            //return View(bar);
+            var barViewModel = new BarViewModel
+            {
+                Id = barDTO.Id,
+                Name = barDTO.Name,
+                Country = barDTO.Address.CountryName,
+                City = barDTO.Address.City.Name,
+                Street = barDTO.Address.Street,
+                Phone = barDTO.Phone,
+                Details = barDTO.Details,
+                AverageRating = barDTO.AverageRating,
+                ImagePath = barDTO.ImagePath,
+            };
+
+            return View(barViewModel);
         }
 
         public async Task<IActionResult> Create()
@@ -92,6 +99,7 @@ namespace CM.Web.Controllers
         {
             if (ModelState.IsValid)
             {
+                //TODO View model to dto mapper
                 var addressDTO = new AddressDTO
                 {
                     City = await this._addressServices.GetCityAsync(barViewModel.City),
