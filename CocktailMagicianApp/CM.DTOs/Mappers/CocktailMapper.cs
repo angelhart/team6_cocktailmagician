@@ -40,7 +40,7 @@ namespace CM.DTOs.Mappers
                                 .ToList()
             };
         }
-
+        //TODO Can we remove this in factory models?
         public Cocktail CreateCocktail(CocktailDTO dto)
         {
             return new Cocktail
@@ -88,7 +88,7 @@ namespace CM.DTOs.Mappers
                 Unit = ingredient.Unit.ToString()
             };
         }
-
+        //TODO Can we remove this in factory models?
         public CocktailIngredient CreateCocktailIngredient(Guid cocktailId, CocktailIngredientDTO dto)
         {
             return new CocktailIngredient

@@ -7,7 +7,9 @@ namespace CM.DTOs.Mappers.Contracts
 {
     public interface IBarMapper
     {
-        BarCommentDTO CreateBarCommentDTO(BarComment barComment);
+		Bar CreateBar(BarDTO barDTO, Address address);
+		BarCocktail CreateBarCocktail(Bar bar, Cocktail cocktail);
+		BarCommentDTO CreateBarCommentDTO(BarComment barComment);
         BarDTO CreateBarDTO(Bar bar);
         BarRatingDTO CreateBarRatingDTO(BarRating rating);
     }
