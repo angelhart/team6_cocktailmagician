@@ -8,7 +8,6 @@ namespace CM.Models
 {
 	public class BarComment: Comment
     {
-        //public Guid Id { get; set; }
         public Guid BarId { get; set; }
         public Bar Bar { get; set; }
     }

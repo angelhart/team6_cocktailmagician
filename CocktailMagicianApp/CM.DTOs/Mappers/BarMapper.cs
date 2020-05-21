@@ -1,7 +1,6 @@
 ﻿using CM.DTOs.Mappers.Contracts;
 using CM.Models;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace CM.DTOs.Mappers
@@ -9,6 +8,14 @@ namespace CM.DTOs.Mappers
 
     public class BarMapper : IBarMapper
     {
+        private readonly IAddressMapper _addressMapper;
+
+        public BarMapper(IAddressMapper addressMapper)
+        {
+            _addressMapper = addressMapper ?? throw new ArgumentNullException(nameof(_addressMapper));
+        }
+
+
         public BarDTO CreateBarDTO(Bar bar)
         {
             return new BarDTO
@@ -16,8 +23,12 @@ namespace CM.DTOs.Mappers
                 Id = bar.Id,
                 Name = bar.Name,
                 AverageRating = bar.AverageRating,
-                Address = String.Concat(bar.Address.Country.Name, ',', bar.Address.City, ',', bar.Address.Street),
+                //Address = String.Concat(bar.Address.Country.Name, ',', bar.Address.City, ',', bar.Address.Street),
+
+                Address = this._addressMapper.CreateAddressDTO(bar.Address),
                 Phone = bar.Phone,
+                Details = bar.Details,
+
                 Cocktails = bar.Cocktails
                         .Select(cocktail => CreateBarCocktailDTO(cocktail))
                         .ToList(),
@@ -39,7 +50,6 @@ namespace CM.DTOs.Mappers
                 Text = barComment.Text
             };
         }
-
 
         public BarRatingDTO CreateBarRatingDTO(BarRating rating)
         {

@@ -8,6 +8,6 @@ namespace CM.Models
 		public Guid Id { get; set; }
 		public string Name { get; set; }
 
-		public ICollection<Address> Adresses { get; set; }
+		public ICollection<City> Cities { get; set; }
 }
 }

@@ -9,7 +9,7 @@ namespace CM.Models.BaseClasses
 	{
 		public Guid AppUserId { get; set; }
 		public AppUser AppUser { get; set; }
-		[Required]
+		[Required(ErrorMessage = "Please Enter Rating")]
 		[Range(1, 5)]
 		public int Score { get; set; }
 	}

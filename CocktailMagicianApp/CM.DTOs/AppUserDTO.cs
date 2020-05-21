@@ -18,7 +18,6 @@ namespace CM.DTOs
 
 		public DateTime? DeletedOn { get; set; }
 		public bool IsDeleted { get; set; }
-
-		//TODO image
+		public string ImagePath { get; set; }
 	}
 }

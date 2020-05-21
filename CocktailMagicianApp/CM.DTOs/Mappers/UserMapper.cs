@@ -21,9 +21,8 @@ namespace CM.DTOs.Mappers
         {
             return new AppUserDTO
             {
-
-                //TODO image
                 Id = user.Id,
+                ImagePath = user.ImagePath,
                 IsDeleted = user.IsDeleted,
 
                 BarRatings = user.BarRatings

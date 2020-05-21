@@ -21,15 +21,12 @@ namespace CM.Models
         [MaxLength(256)]
         public string Name { get; set; }
         public string Recipe { get; set; }
+        public string ImagePath { get; set; }
         public bool IsUnlisted { get; set; }
         public ICollection<CocktailIngredient> Ingredients { get; set; }
         public ICollection<CocktailComment> Comments { get; set; }
         public ICollection<CocktailRating> Ratings { get; set; }
         public double? AverageRating { get; set; } // => Ratings.Average(r => r.Score);
         public ICollection<BarCocktail> Bars { get; set; }
-        
-        // TODO: picture
-
-        // prop DateTime LastRated - to resolve same rating conflicts for top spot?
     }
 }
