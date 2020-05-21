@@ -40,5 +40,14 @@ namespace CM.DTOs.Mappers
 				CountryName = address.City.Country.Name
 			};
 		}
+
+		public Address CreateAddress(BarDTO barDTO)
+		{
+			return new Address
+			{
+				CityId = barDTO.Address.CityId,
+				Street = barDTO.Address.Street,
+			}; ;
+		}
 	}
 }

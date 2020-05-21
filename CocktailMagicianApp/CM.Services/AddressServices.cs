@@ -75,7 +75,6 @@ namespace CM.Services
             var cityDTO = this._addressMapper.CreateCityDTO(city);
 
             return cityDTO;
-
         }
     }
 }
