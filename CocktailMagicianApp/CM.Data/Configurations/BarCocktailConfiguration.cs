@@ -1,6 +1,9 @@
 ﻿using CM.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using System;
+using System.Collections.Generic;
+using System.Text;
 
 namespace CM.Data.Configurations
 {
@@ -8,7 +11,7 @@ namespace CM.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<BarCocktail> builder)
         {
-            builder.HasKey(barCocktail => new { barCocktail.BarId, barCocktail.CocktailId });
+            builder.HasKey(cc => new { cc.CocktailId, cc.BarId });
         }
     }
 }

@@ -8,10 +8,11 @@ namespace CM.DTOs
     {
         public IngredientDTO()
         {
-            Cocktails = new List<IngredientCocktailDTO>();
+            Cocktails = new List<CocktailIngredientDTO>();
         }
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public ICollection<IngredientCocktailDTO> Cocktails { get; set; }
+        public ICollection<CocktailIngredientDTO> Cocktails { get; set; }
+        // TODO: picture
     }
 }

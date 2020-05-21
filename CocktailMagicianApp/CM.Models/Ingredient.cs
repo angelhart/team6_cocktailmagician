@@ -13,5 +13,6 @@ namespace CM.Models
         public Guid Id { get; set; }
         public string Name { get; set; }
         public ICollection<CocktailIngredient> Cocktails { get; set; }
+        // TODO: picture
     }
 }
