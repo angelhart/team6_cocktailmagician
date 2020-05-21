@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +11,8 @@ using CM.DTOs.Mappers;
 using CM.Models;
 using CM.Services;
 using CM.Services.Contracts;
+using CM.Services.Providers.Contracts;
+using CM.Services.Providers;
 
 namespace CM.Web
 {
@@ -55,6 +51,7 @@ namespace CM.Web
 
             services.AddScoped<IBarServices, BarServices>();
             services.AddScoped<IAddressServices, AddressServices>();
+            services.AddScoped<IAppUserServices, AppUserServices>();
 
         }
 
