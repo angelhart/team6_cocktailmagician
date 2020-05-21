@@ -51,7 +51,7 @@ namespace CM.Web.Controllers
             }
 
             var barDTO = await this._barServices.GetBarAsync(id);
-
+            //TODO dto=>view model mappers
             var barViewModel = new BarViewModel
             {
                 Id = barDTO.Id,
@@ -63,6 +63,14 @@ namespace CM.Web.Controllers
                 Details = barDTO.Details,
                 AverageRating = barDTO.AverageRating,
                 ImagePath = barDTO.ImagePath,
+
+                Cocktails = barDTO.Cocktails.Select(bc => new BarCocktailViewModel
+                {
+                    BarId = bc.BarId,
+                    Bar = bc.Bar,
+                    Cocktail = bc.Cocktail,
+                    CocktailId = bc.CocktailId
+                }).ToList()
             };
 
             return View(barViewModel);
@@ -73,7 +81,7 @@ namespace CM.Web.Controllers
             var collectionOfCountries = await this._addressServices.GetAllCountriesAsync();
 
             var listOfCountries = collectionOfCountries.ToList();
-            listOfCountries.Insert(0, new CountryDTO { Id = new Guid(),Name = "Select" }) ;
+            //listOfCountries.Insert(0, new CountryDTO { Id = new Guid(),Name = "Select" }) ;
 
             ViewBag.listOfCountries = listOfCountries;
 
@@ -86,7 +94,7 @@ namespace CM.Web.Controllers
             var collectionOfCities = await this._addressServices.GetCountryCitiesAsync(countryID);
 
             var listOfCities = collectionOfCities.ToList();
-            listOfCities.Insert(0, new CityDTO { Id = new Guid(), Name = "Select" });
+            //listOfCities.Insert(0, new CityDTO { Id = new Guid(), Name = "Select" });
 
             ViewBag.listOfCities = listOfCities;
 
