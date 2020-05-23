@@ -71,5 +71,16 @@ namespace CM.DTOs.Mappers
                 Name = cocktail.Bar?.Name
             };
         }
+
+        public BarComment CreateBarComment(BarCommentDTO newCommentDto)
+        {
+            return new BarComment
+            {
+                BarId = newCommentDto.BarId,
+                AppUserId = newCommentDto.UserId,
+                CommentedOn = newCommentDto.CommentedOn,
+                Text = newCommentDto.Text
+            };
+        }
     }
 }

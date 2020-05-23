@@ -19,6 +19,50 @@ namespace CM.ServicesTests.IngredientServicesTests
     public class PageIngredientsAsync_Should
     {
         [TestMethod]
+        public async Task Throw_When_NullSearchString_Ingr()
+        {
+            var options = Utility.GetOptions(nameof(Throw_When_NullSearchString_Ingr));
+            await Utility.ArrangeContextAsync(options);
+
+            var mockMapper = new Mock<IIngredientMapper>();
+
+            using var assertContext = new CMContext(options);
+            {
+                var sut = new IngredientServices(assertContext, mockMapper.Object);
+                await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.PageIngredientsAsync(searchString: null));
+            }
+        }
+
+        [TestMethod]
+        public async Task Throw_When_PageNumberInvalid_Ingr()
+        {
+            var options = Utility.GetOptions(nameof(Throw_When_PageNumberInvalid_Ingr));
+            await Utility.ArrangeContextAsync(options);
+
+            var mockMapper = new Mock<IIngredientMapper>();
+
+            using var assertContext = new CMContext(options);
+            {
+                var sut = new IngredientServices(assertContext, mockMapper.Object);
+                await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => sut.PageIngredientsAsync(pageNumber: 0));
+            }
+        }
+
+        public async Task Throw_When_PageSizeInvalid_Ingr()
+        {
+            var options = Utility.GetOptions(nameof(Throw_When_PageSizeInvalid_Ingr));
+            await Utility.ArrangeContextAsync(options);
+
+            var mockMapper = new Mock<IIngredientMapper>();
+
+            using var assertContext = new CMContext(options);
+            {
+                var sut = new IngredientServices(assertContext, mockMapper.Object);
+                await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => sut.PageIngredientsAsync(pageSize: 0));
+            }
+        }
+
+        [TestMethod]
         public async Task ReturnAllPaged_When_NoSearchStringProvided()
         {
             var options = Utility.GetOptions(nameof(ReturnAllPaged_When_NoSearchStringProvided));

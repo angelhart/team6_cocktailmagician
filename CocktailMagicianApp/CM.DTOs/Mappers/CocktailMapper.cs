@@ -56,9 +56,9 @@ namespace CM.DTOs.Mappers
             return ratings.Average(r => r.Score);
         }
 
-        private CocktailBarDTO CreateCocktailBarDTO(BarCocktail bar)
+        private BarCocktailDTO CreateCocktailBarDTO(BarCocktail bar)
         {
-            return new CocktailBarDTO
+            return new BarCocktailDTO
             {
                 Id = bar.BarId,
                 Name = bar.Bar?.Name
@@ -69,10 +69,22 @@ namespace CM.DTOs.Mappers
         {
             return new CocktailCommentDTO
             {
-                //CocktailId = comment.CocktailId,
-                //CocktailName = comment.Cocktail?.Name,
+                Id = comment.Id,
                 UserId = comment.AppUserId,
                 UserName = comment.AppUser?.UserName,
+                CocktailId = comment.CocktailId,
+                //CocktailName = comment.Cocktail?.Name,
+                CommentedOn = comment.CommentedOn,
+                Text = comment.Text
+            };
+        }
+
+        public CocktailComment CreateCocktailComment(CocktailCommentDTO comment)
+        {
+            return new CocktailComment
+            {
+                CocktailId = comment.CocktailId,
+                AppUserId = comment.UserId,
                 CommentedOn = comment.CommentedOn,
                 Text = comment.Text
             };
@@ -107,6 +119,16 @@ namespace CM.DTOs.Mappers
                 AppUserId = rating.AppUserId,
                 CocktailId = rating.CocktailId,
                 Score = rating.Score
+            };
+        }
+
+        public CocktailRating CreateCocktailRating(CocktailRatingDTO input)
+        {
+            return new CocktailRating
+            {
+                AppUserId = input.AppUserId,
+                CocktailId = input.CocktailId,
+                Score = input.Score
             };
         }
     }
