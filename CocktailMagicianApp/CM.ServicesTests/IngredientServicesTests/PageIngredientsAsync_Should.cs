@@ -36,7 +36,7 @@ namespace CM.ServicesTests.IngredientServicesTests
 
             var sut = new IngredientServices(assertContext, mockMapper.Object);
 
-            var result = await sut.PageIngredientsAsync(null);
+            var result = await sut.PageIngredientsAsync();
             var expected = await assertContext.Ingredients.ToListAsync();
 
             Assert.AreNotEqual(0, expected.Count);
@@ -64,7 +64,7 @@ namespace CM.ServicesTests.IngredientServicesTests
 
             var sut = new IngredientServices(assertContext, mockMapper.Object);
 
-            var result = await sut.PageIngredientsAsync(null, pageNumber, pageSize);
+            var result = await sut.PageIngredientsAsync("", pageNumber, pageSize);
             var expected = await assertContext.Ingredients.ToListAsync();
 
             Assert.AreEqual(pageSize, result.Count);
@@ -84,13 +84,11 @@ namespace CM.ServicesTests.IngredientServicesTests
                           Name = i.Name
                       });
 
-            string search = null;
-
             using var assertContext = new CMContext(options);
 
             var sut = new IngredientServices(assertContext, mockMapper.Object);
 
-            var result = await sut.PageIngredientsAsync(search);
+            var result = await sut.PageIngredientsAsync();
             var expected = await assertContext.Ingredients.ToListAsync();
             Assert.AreEqual(0, expected.Count);
             Assert.AreEqual(expected.Count, result.Count);

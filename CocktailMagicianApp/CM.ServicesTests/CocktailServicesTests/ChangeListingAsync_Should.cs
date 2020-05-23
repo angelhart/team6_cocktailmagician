@@ -40,7 +40,7 @@ namespace CM.ServicesTests.CocktailServicesTests
                                          .ToList(),
                       });
 
-            var cocktailId = Guid.Parse("9344e67f-f9a9-45c3-b583-7378387bf862"); // unlisted in InMemory
+            var cocktailId = Guid.Parse("9344e67f-f9a9-45c3-b583-7378387bf862"); // Cocktail C unlisted in InMemory
             var newState = false;
 
             using var assertContext = new CMContext(options);

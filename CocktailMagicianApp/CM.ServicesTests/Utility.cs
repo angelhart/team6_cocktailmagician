@@ -136,6 +136,35 @@ namespace CM.ServicesTests
                 // Cocktail C has no ingredients
             };
 
+            var bars = new List<Bar>
+            {
+                new Bar
+                {
+                    Id = Guid.Parse("a73c9de1-2498-4b58-b545-5bc74689160e"),
+                    Name = "Bar A",
+                },
+                new Bar
+                {
+                    Id = Guid.Parse("de61e799-a312-4764-950a-dd7d97713412"),
+                    Name = "Bar B",
+                    IsUnlisted = true,
+                }
+            };
+
+            var barCocktails = new List<BarCocktail>
+            {
+                new BarCocktail
+                {
+                    BarId = Guid.Parse("a73c9de1-2498-4b58-b545-5bc74689160e"), // Bar A
+                    CocktailId = Guid.Parse("9b9f85e3-51be-4fbf-918a-9fbd89546ef7"), // Cocktail A
+                },
+                new BarCocktail
+                {
+                    BarId = Guid.Parse("de61e799-a312-4764-950a-dd7d97713412"), // Bar B
+                    CocktailId = Guid.Parse("9b9f85e3-51be-4fbf-918a-9fbd89546ef7"), // Cocktail A
+                }
+            };
+
             using var arrangeContext = new CMContext(options);
 
             await arrangeContext.AddAsync(user1);
@@ -143,6 +172,8 @@ namespace CM.ServicesTests
             await arrangeContext.AddRangeAsync(cocktails);
             await arrangeContext.AddRangeAsync(ingredients);
             await arrangeContext.AddRangeAsync(cocktailIngredients);
+            await arrangeContext.AddRangeAsync(bars);
+            await arrangeContext.AddRangeAsync(barCocktails);
             await arrangeContext.SaveChangesAsync();
         }
     }
