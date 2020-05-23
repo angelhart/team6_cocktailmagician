@@ -91,6 +91,11 @@ namespace CM.ServicesTests
                     AverageRating = 1.5,
                     IsUnlisted = true // unlisted
                 },
+                new Cocktail
+                {
+                    Id = Guid.Parse("5416ceee-839d-43e3-bb85-b292976c353e"),
+                    Name = "Cocktail D",
+                }
             };
 
             var ingredients = new List<Ingredient>
