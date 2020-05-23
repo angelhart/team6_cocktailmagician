@@ -6,6 +6,7 @@ using CM.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -36,7 +37,7 @@ namespace CM.Services
                                       .FirstOrDefaultAsync(cr => cr.AppUserId == userId
                                                                  && cr.CocktailId == cocktailId);
             if (entry == null)
-                throw new NullReferenceException($"This user hasn't rated the queried cocktail.");
+                throw new NullReferenceException("Cocktail rating not found.");
 
             return entry;
         }
@@ -44,8 +45,11 @@ namespace CM.Services
         private async Task UpdateCocktailAverageRatingAsync(Guid cocktailId)
         {
             // update average in the cocktail entity
-            var cocktail = await _context.Cocktails.FindAsync(cocktailId);
-            cocktail.AverageRating = await _context.CocktailRatings.AverageAsync(cr => cr.Score);
+            var cocktail = await _context.Cocktails.FindAsync(cocktailId) 
+                ?? throw new NullReferenceException("No cocktail for which to update the rating found");
+            cocktail.AverageRating = await _context.CocktailRatings
+                                                .Where(cr => cr.CocktailId == cocktailId)
+                                                .AverageAsync(cr => cr.Score);
             _context.Update(cocktail);
             await _context.SaveChangesAsync();
         }
@@ -68,10 +72,9 @@ namespace CM.Services
             };
 
             await _context.AddAsync(newRating);
+            await _context.SaveChangesAsync();
 
             await UpdateCocktailAverageRatingAsync(input.CocktailId);
-
-            await _context.SaveChangesAsync();
 
             var outputDto = _cocktailMapper.CreateCocktailRatingDTO(newRating);
 
@@ -129,6 +132,8 @@ namespace CM.Services
             _context.Remove(entry);
 
             await UpdateCocktailAverageRatingAsync(cocktailId);
+
+            await _context.SaveChangesAsync();
 
             return outputDto;
         }
