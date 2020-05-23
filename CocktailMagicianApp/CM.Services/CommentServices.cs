@@ -59,14 +59,20 @@ namespace CM.Services
         /// <summary>
         /// Adds a new comment for a cocktail.
         /// </summary>
-        /// <param name="newCommentDto">Object containing IDs for commenter and cocktail along with text content.</param>
+        /// <param name="dto">Object containing IDs for commenter and cocktail along with text content.</param>
         /// <returns><see cref="CocktailCommentDTO"/></returns>
-        public async Task<CocktailCommentDTO> AddCocktailCommentAsync(CocktailCommentDTO newCommentDto)
+        public async Task<CocktailCommentDTO> AddCocktailCommentAsync(CocktailCommentDTO dto)
         {
-            if (newCommentDto == null)
+            if (dto == null)
                 throw new ArgumentNullException("New comment object cannot be null");
 
-            var newComment = _cocktailMapper.CreateCocktailComment(newCommentDto);
+            var newComment = new CocktailComment
+            {
+                CocktailId = dto.CocktailId,
+                AppUserId = dto.UserId,
+                CommentedOn = dto.CommentedOn,
+                Text = dto.Text
+            };
 
             await _context.AddAsync(newComment);
             await _context.SaveChangesAsync();

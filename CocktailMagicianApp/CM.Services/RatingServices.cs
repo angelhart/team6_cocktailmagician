@@ -60,8 +60,13 @@ namespace CM.Services
             if (input == null)
                 throw new ArgumentNullException("New rating object cannot be null");
 
-            // add new rating in join table
-            var newRating = _cocktailMapper.CreateCocktailRating(input);
+            var newRating = new CocktailRating
+            {
+                AppUserId = input.AppUserId,
+                CocktailId = input.CocktailId,
+                Score = input.Score
+            };
+
             await _context.AddAsync(newRating);
 
             await UpdateCocktailAverageRatingAsync(input.CocktailId);

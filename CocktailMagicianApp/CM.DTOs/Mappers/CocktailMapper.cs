@@ -41,21 +41,6 @@ namespace CM.DTOs.Mappers
             };
         }
 
-        public Cocktail CreateCocktail(CocktailDTO dto)
-        {
-            return new Cocktail
-            {
-                Name = dto.Name,
-                Recipe = dto.Recipe,
-                // TODO: picture
-            };
-        }
-
-        private double? GetAverageRating(IEnumerable<CocktailRating> ratings)
-        {
-            return ratings.Average(r => r.Score);
-        }
-
         private BarCocktailDTO CreateCocktailBarDTO(BarCocktail bar)
         {
             return new BarCocktailDTO
@@ -79,17 +64,6 @@ namespace CM.DTOs.Mappers
             };
         }
 
-        public CocktailComment CreateCocktailComment(CocktailCommentDTO comment)
-        {
-            return new CocktailComment
-            {
-                CocktailId = comment.CocktailId,
-                AppUserId = comment.UserId,
-                CommentedOn = comment.CommentedOn,
-                Text = comment.Text
-            };
-        }
-
         public CocktailIngredientDTO CreateCocktailIngredientDTO(CocktailIngredient ingredient)
         {
             return new CocktailIngredientDTO
@@ -101,17 +75,6 @@ namespace CM.DTOs.Mappers
             };
         }
 
-        public CocktailIngredient CreateCocktailIngredient(Guid cocktailId, CocktailIngredientDTO dto)
-        {
-            return new CocktailIngredient
-            {
-                IngredientId = dto.IngredientId,
-                CocktailId = cocktailId,
-                Ammount = dto.Ammount,
-                Unit = Enum.Parse<Unit>(dto.Unit, true),
-            };
-        }
-
         public CocktailRatingDTO CreateCocktailRatingDTO(CocktailRating rating)
         {
             return new CocktailRatingDTO
@@ -119,16 +82,6 @@ namespace CM.DTOs.Mappers
                 AppUserId = rating.AppUserId,
                 CocktailId = rating.CocktailId,
                 Score = rating.Score
-            };
-        }
-
-        public CocktailRating CreateCocktailRating(CocktailRatingDTO input)
-        {
-            return new CocktailRating
-            {
-                AppUserId = input.AppUserId,
-                CocktailId = input.CocktailId,
-                Score = input.Score
             };
         }
     }

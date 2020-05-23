@@ -42,14 +42,20 @@ namespace CM.Services
             return cocktail;
         }
         
-        private async Task UpdateIngredientsAsync(Guid id, ICollection<CocktailIngredientDTO> newIngredients)
+        private async Task UpdateIngredientsAsync(Guid cocktailId, ICollection<CocktailIngredientDTO> newIngredients)
         {
             var currentIngredients = _context.CocktailIngredients
-                                             .Where(ci => ci.CocktailId == id);
+                                             .Where(ci => ci.CocktailId == cocktailId);
 
             _context.RemoveRange(currentIngredients);
 
-            var ingredientsToAdd = newIngredients.Select(ci => _cocktailMapper.CreateCocktailIngredient(id, ci));
+            var ingredientsToAdd = newIngredients.Select(ci => new CocktailIngredient 
+            {
+                IngredientId = ci.IngredientId,
+                CocktailId = cocktailId,
+                Ammount = ci.Ammount,
+                Unit = Enum.Parse<Unit>(ci.Unit, true),
+            });
 
             await _context.AddRangeAsync(ingredientsToAdd);
             await _context.SaveChangesAsync();
@@ -110,7 +116,12 @@ namespace CM.Services
             if (nameExists)
                 throw new DbUpdateException("Cocktail with this name already exists in the records.");
 
-            var cocktail = _cocktailMapper.CreateCocktail(dto);
+            var cocktail = new Cocktail
+            {
+                Name = dto.Name,
+                Recipe = dto.Recipe,
+                // TODO: picture
+            };
             await _context.Cocktails.AddAsync(cocktail);
             await _context.SaveChangesAsync();
 

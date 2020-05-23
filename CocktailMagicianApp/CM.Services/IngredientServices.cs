@@ -71,7 +71,11 @@ namespace CM.Services
             if (nameExists)
                 throw new DbUpdateException("Ingredient with this name already exists in the records.");
 
-            Ingredient newIngredient = _ingredientMapper.CreateIngredient(dto);
+            Ingredient newIngredient = new Ingredient
+            {
+                Name = dto.Name,
+                // TODO: picture
+            };
 
             await _context.Ingredients.AddAsync(newIngredient);
             await _context.SaveChangesAsync();

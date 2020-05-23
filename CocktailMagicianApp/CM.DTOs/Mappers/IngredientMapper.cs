@@ -30,14 +30,5 @@ namespace CM.DTOs.Mappers
                 CocktailName = ingredient.Cocktail?.Name
             };
         }
-
-        public Ingredient CreateIngredient(IngredientDTO dto)
-        {
-            return new Ingredient
-            {
-                Name = dto.Name
-                // TODO: picture
-            };
-        }
     }
 }
