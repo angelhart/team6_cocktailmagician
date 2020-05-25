@@ -12,7 +12,7 @@ namespace CM.DTOs
         }
         public Guid Id { get; set; }
         public string Name { get; set; }
+        public string ImagePath { get; set; }
         public ICollection<CocktailIngredientDTO> Cocktails { get; set; }
-        // TODO: picture
     }
 }
