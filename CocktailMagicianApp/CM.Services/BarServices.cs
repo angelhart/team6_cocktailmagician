@@ -2,7 +2,9 @@
 using CM.DTOs;
 using CM.DTOs.Mappers.Contracts;
 using CM.Models;
+using CM.Models.BaseClasses;
 using CM.Services.Contracts;
+using CM.Services.Providers;
 using CM.Services.Providers.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -31,20 +33,47 @@ namespace CM.Services
 		/// Retrieves a collection of all bars in the database.
 		/// </summary>
 		/// <returns>ICollection</returns>
-		public async Task<ICollection<BarDTO>> GetAllBarsAsync()
+		public async Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", string sortBy = "", string sortOrder = "", int pageNumber = 1, int pageSize = 2, bool allowUnlisted = false)
 		{
+			//var bc = _context.BarCocktails.ToList();
 
-			var bars = await _context.Bars
-						.Include(a => a.Address)
-							.ThenInclude(a => a.City)
-								.ThenInclude(c => c.Country)
-						.Include(c => c.Cocktails)
-						.Where(bar => bar.IsUnlisted == false)
-						.OrderBy(bar => bar.Name)
-						.Select(bar => this._barMapper.CreateBarDTO(bar))
-						.ToListAsync();
+			var bars = _context.Bars
+								.Include(bar => bar.Address)
+									.ThenInclude(a => a.City)
+										.ThenInclude(c => c.Country)
+								//.Include(bar => bar.Cocktails)
+								.Include(bar => bar.Ratings)
+								.Where(bar => (!bar.IsUnlisted || allowUnlisted)
+																&& (bar.Name.Contains(searchString)
+																|| bar.Address.City.Name.Contains(searchString)
+																|| bar.Address.Street.Contains(searchString)));
 
-			return bars;
+			//var sortedBars = Helper<Bar>.SortCollection(bars, sortBy, sortOrder);
+
+			bars = SortBars(bars, sortBy, sortOrder);
+
+			var dtos = bars.Select(bar => _barMapper.CreateBarDTO(bar));
+
+			var pagedDtos = await PaginatedList<BarDTO>.CreateAsync(dtos, pageNumber, pageSize);
+
+			return pagedDtos;
+		}
+
+		/// <summary>
+		/// Returns Top Rated Bars.
+		/// </summary>
+		/// <param name="ammount">The number of bars o retrieve.</param>
+		/// <returns>Returns ICollection of BarDTO of the Top Rated bars.</returns>
+		public async Task<ICollection<BarDTO>> GetTopBarsAsync(int ammount = 3)
+		{
+			var topBars = await _context.Bars
+									 .Where(bar => !bar.IsUnlisted)
+									 .OrderByDescending(c => c.AverageRating)
+									 .Take(ammount)
+									 .Select(bar => _barMapper.CreateBarDTO(bar))
+									 .ToListAsync();
+
+			return topBars;
 		}
 
 		/// <summary>
@@ -111,8 +140,20 @@ namespace CM.Services
 
 			try
 			{
-				var address = _addressMapper.CreateAddress(barDTO);
-				var bar = _barMapper.CreateBar(barDTO, address);
+				var address = new Address
+				{
+					CityId = barDTO.Address.CityId,
+					Street = barDTO.Address.Street,
+				}; 
+
+				var bar = new Bar
+				{
+					Name = barDTO.Name,
+					Phone = barDTO.Phone,
+					ImagePath = barDTO.ImagePath,
+					Details = barDTO.Details,
+					Address = address,
+				};
 
 				await _context.Bars.AddAsync(bar);
 				await _context.Addresses.AddAsync(address);
@@ -158,7 +199,13 @@ namespace CM.Services
 			var bar = await GetBarEntityWithCocktails(barId);
 			var cocktail = await GetCocktailEntity(cocktailId);
 
-			bar.Cocktails.Add(_barMapper.CreateBarCocktail(bar, cocktail));
+			bar.Cocktails.Add(new BarCocktail
+			{
+				BarId = bar.Id,
+				Bar = bar,
+				CocktailId = cocktail.Id,
+				Cocktail = cocktail
+			});
 
 			_context.Update(bar);
 			_context.SaveChanges();
@@ -179,7 +226,13 @@ namespace CM.Services
 			var bar = await GetBarEntityWithCocktails(barId);
 			var cocktail = await GetCocktailEntity(cocktailId);
 
-			bar.Cocktails.Remove(_barMapper.CreateBarCocktail(bar, cocktail));
+			bar.Cocktails.Remove(new BarCocktail
+			{
+				BarId = bar.Id,
+				Bar = bar,
+				CocktailId = cocktail.Id,
+				Cocktail = cocktail
+			});
 
 			_context.Update(bar);
 			_context.SaveChanges();
@@ -202,7 +255,18 @@ namespace CM.Services
 			return await _context.Cocktails
 				.FirstOrDefaultAsync(cocktail => cocktail.Id == cocktailId && cocktail.IsUnlisted == false) ?? throw new ArgumentNullException();
 		}
-	}//TODO Search,  top5 bars
-	 //TODO sorting
-	 //TODO paging
+		private IQueryable<Bar> SortBars(IQueryable<Bar> bars, string sortBy, string sortOrder)
+		{
+			return sortBy switch
+			{
+				"rating" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(c => c.AverageRating)
+																	   .ThenBy(c => c.Name) :
+															  bars.OrderByDescending(c => c.AverageRating)
+																	   .ThenBy(c => c.Name),
+
+				_ => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(c => c.Name) :
+													   bars.OrderByDescending(c => c.Name),
+			};
+		}
+	}
 }
