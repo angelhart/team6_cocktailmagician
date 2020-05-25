@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using CM.Models.BaseClasses;
 
 namespace CM.Models
 {
-	public class Bar
-	{
+	public class Bar: ISortable
+    {
         public Bar()
         {
             Comments = new List<BarComment>();

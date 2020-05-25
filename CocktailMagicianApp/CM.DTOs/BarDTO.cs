@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CM.Models;
+using CM.Models.BaseClasses;
 
 namespace CM.DTOs
 {
-	public class BarDTO
+	public class BarDTO : ISortable
 	{
         public Guid Id { get; set; }
         public string Name { get; set; }
