@@ -15,6 +15,7 @@ namespace CM.DTOs
         public string Details { get; set; }
         public double? AverageRating { get; set; }
         public string ImagePath { get; set; }
+        public bool IsUnlisted { get; set; }
 
         public ICollection<BarCommentDTO> Comments { get; set; }
         public ICollection<BarCocktailDTO> Cocktails { get; set; }

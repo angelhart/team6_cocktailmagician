@@ -36,18 +36,11 @@ namespace CM.DTOs.Mappers
 			{
 				Id = address.Id,
 				City = CreateCityDTO(address.City),
+				CityId = address.CityId,
 				Street = address.Street,
 				CountryName = address.City.Country.Name
 			};
 		}
 
-		public Address CreateAddress(BarDTO barDTO)
-		{
-			return new Address
-			{
-				CityId = barDTO.Address.CityId,
-				Street = barDTO.Address.Street,
-			}; ;
-		}
 	}
 }

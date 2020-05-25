@@ -28,6 +28,7 @@ namespace CM.DTOs.Mappers
                 Address = this._addressMapper.CreateAddressDTO(bar.Address),
                 Phone = bar.Phone,
                 Details = bar.Details,
+                IsUnlisted = bar.IsUnlisted,
 
                 Cocktails = bar.Cocktails
                         .Select(cocktail => CreateBarCocktailDTO(cocktail))
@@ -71,29 +72,6 @@ namespace CM.DTOs.Mappers
                 Bar = bc.Bar,
                 CocktailId = bc.CocktailId,
                 Cocktail = bc.Cocktail
-            };
-        }
-
-        public Bar CreateBar(BarDTO barDTO, Address address)
-        {
-            return new Bar
-            {
-                Name = barDTO.Name,
-                Phone = barDTO.Phone,
-                ImagePath = barDTO.ImagePath,
-                Details = barDTO.Details,
-                Address = address,
-            };
-        }
-
-        public BarCocktail CreateBarCocktail(Bar bar, Cocktail cocktail)
-        {
-            return new BarCocktail
-            {
-                BarId = bar.Id,
-                Bar = bar,
-                CocktailId = cocktail.Id,
-                Cocktail = cocktail
             };
         }
     }
