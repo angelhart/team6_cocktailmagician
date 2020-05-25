@@ -16,6 +16,7 @@ namespace CM.ServicesTests.AddressServicesTests
         [TestMethod]
         public async Task ReturnCountryyDto_WhenIdFound()
         {
+            //Arrange
             var options = Utility.GetOptions(nameof(ReturnCountryyDto_WhenIdFound));
             await Utility.ArrangeContextAsync(options);
 
@@ -29,29 +30,34 @@ namespace CM.ServicesTests.AddressServicesTests
 
             var lookUpId = Guid.Parse("4828b9db-cd3a-487f-9782-7a23653ff99a");
 
-            using var assertContext = new CMContext(options);
+            //Act/Assert
+            using (var assertContext = new CMContext(options))
+            {
+                var sut = new AddressServices(assertContext, mockMapper.Object);
 
-            var sut = new AddressServices(assertContext, mockMapper.Object);
-
-            var result = await sut.GetCountryAsync(lookUpId);
-            var expected = await assertContext.Countries.FindAsync(lookUpId);
-            Assert.AreEqual(expected.Name, result.Name);
+                var result = await sut.GetCountryAsync(lookUpId);
+                var expected = await assertContext.Countries.FindAsync(lookUpId);
+                Assert.AreEqual(expected.Name, result.Name);
+            }
         }
 
         [TestMethod]
         public async Task ThrowArgumentException_WhenCountry_NotFound()
         {
+            //Arrange
             var options = Utility.GetOptions(nameof(ThrowArgumentException_WhenCountry_NotFound));
 
             var mockMapper = new Mock<IAddressMapper>();
 
             var lookUpId = Guid.Parse("00000000-0000-0000-0000-000000000000");
 
-            using var assertContext = new CMContext(options);
+            //Act/Assert
+            using (var assertContext = new CMContext(options))
+            {
+                var sut = new AddressServices(assertContext, mockMapper.Object);
 
-            var sut = new AddressServices(assertContext, mockMapper.Object);
-
-            await Assert.ThrowsExceptionAsync<ArgumentException>(() => sut.GetCountryAsync(lookUpId));
+                await Assert.ThrowsExceptionAsync<ArgumentException>(() => sut.GetCountryAsync(lookUpId));
+            }
         }
     }
 }

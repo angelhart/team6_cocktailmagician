@@ -19,13 +19,11 @@ namespace CM.Services
 	{
 		private readonly CMContext _context;
 		private readonly IBarMapper _barMapper;
-		private readonly IAddressMapper _addressMapper;
 
-		public BarServices(CMContext context, IBarMapper barMapper, IAddressMapper addressMapper)
+		public BarServices(CMContext context, IBarMapper barMapper)
 		{
 			_context = context ?? throw new ArgumentNullException(nameof(context));
 			_barMapper = barMapper ?? throw new ArgumentNullException(nameof(barMapper));
-			_addressMapper = addressMapper ?? throw new ArgumentNullException(nameof(addressMapper));
 		}
 
 
@@ -35,8 +33,6 @@ namespace CM.Services
 		/// <returns>ICollection</returns>
 		public async Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", string sortBy = "", string sortOrder = "", int pageNumber = 1, int pageSize = 2, bool allowUnlisted = false)
 		{
-			//var bc = _context.BarCocktails.ToList();
-
 			var bars = _context.Bars
 								.Include(bar => bar.Address)
 									.ThenInclude(a => a.City)

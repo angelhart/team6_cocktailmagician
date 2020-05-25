@@ -205,6 +205,12 @@ namespace CM.ServicesTests
 				{
 					Id = new Guid("4ecac9dc-31df-4b89-93b5-5550d2608ede"),
 					Name = "UK"
+				},
+
+				new Country
+				{
+					Id = new Guid("fb4effe9-32c1-45fd-8fce-9b45259c7ff6"),
+					Name = "Bulgaria"
 				}
 			};
 

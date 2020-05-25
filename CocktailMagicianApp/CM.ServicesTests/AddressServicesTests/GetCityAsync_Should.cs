@@ -16,6 +16,7 @@ namespace CM.ServicesTests.AddressServicesTests
         [TestMethod]
         public async Task ReturnCityDto_WhenIdFound()
         {
+            //Arrange
             var options = Utility.GetOptions(nameof(ReturnCityDto_WhenIdFound));
             await Utility.ArrangeContextAsync(options);
 
@@ -29,29 +30,35 @@ namespace CM.ServicesTests.AddressServicesTests
 
             var lookUpId = Guid.Parse("320b050b-82f1-494c-9add-91ab28bf98dd");
 
-            using var assertContext = new CMContext(options);
+            //Act/Assert
+            using (var assertContext = new CMContext(options))
+            {
+                var sut = new AddressServices(assertContext, mockMapper.Object);
 
-            var sut = new AddressServices(assertContext, mockMapper.Object);
-
-            var result = await sut.GetCityAsync(lookUpId);
-            var expected = await assertContext.Cities.FindAsync(lookUpId);
-            Assert.AreEqual(expected.Name, result.Name);
+                var result = await sut.GetCityAsync(lookUpId);
+                var expected = await assertContext.Cities.FindAsync(lookUpId);
+                Assert.AreEqual(expected.Name, result.Name);
+            }
         }
 
         [TestMethod]
         public async Task ThrowArgumentException_WhenId_NotFound()
         {
+            //Arrange
             var options = Utility.GetOptions(nameof(ThrowArgumentException_WhenId_NotFound));
 
             var mockMapper = new Mock<IAddressMapper>();
 
             var lookUpId = Guid.Parse("00000000-0000-0000-0000-000000000000");
 
-            using var assertContext = new CMContext(options);
+            //Act/Assert
+            using (var assertContext = new CMContext(options))
+            {
 
-            var sut = new AddressServices(assertContext, mockMapper.Object);
+                var sut = new AddressServices(assertContext, mockMapper.Object);
 
-            await Assert.ThrowsExceptionAsync<ArgumentException>(() => sut.GetCityAsync(lookUpId));
+                await Assert.ThrowsExceptionAsync<ArgumentException>(() => sut.GetCityAsync(lookUpId));
+            }
         }
     }
 }

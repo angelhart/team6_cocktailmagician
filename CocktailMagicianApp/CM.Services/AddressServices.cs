@@ -93,10 +93,14 @@ namespace CM.Services
         /// <returns>Returns CountryDTO with the params of the created country.</returns>
         public async Task<CountryDTO> CreateCountryAsync(CountryDTO countryDTO)
         {
+            if (countryDTO.Name == null)
+                throw new ArgumentNullException("Country name cannot be null!");
+
             var countryAlredyExists = _context.Countries
                 .Any(country => country.Name == countryDTO.Name);
             if (countryAlredyExists)
-                throw new DbUpdateException();
+                throw new DbUpdateException("A country with the same name already exists!");
+
 
             var country = new Country { Name = countryDTO.Name };
 
@@ -115,10 +119,13 @@ namespace CM.Services
         /// <returns>Returns CityDTO with the params of the created city.</returns>
         public async Task<CityDTO> CreateCityAsync(CityDTO cityDTO, Guid countryId)
         {
+            if (cityDTO.Name == null)
+                throw new ArgumentNullException("City name cannot be null!");
+
             var alredyExists = _context.Cities
                 .Any(city => city.Name == cityDTO.Name);
             if (alredyExists)
-                throw new DbUpdateException();
+                throw new DbUpdateException("A city with the same name already exists!");
 
             var city = new City { Name = cityDTO.Name, CountryId = countryId };
 

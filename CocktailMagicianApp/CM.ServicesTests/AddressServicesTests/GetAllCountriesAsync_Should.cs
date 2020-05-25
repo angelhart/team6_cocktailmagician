@@ -14,27 +14,30 @@ namespace CM.ServicesTests.AddressServicesTests
 	[TestClass]
 	public class GetAllCountriesAsync_Should
 	{
-        [TestMethod]
-        public async Task ReturnListCountryyDto()
-        {
-            var options = Utility.GetOptions(nameof(ReturnListCountryyDto));
-            await Utility.ArrangeContextAsync(options);
+		[TestMethod]
+		public async Task ReturnListCountryyDto()
+		{
+			//Arrange
+			var options = Utility.GetOptions(nameof(ReturnListCountryyDto));
+			await Utility.ArrangeContextAsync(options);
 
-            var mockMapper = new Mock<IAddressMapper>();
-            mockMapper.Setup(x => x.CreateCountryDTO(It.IsAny<Country>()))
-                      .Returns<Country>(country => new CountryDTO
-                      {
-                          Id = country.Id,
-                          Name = country.Name
-                      });
+			var mockMapper = new Mock<IAddressMapper>();
+			mockMapper.Setup(x => x.CreateCountryDTO(It.IsAny<Country>()))
+					  .Returns<Country>(country => new CountryDTO
+					  {
+						  Id = country.Id,
+						  Name = country.Name
+					  });
 
-            using var assertContext = new CMContext(options);
+			//Act/Assert
+			using (var assertContext = new CMContext(options))
+			{
+				var sut = new AddressServices(assertContext, mockMapper.Object);
 
-            var sut = new AddressServices(assertContext, mockMapper.Object);
-
-            var result = await sut.GetAllCountriesAsync();
-            var expected = await assertContext.Countries.ToListAsync();
-            Assert.AreEqual(expected.Count, result.Count);
-        }
-    }
+				var result = await sut.GetAllCountriesAsync();
+				var expected = await assertContext.Countries.ToListAsync();
+				Assert.AreEqual(expected.Count, result.Count);
+			}
+		}
+	}
 }
