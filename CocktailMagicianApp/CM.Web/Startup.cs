@@ -39,6 +39,10 @@ namespace CM.Web
                 .AddDefaultUI() // Consider commenting out this as it was missing in master
                 .AddDefaultTokenProviders();
 
+            //services.AddControllers().AddNewtonsoftJson(options =>
+            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            //);
+
             services.AddControllersWithViews();
             services.AddRazorPages();
 
