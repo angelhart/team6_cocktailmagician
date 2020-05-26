@@ -31,9 +31,9 @@ namespace CM.Services
 		/// Retrieves a collection of all bars in the database.
 		/// </summary>
 		/// <returns>ICollection</returns>
-		public async Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", string sortBy = "", string sortOrder = "", int pageNumber = 1, int pageSize = 2, bool allowUnlisted = false)
+		public async Task<ICollection<BarDTO>> GetAllBarsAsync(string searchString = "", string sortBy = "", string sortOrder = "", int pageNumber = 1, int pageSize = 2, bool allowUnlisted = false)
 		{
-			var bars = _context.Bars
+			var bars = await _context.Bars
 								.Include(bar => bar.Address)
 									.ThenInclude(a => a.City)
 										.ThenInclude(c => c.Country)
@@ -42,17 +42,18 @@ namespace CM.Services
 								.Where(bar => (!bar.IsUnlisted || allowUnlisted)
 																&& (bar.Name.Contains(searchString)
 																|| bar.Address.City.Name.Contains(searchString)
-																|| bar.Address.Street.Contains(searchString)));
+																|| bar.Address.Street.Contains(searchString)))
+								.ToListAsync();
 
 			//var sortedBars = Helper<Bar>.SortCollection(bars, sortBy, sortOrder);
 
-			bars = SortBars(bars, sortBy, sortOrder);
+			//bars = SortBars(bars, sortBy, sortOrder);
 
-			var dtos = bars.Select(bar => _barMapper.CreateBarDTO(bar));
+			var dtos = bars.Select(bar => _barMapper.CreateBarDTO(bar)).ToList();
 
-			var pagedDtos = await PaginatedList<BarDTO>.CreateAsync(dtos, pageNumber, pageSize);
+			//var pagedDtos = await PaginatedList<BarDTO>.CreateAsync(dtos, pageNumber, pageSize);
 
-			return pagedDtos;
+			return dtos;
 		}
 
 		/// <summary>

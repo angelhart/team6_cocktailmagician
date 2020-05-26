@@ -1,16 +1,17 @@
 ﻿@model BarViewModel
 
 @{
-    ViewData["Title"] = "Create";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Create";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h1>Create</h1>
 
+
 <h4>Bar</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
+	<div class="col-md-4">
 		<form asp-action="Create">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 			<div class="form-group">
@@ -19,15 +20,43 @@
 				<span asp-validation-for="Name" class="text-danger"></span>
 			</div>
 			<div class="form-group">
-				<label asp-for="Country" class="control-label"></label>
-				<select asp-for="CountryID" class="form-control" asp-items="@(new SelectList(ViewBag.ListOfCountries, "Id", "Name"))"></select>
-				<span asp-validation-for="Country" class="text-danger"></span>
+				<label asp-for="CountryID" class="control-label"></label>
+				@*<select asp-for="CountryID" class="form-control" asp-items="(new SelectList(ViewBag.ListOfCountries, "Id", "Name"))"></select>*@
+				@Html.DropDownListFor(model => model.CountryID, new SelectList(ViewBag.ListOfCountries, "Id", "Name"), "--Select Country--", new { @class = "form-control" })
+				@*<span asp-validation-for="CountryID" class="text-danger"></span>*@
 			</div>
+
+
 			<div class="form-group">
-				<label asp-for="City" class="control-label"></label>
-				<select asp-for="CityID" class="form-control" asp-items="@(new SelectList(string.Empty, "Id", "Name"))"></select>
-				<span asp-validation-for="City" class="text-danger"></span>
 			</div>
+
+
+
+
+			<div class="form-group">
+				<label asp-for="CityID" class="control-label"></label>
+				<select asp-for="CityID" class="form-control" asp-items="@(new SelectList(string.Empty, "Id", "Name"))"><option value="">Pick one</option></select>
+				<span asp-validation-for="CityID" class="text-danger"></span>
+				@Html.DropDownListFor(model => model.CityID, new SelectList(string.Empty, "Id", "Name"), "--Select City--", new { @class = "form-control" })
+
+			</div>
+
+
+
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+			<script>
+				$(document).ready(function () {
+					$("#CountryID").change(function () {
+						$.get("/Bars/GetCountryCitiesAsync", { CountryID: $("#CountryID").val() }, function (data) {
+							$("#CityID").empty();
+							$.each(data, function (index, row) {
+								$("#CityID").append("<option value='" + row.Id + "'>" + row.Name + "</option>")
+							});
+						});
+					});
+				});
+			</script>
+
 			<div class="form-group">
 				<label asp-for="Street" class="control-label"></label>
 				<input asp-for="Street" class="form-control" />
@@ -51,24 +80,18 @@
 			<div class="form-group">
 				<input type="submit" value="Create" class="btn btn-primary" />
 			</div>
-
-			@*https://www.c-sharpcorner.com/article/creating-simple-cascading-dropdownlist-in-asp-net-core-mvc-with-new-tag-helpers/*@
-			<script src="~/lib/jquery/dist/jquery.js"></script>
-			<script type="text/javascript">
-				$(document).ready(function () {
-					var items = "<option value ='0'>Select</option>";
-					$('#CityID').html(items);
-				});
-			</script>
-
 		</form>
-    </div>
+	</div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+	<a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@*<script src="~/js/SetDefaultSelect.js"></script>*@
+	@*<script type="text/javascript" src="~/js/DependentDropdown.js"></script>*@
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 }
