@@ -17,6 +17,8 @@ using CM.DTOs.Mappers;
 using CM.Models;
 using CM.Services;
 using CM.Services.Contracts;
+using CM.Web.Providers.Contracts;
+using CM.Web.Providers;
 
 namespace CM.Web
 {
@@ -47,15 +49,18 @@ namespace CM.Web
             services.AddRazorPages();
 
 
-            services.AddScoped<ICocktailMapper, CocktailMapper>();
+            services.AddScoped<IAddressMapper, AddressMapper>();
             services.AddScoped<IBarMapper, BarMapper>();
+            services.AddScoped<ICocktailMapper, CocktailMapper>();
             services.AddScoped<IIngredientMapper, IngredientMapper>();
             services.AddScoped<IUserMapper, UserMapper>();
-            services.AddScoped<IAddressMapper, AddressMapper>();
 
-            services.AddScoped<IBarServices, BarServices>();
             services.AddScoped<IAddressServices, AddressServices>();
+            services.AddScoped<IBarServices, BarServices>();
+            services.AddScoped<ICocktailServices, CocktailServices>();
+            services.AddScoped<IIngredientServices, IngredientServices>();
 
+            services.AddScoped<IIngredientViewMapper, IngredientViewMapper>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

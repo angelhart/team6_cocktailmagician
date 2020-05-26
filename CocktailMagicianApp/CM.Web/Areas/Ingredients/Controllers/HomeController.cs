@@ -12,13 +12,13 @@ using Microsoft.AspNetCore.Mvc;
 namespace CM.Web.Areas.Ingredients.Controllers
 {
     [Area("Ingredients")]
-    [Authorize(Roles = (""))] // TODO: add roles
-    public class IngredientsController : Controller
+    //[Authorize(Roles = (""))] // TODO: add roles
+    public class HomeController : Controller
     {
         private readonly IIngredientServices _ingredientServices;
         private readonly IIngredientViewMapper _ingredientViewMapper;
 
-        public IngredientsController(IIngredientServices ingredientServices,
+        public HomeController(IIngredientServices ingredientServices,
                                      IIngredientViewMapper ingredientViewMapper)
         {
             this._ingredientServices = ingredientServices;
