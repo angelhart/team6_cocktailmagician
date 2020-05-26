@@ -18,7 +18,12 @@ namespace CM.ServicesTests.AddressServicesTests
         {
             //Arrange
             var options = Utility.GetOptions(nameof(ReturnCountryyDto_WhenIdFound));
-            await Utility.ArrangeContextAsync(options);
+
+            var existingCountry = new Country
+            {
+                Id = Guid.Parse("4828b9db-cd3a-487f-9782-7a23653ff99a"),
+                Name = "TestCountry"
+            };
 
             var mockMapper = new Mock<IAddressMapper>();
             mockMapper.Setup(x => x.CreateCountryDTO(It.IsAny<Country>()))
@@ -29,6 +34,12 @@ namespace CM.ServicesTests.AddressServicesTests
                       });
 
             var lookUpId = Guid.Parse("4828b9db-cd3a-487f-9782-7a23653ff99a");
+
+            using (var arrangeContext = new CMContext(options))
+            {
+                await arrangeContext.Countries.AddAsync(existingCountry);
+                await arrangeContext.SaveChangesAsync();
+            }
 
             //Act/Assert
             using (var assertContext = new CMContext(options))
