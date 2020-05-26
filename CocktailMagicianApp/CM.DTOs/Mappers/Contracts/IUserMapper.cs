@@ -7,6 +7,7 @@ namespace CM.DTOs.Mappers.Contracts
 {
     public interface IUserMapper
     {
-        AppUserDTO CreateAppUserDTO(AppUser user);
+		AppUser CreateAppUser();
+		AppUserDTO CreateAppUserDTO(AppUser user);
     }
 }

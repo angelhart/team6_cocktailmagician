@@ -36,5 +36,9 @@ namespace CM.DTOs.Mappers
                             .Select(comment => _cocktailMapper.CreateCocktailCommentDTO(comment)).ToList()
             };
         }
+        public AppUser CreateAppUser()
+        {
+            return new AppUser();
+        }
     }
 }
