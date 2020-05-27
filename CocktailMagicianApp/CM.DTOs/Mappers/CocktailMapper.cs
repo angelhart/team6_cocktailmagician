@@ -45,8 +45,8 @@ namespace CM.DTOs.Mappers
         {
             return new BarCocktailDTO
             {
-                Id = bar.BarId,
-                Name = bar.Bar?.Name
+                BarId = bar.BarId,
+                Bar = bar.Bar?.Name
             };
         }
 
