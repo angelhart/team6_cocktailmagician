@@ -11,7 +11,7 @@ namespace CM.Services.Contracts
         Task<CocktailRatingDTO> DeleteCocktailRatingAsync(Guid userId, Guid cocktailId);
         Task<CocktailRatingDTO> EditCocktailRatingAsync(CocktailRatingDTO input);
         Task<CocktailRatingDTO> GetCocktailRatingAsync(Guid userId, Guid cocktailId);
-        public Task<BarRatingDTO> RateBarAsync(int id, BarRatingDTO barRatingDTO);
+        Task<BarRatingDTO> RateBarAsync(BarRatingDTO barRatingDTO);
         Task<CocktailRatingDTO> RateCocktailAsync(CocktailRatingDTO input);
     }
 }

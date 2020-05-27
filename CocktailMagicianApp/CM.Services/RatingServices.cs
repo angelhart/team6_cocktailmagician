@@ -4,6 +4,7 @@ using CM.DTOs.Mappers.Contracts;
 using CM.Models;
 using CM.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,9 +27,26 @@ namespace CM.Services
             this._cocktailMapper = cocktailMapper;
             this._barMapper = barMapper;
         }
-        public async Task<BarRatingDTO> RateBarAsync(int id, BarRatingDTO barRatingDTO)
+        public async Task<BarRatingDTO> RateBarAsync(BarRatingDTO barRatingDTO)
         {
-            throw new NotImplementedException();
+            var bar = _context.Bars
+               .FirstOrDefault(bar => bar.Id == barRatingDTO.BarId) ?? throw new NullReferenceException();
+
+            var newRating = new BarRating
+            {
+                AppUserId = barRatingDTO.AppUserId,
+                BarId = barRatingDTO.BarId,
+                Score = barRatingDTO.Score
+            };
+
+            //TODO Ntoast notif
+            await _context.AddAsync(newRating);
+            await _context.SaveChangesAsync();
+
+            await UpdateBarAverageRatingAsync(bar);
+
+            var brDTO = _barMapper.CreateBarRatingDTO(newRating);
+            return brDTO;
         }
 
         private async Task<CocktailRating> GetCocktailRatingEntityAsync(Guid userId, Guid cocktailId)
@@ -136,6 +154,15 @@ namespace CM.Services
             await _context.SaveChangesAsync();
 
             return outputDto;
+        }
+
+        private async Task UpdateBarAverageRatingAsync(Bar bar)
+        {
+            bar.AverageRating = await _context.BarRatings
+                                                .Where(barRating => barRating.BarId == bar.Id)
+                                                .AverageAsync(barRating => barRating.Score);
+            _context.Update(bar);
+            await _context.SaveChangesAsync();
         }
     }
 }

@@ -169,7 +169,7 @@ namespace CM.ServicesTests
 					Phone = "+555 555 555",
 					Details = "Test Details",
 					AddressID = new Guid("dfaa43d9-d6d8-4a15-bda9-48823fa4b882"),
-				}
+				},
 				 
                 new Bar
                 {
