@@ -34,59 +34,6 @@ namespace CM.ServicesTests.BarServicesTests
 			var mockMapperAddress = new Mock<IAddressServices>();
 			mockMapperAddress.Setup(x => x.CreateAddressAsync(It.IsAny<AddressDTO>()));
 
-			//Ratings for Bar Dante - AvgRating 3
-			var barRating1 = new BarRating
-			{
-				BarId = Guid.Parse("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
-				AppUserId = Guid.Parse("9bdbf5e7-ad83-415c-b359-9ff5e2f0ded1"),
-				Score = 2
-			};
-			var barRating2 = new BarRating
-			{
-				BarId = Guid.Parse("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
-				AppUserId = Guid.Parse("9bdbf5e7-ad83-415c-b359-9ff5e2f0ded2"),
-				Score = 2
-			};
-			var barRating3 = new BarRating
-			{
-				BarId = Guid.Parse("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
-				AppUserId = Guid.Parse("9bdbf5e7-ad83-415c-b359-9ff5e2f0ded3"),
-				Score = 5
-			};
-
-			//Ratings for Connaught Bar - AvgRating 2
-			var barRating4 = new BarRating
-			{
-				BarId = Guid.Parse("0899e918-977c-44d5-a5cb-de9559ad822c"),
-				AppUserId = Guid.Parse("9bdbf5e7-ad83-415c-b359-9ff5e2f0ded1"),
-				Score = 1
-			};
-			var barRating5 = new BarRating
-			{
-				BarId = Guid.Parse("0899e918-977c-44d5-a5cb-de9559ad822c"),
-				AppUserId = Guid.Parse("9bdbf5e7-ad83-415c-b359-9ff5e2f0ded2"),
-				Score = 3
-			};
-
-			//Ratings for Test Bar1 - AvgRating 5
-			var barRating6 = new BarRating
-			{
-				BarId = Guid.Parse("0899e918-977c-44d5-a5cb-de9559ad822a"),
-				AppUserId = Guid.Parse("9bdbf5e7-ad83-415c-b359-9ff5e2f0ded1"),
-				Score = 5
-			};
-
-			using (var arrangeContext = new CMContext(options))
-			{
-				await arrangeContext.BarRatings.AddAsync(barRating1);
-				await arrangeContext.BarRatings.AddAsync(barRating2);
-				await arrangeContext.BarRatings.AddAsync(barRating3);
-				await arrangeContext.BarRatings.AddAsync(barRating4);
-				await arrangeContext.BarRatings.AddAsync(barRating5);
-				await arrangeContext.BarRatings.AddAsync(barRating6);
-				await arrangeContext.SaveChangesAsync();
-			}
-
 			//Act/Assert
 			using (var assertContext = new CMContext(options))
 			{

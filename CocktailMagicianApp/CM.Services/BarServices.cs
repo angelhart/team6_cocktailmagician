@@ -120,12 +120,11 @@ namespace CM.Services
 			var topBars = await _context.Bars
 									 .Where(bar => bar.IsUnlisted == false)
 									 .Include(bar => bar.Ratings)
+									 .OrderByDescending(bar => bar.AverageRating)
+									 .Take(ammount)
 									 .ToListAsync();
 
-			var topBarsDTO = topBars.Select(bar => _barMapper.CreateBarDTO(bar))
-									.OrderByDescending(bar => bar.AverageRating)
-									.Take(ammount)
-									.ToList();
+			var topBarsDTO = topBars.Select(bar => _barMapper.CreateBarDTO(bar)).ToList();
 
 			return topBarsDTO;
 		}

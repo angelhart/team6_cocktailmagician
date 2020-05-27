@@ -151,6 +151,7 @@ namespace CM.ServicesTests
 					Phone = "(212) 982-5275",
 					Details = "Weaving tradition with modernity, there’s something heart-warming about the story of Dante. When Linden Pride, Nathalie Hudson and Naren Young took over this Greenwich Village site 100 years after it first opened they could see the things that made this fading Italian café once great could be relevant again. At the heart of their mission was to renew the bar, while being authentic to its roots and appealing to the Greenwich Village community. So the classical décor was given a lift, and in came refined but wholesome Italian food, aperitivos and cocktails. There is a whole list of Negronis to make your way through, but that’s OK because Dante is an all-day restaurant-bar. The Garibaldi too is a must-order. Made with Campari and ‘fluffy’ orange juice, it has brought this once-dusty drink back to life. The measure of a bar is the experience of its customers – in hospitality, drinks and food Dante has the fundamentals down to a fine art, earning the deserved title of The World's Best Bar 2019, sponsored by Perrier.",
 					AddressID = new Guid("73f2c4c2-78ae-45ab-b82c-b06a48271a6d"),
+					AverageRating = 3
 				},
 
 				new Bar
@@ -160,6 +161,7 @@ namespace CM.ServicesTests
 					Phone = "+44 (0)20 7499 7070",
 					Details = "No matter the workings of the cocktail world around it, the Connaught Bar stays true to its principles – artful drinks and graceful service in a stylish setting. Under the watchful gaze of Ago Perrone, the hotel’s director of mixology, the bar moves forward with an effortless glide. Last year marked 10 years since designer David Collins unveiled the bar’s elegant Cubist interior and in celebration it launched its own gin, crafted in the building by none other than Perrone himself. It’s already the most called-for spirit on the showpiece trolley that clinks between the bar’s discerning guests, serving personalised Martinis. The latest cocktail menu, Vanguard, has upped the invention – Number 11 is an embellished Vesper served in Martini glasses hand-painted every day in house, while the Gate No.1 is a luscious blend of spirits, wines and jam. But of course, the Connaught Masterpieces isn’t a chapter easily overlooked. Along with the Dry Martini, the Bloody Mary is liquid perfection and the Mulatta Daisy is Perrone’s own classic, in and out of the bar. In 2019, Connaught Bar earns the title of The Best Bar in Europe, sponsored by Michter's.",
 					AddressID = new Guid("4ecac9dc-31df-4b89-93b5-5550d2608ede"),
+					AverageRating = 2
 				},
 
 				new Bar
@@ -169,6 +171,7 @@ namespace CM.ServicesTests
 					Phone = "+555 555 555",
 					Details = "Test Details",
 					AddressID = new Guid("dfaa43d9-d6d8-4a15-bda9-48823fa4b882"),
+					AverageRating = 5
 				},
 				 
                 new Bar
