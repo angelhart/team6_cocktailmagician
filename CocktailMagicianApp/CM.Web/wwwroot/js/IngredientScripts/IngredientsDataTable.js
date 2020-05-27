@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    $('#table_id').DataTable({
+    $('#ingredientsTable').DataTable({
         serverSide: true,
         ajax: {
             url: '/ingredients/home/indextable',

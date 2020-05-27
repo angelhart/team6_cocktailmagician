@@ -1,7 +1,7 @@
 ﻿@section Styles {
-    <link href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css" />
-    
-    @*<link href="@Url.Content("~/css/Ingredients/IngredientsTable.css")" rel="stylesheet" type="text/css" />*@
+    <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="~/css/Ingredients/IngredientsTable.css" rel="stylesheet" type="text/css" />
 }
 
 @{
@@ -11,7 +11,8 @@
 
 <h1>Index</h1>
 
-<table id="table_id" class="display">
+<table id="ingredientsTable" class="display">
+    <!--hover order-column stripe-->
     <thead>
         <tr>
             <th>Column 1</th>
@@ -32,9 +33,9 @@
 
 @section Scripts {
 
-    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
-    <script src="../../../../wwwroot/js/IngredientScripts/"></script>
+    <script src="~/js/IngredientScripts/IngredientsDataTable.js"></script>
 }
