@@ -65,15 +65,6 @@ namespace CM.DTOs.Mappers
             };
         }
 
-        private BarCocktailDTO CreateBarCocktailDTO(BarCocktail cocktail)
-        {
-            return new BarCocktailDTO
-            {
-                Id = cocktail.BarId,
-                Name = cocktail.Bar?.Name
-            };
-        }
-
         public BarComment CreateBarComment(BarCommentDTO newCommentDto)
         {
             return new BarComment
