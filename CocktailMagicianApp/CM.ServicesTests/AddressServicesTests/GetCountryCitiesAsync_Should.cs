@@ -37,7 +37,7 @@ namespace CM.ServicesTests.AddressServicesTests
             {
                 var sut = new AddressServices(assertContext, mockMapper.Object);
 
-                var result = sut.GetCountryCitiesAsync(countryId);
+                var result = await sut.GetCountryCitiesAsync(countryId);
                 var expected = await assertContext.Cities.Where(city => city.CountryId == countryId).ToListAsync();
                 Assert.AreEqual(expected.Count, result.Count);
             }
@@ -64,7 +64,7 @@ namespace CM.ServicesTests.AddressServicesTests
             {
                 var sut = new AddressServices(assertContext, mockMapper.Object);
 
-                var result = sut.GetCountryCitiesAsync(countryId);
+                var result = await sut.GetCountryCitiesAsync(countryId);
                 Assert.AreEqual(0, result.Count);
             }
         }
