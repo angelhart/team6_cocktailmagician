@@ -154,7 +154,17 @@ namespace CM.ServicesTests
 					Phone = "+44 (0)20 7499 7070",
 					Details = "No matter the workings of the cocktail world around it, the Connaught Bar stays true to its principles – artful drinks and graceful service in a stylish setting. Under the watchful gaze of Ago Perrone, the hotel’s director of mixology, the bar moves forward with an effortless glide. Last year marked 10 years since designer David Collins unveiled the bar’s elegant Cubist interior and in celebration it launched its own gin, crafted in the building by none other than Perrone himself. It’s already the most called-for spirit on the showpiece trolley that clinks between the bar’s discerning guests, serving personalised Martinis. The latest cocktail menu, Vanguard, has upped the invention – Number 11 is an embellished Vesper served in Martini glasses hand-painted every day in house, while the Gate No.1 is a luscious blend of spirits, wines and jam. But of course, the Connaught Masterpieces isn’t a chapter easily overlooked. Along with the Dry Martini, the Bloody Mary is liquid perfection and the Mulatta Daisy is Perrone’s own classic, in and out of the bar. In 2019, Connaught Bar earns the title of The Best Bar in Europe, sponsored by Michter's.",
 					AddressID = new Guid("4ecac9dc-31df-4b89-93b5-5550d2608ede"),
+				},
+
+				new Bar
+				{
+					Id = new Guid("0899e918-977c-44d5-a5cb-de9559ad822a"),
+					Name = "Test Bar1",
+					Phone = "+555 555 555",
+					Details = "Test Details",
+					AddressID = new Guid("dfaa43d9-d6d8-4a15-bda9-48823fa4b882"),
 				}
+
 			};
 
 			var addresses = new List<Address>
@@ -173,6 +183,14 @@ namespace CM.ServicesTests
 					CityId = new Guid("0eea5eb5-6151-41be-ac73-b35e056ca97e"),
 					Street = "Mayfair W1K 2AL",
 					BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"),
+				},
+
+				new Address
+				{
+					Id = new Guid("dfaa43d9-d6d8-4a15-bda9-48823fa4b882"),
+					CityId = new Guid("0eea5eb5-6151-41be-ac73-b35e056ca97e"),
+					Street = "Test Street",
+					BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822a"),
 				}
 		};
 
