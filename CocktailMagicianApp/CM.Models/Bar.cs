@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using CM.Models.BaseClasses;
 
@@ -34,15 +35,7 @@ namespace CM.Models
         public ICollection<BarCocktail> Cocktails { get; set; }
 
         public ICollection<BarRating> Ratings { get; set; }
-        public double? AverageRating
-        {
-            get
-            {
-                if (Ratings.Count > 0)
-                    return Ratings.Average(r => r.Score);
-                else
-                    return null;
-            }
-        }
+
+        public double? AverageRating { get; set; }
     }
 }
