@@ -40,7 +40,6 @@ namespace CM.Data.Seeder
 				});
 
 
-
 			modelBuilder.Entity<Address>().HasData(
 				new Address
 				{
@@ -58,7 +57,31 @@ namespace CM.Data.Seeder
 					BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"),
 				});
 
+			modelBuilder.Entity<AppUser>().HasData(
+				new AppUser
+				{
+					Id = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
+					UserName = "testUser@test.com",
+				},
+				new AppUser
+				{
+					Id = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
+					UserName = "testUser1@test.com",
+				});
 
+			modelBuilder.Entity<BarRating>().HasData(
+				new BarRating
+				{
+					BarId = Guid.Parse("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+					AppUserId =Guid.Parse("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
+					Score = 5
+				},
+				new BarRating
+				{
+					BarId = Guid.Parse("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+					AppUserId = Guid.Parse("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
+					Score = 1
+				});
 
 			modelBuilder.Entity<Bar>().HasData(
 				new Bar
@@ -85,11 +108,13 @@ namespace CM.Data.Seeder
 					Id = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"),
 					Name = "Loch Lomond",
 				},
+
 				new Cocktail
 				{
 					Id = new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"),
 					Name = "Strawberry Lemonade",
 				},
+
 				new Cocktail
 				{
 					Id = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"),
