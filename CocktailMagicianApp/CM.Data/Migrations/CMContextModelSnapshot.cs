@@ -161,6 +161,32 @@ namespace CM.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "3bcb87fd-de3b-4b3c-8863-a29ce1b6736c",
+                            EmailConfirmed = false,
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "testUser@test.com"
+                        },
+                        new
+                        {
+                            Id = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "01c8e44c-ac2c-4655-8061-ebd0200d6fce",
+                            EmailConfirmed = false,
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "testUser1@test.com"
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.Bar", b =>
@@ -171,6 +197,9 @@ namespace CM.Data.Migrations
 
                     b.Property<Guid>("AddressID")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double?>("AverageRating")
+                        .HasColumnType("float");
 
                     b.Property<string>("Details")
                         .HasColumnType("nvarchar(max)");
@@ -285,6 +314,20 @@ namespace CM.Data.Migrations
                     b.HasIndex("AppUserId");
 
                     b.ToTable("BarRatings");
+
+                    b.HasData(
+                        new
+                        {
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            AppUserId = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
+                            Score = 5
+                        },
+                        new
+                        {
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            AppUserId = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
+                            Score = 1
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.City", b =>

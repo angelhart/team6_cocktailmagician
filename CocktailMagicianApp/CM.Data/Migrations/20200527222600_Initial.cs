@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CM.Data.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -59,7 +59,8 @@ namespace CM.Data.Migrations
                     Phone = table.Column<string>(nullable: true),
                     ImagePath = table.Column<string>(nullable: true),
                     Details = table.Column<string>(nullable: true),
-                    IsUnlisted = table.Column<bool>(nullable: false)
+                    IsUnlisted = table.Column<bool>(nullable: false),
+                    AverageRating = table.Column<double>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -72,8 +73,10 @@ namespace CM.Data.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(maxLength: 256, nullable: false),
+                    Recipe = table.Column<string>(nullable: true),
                     ImagePath = table.Column<string>(nullable: true),
-                    IsUnlisted = table.Column<bool>(nullable: false)
+                    IsUnlisted = table.Column<bool>(nullable: false),
+                    AverageRating = table.Column<double>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -270,7 +273,7 @@ namespace CM.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BarCocktails", x => new { x.BarId, x.CocktailId });
+                    table.PrimaryKey("PK_BarCocktails", x => new { x.CocktailId, x.BarId });
                     table.ForeignKey(
                         name: "FK_BarCocktails_Bars_BarId",
                         column: x => x.BarId,
@@ -387,7 +390,6 @@ namespace CM.Data.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     CityId = table.Column<Guid>(nullable: false),
-                    City = table.Column<string>(nullable: true),
                     Street = table.Column<string>(nullable: true),
                     BarId = table.Column<Guid>(nullable: false)
                 },
@@ -409,22 +411,31 @@ namespace CM.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Bars",
-                columns: new[] { "Id", "AddressID", "Details", "ImagePath", "IsUnlisted", "Name", "Phone" },
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DeletedOn", "Email", "EmailConfirmed", "ImagePath", "IsDeleted", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), new Guid("73f2c4c2-78ae-45ab-b82c-b06a48271a6d"), "Weaving tradition with modernity, there’s something heart-warming about the story of Dante. When Linden Pride, Nathalie Hudson and Naren Young took over this Greenwich Village site 100 years after it first opened they could see the things that made this fading Italian café once great could be relevant again. At the heart of their mission was to renew the bar, while being authentic to its roots and appealing to the Greenwich Village community. So the classical décor was given a lift, and in came refined but wholesome Italian food, aperitivos and cocktails. There is a whole list of Negronis to make your way through, but that’s OK because Dante is an all-day restaurant-bar. The Garibaldi too is a must-order. Made with Campari and ‘fluffy’ orange juice, it has brought this once-dusty drink back to life. The measure of a bar is the experience of its customers – in hospitality, drinks and food Dante has the fundamentals down to a fine art, earning the deserved title of The World's Best Bar 2019, sponsored by Perrier.", null, false, "Dante", "(212) 982-5275" },
-                    { new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"), new Guid("4ecac9dc-31df-4b89-93b5-5550d2608ede"), "No matter the workings of the cocktail world around it, the Connaught Bar stays true to its principles – artful drinks and graceful service in a stylish setting. Under the watchful gaze of Ago Perrone, the hotel’s director of mixology, the bar moves forward with an effortless glide. Last year marked 10 years since designer David Collins unveiled the bar’s elegant Cubist interior and in celebration it launched its own gin, crafted in the building by none other than Perrone himself. It’s already the most called-for spirit on the showpiece trolley that clinks between the bar’s discerning guests, serving personalised Martinis. The latest cocktail menu, Vanguard, has upped the invention – Number 11 is an embellished Vesper served in Martini glasses hand-painted every day in house, while the Gate No.1 is a luscious blend of spirits, wines and jam. But of course, the Connaught Masterpieces isn’t a chapter easily overlooked. Along with the Dry Martini, the Bloody Mary is liquid perfection and the Mulatta Daisy is Perrone’s own classic, in and out of the bar. In 2019, Connaught Bar earns the title of The Best Bar in Europe, sponsored by Michter's.", null, false, "Connaught Bar", "+44 (0)20 7499 7070" }
+                    { new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"), 0, "3bcb87fd-de3b-4b3c-8863-a29ce1b6736c", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser@test.com" },
+                    { new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"), 0, "01c8e44c-ac2c-4655-8061-ebd0200d6fce", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser1@test.com" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Bars",
+                columns: new[] { "Id", "AddressID", "AverageRating", "Details", "ImagePath", "IsUnlisted", "Name", "Phone" },
+                values: new object[,]
+                {
+                    { new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), new Guid("73f2c4c2-78ae-45ab-b82c-b06a48271a6d"), null, "Weaving tradition with modernity, there’s something heart-warming about the story of Dante. When Linden Pride, Nathalie Hudson and Naren Young took over this Greenwich Village site 100 years after it first opened they could see the things that made this fading Italian café once great could be relevant again. At the heart of their mission was to renew the bar, while being authentic to its roots and appealing to the Greenwich Village community. So the classical décor was given a lift, and in came refined but wholesome Italian food, aperitivos and cocktails. There is a whole list of Negronis to make your way through, but that’s OK because Dante is an all-day restaurant-bar. The Garibaldi too is a must-order. Made with Campari and ‘fluffy’ orange juice, it has brought this once-dusty drink back to life. The measure of a bar is the experience of its customers – in hospitality, drinks and food Dante has the fundamentals down to a fine art, earning the deserved title of The World's Best Bar 2019, sponsored by Perrier.", null, false, "Dante", "(212) 982-5275" },
+                    { new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"), new Guid("4ecac9dc-31df-4b89-93b5-5550d2608ede"), null, "No matter the workings of the cocktail world around it, the Connaught Bar stays true to its principles – artful drinks and graceful service in a stylish setting. Under the watchful gaze of Ago Perrone, the hotel’s director of mixology, the bar moves forward with an effortless glide. Last year marked 10 years since designer David Collins unveiled the bar’s elegant Cubist interior and in celebration it launched its own gin, crafted in the building by none other than Perrone himself. It’s already the most called-for spirit on the showpiece trolley that clinks between the bar’s discerning guests, serving personalised Martinis. The latest cocktail menu, Vanguard, has upped the invention – Number 11 is an embellished Vesper served in Martini glasses hand-painted every day in house, while the Gate No.1 is a luscious blend of spirits, wines and jam. But of course, the Connaught Masterpieces isn’t a chapter easily overlooked. Along with the Dry Martini, the Bloody Mary is liquid perfection and the Mulatta Daisy is Perrone’s own classic, in and out of the bar. In 2019, Connaught Bar earns the title of The Best Bar in Europe, sponsored by Michter's.", null, false, "Connaught Bar", "+44 (0)20 7499 7070" }
                 });
 
             migrationBuilder.InsertData(
                 table: "Cocktails",
-                columns: new[] { "Id", "ImagePath", "IsUnlisted", "Name" },
+                columns: new[] { "Id", "AverageRating", "ImagePath", "IsUnlisted", "Name", "Recipe" },
                 values: new object[,]
                 {
-                    { new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"), null, false, "Loch Lomond" },
-                    { new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"), null, false, "Strawberry Lemonade" },
-                    { new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"), null, false, "Rum Milk Punch" }
+                    { new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"), null, null, false, "Loch Lomond", null },
+                    { new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"), null, null, false, "Strawberry Lemonade", null },
+                    { new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"), null, null, false, "Rum Milk Punch", null }
                 });
 
             migrationBuilder.InsertData(
@@ -438,12 +449,21 @@ namespace CM.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "BarCocktails",
-                columns: new[] { "BarId", "CocktailId" },
+                columns: new[] { "CocktailId", "BarId" },
                 values: new object[,]
                 {
-                    { new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), new Guid("a3fd2a00-52c4-4293-a184-6f448d008015") },
-                    { new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9") },
-                    { new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"), new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea") }
+                    { new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"), new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd") },
+                    { new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"), new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd") },
+                    { new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"), new Guid("0899e918-977c-44d5-a5cb-de9559ad822c") }
+                });
+
+            migrationBuilder.InsertData(
+                table: "BarRatings",
+                columns: new[] { "BarId", "AppUserId", "Score" },
+                values: new object[,]
+                {
+                    { new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"), 5 },
+                    { new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"), 1 }
                 });
 
             migrationBuilder.InsertData(
@@ -457,13 +477,13 @@ namespace CM.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Addresses",
-                columns: new[] { "Id", "BarId", "City", "CityId", "Street" },
-                values: new object[] { new Guid("73f2c4c2-78ae-45ab-b82c-b06a48271a6d"), new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), null, new Guid("320b050b-82f1-494c-9add-91ab28bf98dd"), "79-81 MACDOUGAL ST" });
+                columns: new[] { "Id", "BarId", "CityId", "Street" },
+                values: new object[] { new Guid("73f2c4c2-78ae-45ab-b82c-b06a48271a6d"), new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), new Guid("320b050b-82f1-494c-9add-91ab28bf98dd"), "79-81 MACDOUGAL ST" });
 
             migrationBuilder.InsertData(
                 table: "Addresses",
-                columns: new[] { "Id", "BarId", "City", "CityId", "Street" },
-                values: new object[] { new Guid("dfaa43d9-d6d8-4a15-bda9-48823fa4b886"), new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"), null, new Guid("0eea5eb5-6151-41be-ac73-b35e056ca97e"), "Mayfair W1K 2AL" });
+                columns: new[] { "Id", "BarId", "CityId", "Street" },
+                values: new object[] { new Guid("dfaa43d9-d6d8-4a15-bda9-48823fa4b886"), new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"), new Guid("0eea5eb5-6151-41be-ac73-b35e056ca97e"), "Mayfair W1K 2AL" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_BarId",
@@ -516,9 +536,9 @@ namespace CM.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BarCocktails_CocktailId",
+                name: "IX_BarCocktails_BarId",
                 table: "BarCocktails",
-                column: "CocktailId");
+                column: "BarId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BarComments_AppUserId",

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CM.Data.Migrations
 {
     [DbContext(typeof(CMContext))]
-    [Migration("20200517133351_update")]
-    partial class update
+    [Migration("20200527222600_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -163,6 +163,32 @@ namespace CM.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "3bcb87fd-de3b-4b3c-8863-a29ce1b6736c",
+                            EmailConfirmed = false,
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "testUser@test.com"
+                        },
+                        new
+                        {
+                            Id = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "01c8e44c-ac2c-4655-8061-ebd0200d6fce",
+                            EmailConfirmed = false,
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "testUser1@test.com"
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.Bar", b =>
@@ -173,6 +199,9 @@ namespace CM.Data.Migrations
 
                     b.Property<Guid>("AddressID")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double?>("AverageRating")
+                        .HasColumnType("float");
 
                     b.Property<string>("Details")
                         .HasColumnType("nvarchar(max)");
@@ -218,33 +247,33 @@ namespace CM.Data.Migrations
 
             modelBuilder.Entity("CM.Models.BarCocktail", b =>
                 {
-                    b.Property<Guid>("BarId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("CocktailId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("BarId", "CocktailId");
+                    b.Property<Guid>("BarId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasIndex("CocktailId");
+                    b.HasKey("CocktailId", "BarId");
+
+                    b.HasIndex("BarId");
 
                     b.ToTable("BarCocktails");
 
                     b.HasData(
                         new
                         {
-                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
-                            CocktailId = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015")
+                            CocktailId = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"),
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd")
                         },
                         new
                         {
-                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
-                            CocktailId = new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9")
+                            CocktailId = new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"),
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd")
                         },
                         new
                         {
-                            BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"),
-                            CocktailId = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea")
+                            CocktailId = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"),
+                            BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c")
                         });
                 });
 
@@ -287,6 +316,20 @@ namespace CM.Data.Migrations
                     b.HasIndex("AppUserId");
 
                     b.ToTable("BarRatings");
+
+                    b.HasData(
+                        new
+                        {
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            AppUserId = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
+                            Score = 5
+                        },
+                        new
+                        {
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            AppUserId = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
+                            Score = 1
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.City", b =>
@@ -328,6 +371,9 @@ namespace CM.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double?>("AverageRating")
+                        .HasColumnType("float");
+
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
@@ -338,6 +384,9 @@ namespace CM.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
+
+                    b.Property<string>("Recipe")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
