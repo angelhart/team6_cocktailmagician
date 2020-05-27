@@ -32,7 +32,7 @@ namespace CM.Web.Controllers
 				Id = x.Id,
 				Name = x.Name,
 				Country = x.Address.CountryName,
-				City = x.Address.City.Name,
+				City = x.Address.CityName,
 				AverageRating = x.AverageRating,
 				ImagePath = x.ImagePath,
 			});
@@ -54,7 +54,7 @@ namespace CM.Web.Controllers
 				Id = barDTO.Id,
 				Name = barDTO.Name,
 				Country = barDTO.Address.CountryName,
-				City = barDTO.Address.City.Name,
+				City = barDTO.Address.CityName,
 				Street = barDTO.Address.Street,
 				Phone = barDTO.Phone,
 				Details = barDTO.Details,
@@ -102,7 +102,7 @@ namespace CM.Web.Controllers
 					//TODO View model to dto mapper
 					var addressDTO = new AddressDTO
 					{
-						City = await this._addressServices.GetCityAsync(barViewModel.CityID),
+						CityId = barViewModel.CityID,
 						Street = barViewModel.Street,
 					};
 
@@ -214,7 +214,7 @@ namespace CM.Web.Controllers
 				var barViewModel = new BarViewModel
 				{
 					Country = barDTO.Address.CountryName,
-					City = barDTO.Address.City.Name,
+					City = barDTO.Address.CityName,
 					Street = barDTO.Address.Street
 				};
 
