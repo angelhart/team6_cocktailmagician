@@ -42,10 +42,11 @@
 		<dd class="col-sm-10">
 			@foreach (var cocktail in Model.Cocktails)
 			{
-
+			<td>
 				<p>
-					@cocktail.CocktailName<br />
+					<a asp-controller="Cocktails" asp-action="Details" asp-route-id="@cocktail.Id">@Html.DisplayFor(modelItem => cocktail.CocktailName)</a>
 				</p>
+			</td>
 			}
 		</dd>
 	</dl>

@@ -31,12 +31,14 @@
 		<tbody>
 			@foreach (var item in Model)
 			{
-				<tr>
-					<td>@item.Name</td>
-					<td>@item.Country</td>
-					<td>@item.City</td>
-					<td>@item.AverageRating</td>
-				</tr>
+			<tr>
+				<td>
+					<a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
+				</td>
+				<td>@item.Country</td>
+				<td>@item.City</td>
+				<td>@item.AverageRating</td>
+			</tr>
 			}
 		</tbody>
 	</table>
