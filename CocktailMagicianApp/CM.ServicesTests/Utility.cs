@@ -91,7 +91,13 @@ namespace CM.ServicesTests
 					AverageRating = 1.5,
 					IsUnlisted = true // unlisted
                 },
-			};
+			
+                new Cocktail
+                {
+                    Id = Guid.Parse("5416ceee-839d-43e3-bb85-b292976c353e"),
+                    Name = "Cocktail D",
+                }
+            };
 
 			var ingredients = new List<Ingredient>
 			{
@@ -164,8 +170,20 @@ namespace CM.ServicesTests
 					Details = "Test Details",
 					AddressID = new Guid("dfaa43d9-d6d8-4a15-bda9-48823fa4b882"),
 				}
+				 
+                new Bar
+                {
+                    Id = Guid.Parse("a73c9de1-2498-4b58-b545-5bc74689160e"),
+                    Name = "Bar A",
+                },
 
-			};
+                new Bar
+                {
+                    Id = Guid.Parse("de61e799-a312-4764-950a-dd7d97713412"),
+                    Name = "Bar B",
+                    IsUnlisted = true,
+                }
+            };
 
 			var addresses = new List<Address>
 			{
@@ -232,7 +250,7 @@ namespace CM.ServicesTests
 				}
 			};
 
-			var barCoctails = new List<BarCocktail>
+			var barCocktails = new List<BarCocktail>
 			{
 				new BarCocktail
 				{
@@ -250,8 +268,41 @@ namespace CM.ServicesTests
 				{
 					BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"),
 					CocktailId = new Guid("9344e67f-f9a9-45c3-b583-7378387bf862"),
-				}
+				},
+
+				new BarCocktail
+                {
+                    BarId = Guid.Parse("a73c9de1-2498-4b58-b545-5bc74689160e"), // Bar A
+                    CocktailId = Guid.Parse("9b9f85e3-51be-4fbf-918a-9fbd89546ef7"), // Cocktail A
+                },
+
+                new BarCocktail
+                {
+                    BarId = Guid.Parse("de61e799-a312-4764-950a-dd7d97713412"), // Bar B
+                    CocktailId = Guid.Parse("9b9f85e3-51be-4fbf-918a-9fbd89546ef7"), // Cocktail A
+                }
 			};
+
+			var comments = new List<CocktailComment>
+            {
+                new CocktailComment
+                {
+                    Id = Guid.Parse("fb9ee201-c7fb-481f-a697-92f7d1c588f9"),
+                    AppUser = user1,
+                    CocktailId = Guid.Parse("9b9f85e3-51be-4fbf-918a-9fbd89546ef7"), // cocktail A
+                    CommentedOn = DateTimeOffset.UtcNow,
+                    Text = "Lorem ipsum 1",
+                },
+
+                new CocktailComment
+                {
+                    Id = Guid.Parse("8bcb165b-6bca-42ae-8700-85ce663b4b03"),
+                    AppUser = user1,
+                    CocktailId = Guid.Parse("9b9f85e3-51be-4fbf-918a-9fbd89546ef7"), // cocktail A
+                    CommentedOn = DateTimeOffset.UtcNow,
+                    Text = "Lorem ipsum 2",
+                },
+            };
 
 
 			using var arrangeContext = new CMContext(options);
@@ -265,8 +316,9 @@ namespace CM.ServicesTests
 			await arrangeContext.AddRangeAsync(addresses);
 			await arrangeContext.AddRangeAsync(cities);
 			await arrangeContext.AddRangeAsync(countries);
-			await arrangeContext.AddRangeAsync(barCoctails);
+			await arrangeContext.AddRangeAsync(barCocktails);
+			await arrangeContext.AddRangeAsync(comments);
 			await arrangeContext.SaveChangesAsync();
 		}
 	}
-}
+ }

@@ -40,25 +40,10 @@ namespace CM.DTOs.Mappers
                                 .ToList()
             };
         }
-        //TODO Can we remove this in factory models?
-        public Cocktail CreateCocktail(CocktailDTO dto)
-        {
-            return new Cocktail
-            {
-                Name = dto.Name,
-                Recipe = dto.Recipe,
-                // TODO: picture
-            };
-        }
 
-        private double? GetAverageRating(IEnumerable<CocktailRating> ratings)
+        private BarCocktailDTO CreateCocktailBarDTO(BarCocktail bar)
         {
-            return ratings.Average(r => r.Score);
-        }
-
-        private CocktailBarDTO CreateCocktailBarDTO(BarCocktail bar)
-        {
-            return new CocktailBarDTO
+            return new BarCocktailDTO
             {
                 Id = bar.BarId,
                 Name = bar.Bar?.Name
@@ -69,10 +54,11 @@ namespace CM.DTOs.Mappers
         {
             return new CocktailCommentDTO
             {
-                //CocktailId = comment.CocktailId,
-                //CocktailName = comment.Cocktail?.Name,
+                Id = comment.Id,
                 UserId = comment.AppUserId,
                 UserName = comment.AppUser?.UserName,
+                CocktailId = comment.CocktailId,
+                //CocktailName = comment.Cocktail?.Name,
                 CommentedOn = comment.CommentedOn,
                 Text = comment.Text
             };
@@ -86,17 +72,6 @@ namespace CM.DTOs.Mappers
                 IngredientName = ingredient.Ingredient?.Name,
                 Ammount = ingredient.Ammount,
                 Unit = ingredient.Unit.ToString()
-            };
-        }
-        //TODO Can we remove this in factory models?
-        public CocktailIngredient CreateCocktailIngredient(Guid cocktailId, CocktailIngredientDTO dto)
-        {
-            return new CocktailIngredient
-            {
-                IngredientId = dto.IngredientId,
-                CocktailId = cocktailId,
-                Ammount = dto.Ammount,
-                Unit = Enum.Parse<Unit>(dto.Unit, true),
             };
         }
 

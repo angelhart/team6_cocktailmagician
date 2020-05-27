@@ -8,6 +8,10 @@ namespace CM.Services.Contracts
 {
     public interface ICommentServices
     {
-        public Task<BarCommentDTO> AddBarComment(int id, BarCommentDTO barCommentDTO);
+        Task<BarCommentDTO> AddBarCommentAsync(BarCommentDTO newCommentDto);
+        Task<CocktailCommentDTO> AddCocktailCommentAsync(CocktailCommentDTO newCommentDto);
+        Task<CocktailCommentDTO> DeleteCocktailCommentAsync(Guid commentId);
+        Task<CocktailCommentDTO> EditCocktailCommentAsync(Guid commentId, string text);
+        Task<CocktailCommentDTO> GetCocktailCommentAsync(Guid commentId);
     }
 }

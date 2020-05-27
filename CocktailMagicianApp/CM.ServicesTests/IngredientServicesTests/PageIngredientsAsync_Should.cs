@@ -19,6 +19,50 @@ namespace CM.ServicesTests.IngredientServicesTests
     public class PageIngredientsAsync_Should
     {
         [TestMethod]
+        public async Task Throw_When_NullSearchString_Ingr()
+        {
+            var options = Utility.GetOptions(nameof(Throw_When_NullSearchString_Ingr));
+            await Utility.ArrangeContextAsync(options);
+
+            var mockMapper = new Mock<IIngredientMapper>();
+
+            using var assertContext = new CMContext(options);
+            {
+                var sut = new IngredientServices(assertContext, mockMapper.Object);
+                await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.PageIngredientsAsync(searchString: null));
+            }
+        }
+
+        [TestMethod]
+        public async Task Throw_When_PageNumberInvalid_Ingr()
+        {
+            var options = Utility.GetOptions(nameof(Throw_When_PageNumberInvalid_Ingr));
+            await Utility.ArrangeContextAsync(options);
+
+            var mockMapper = new Mock<IIngredientMapper>();
+
+            using var assertContext = new CMContext(options);
+            {
+                var sut = new IngredientServices(assertContext, mockMapper.Object);
+                await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => sut.PageIngredientsAsync(pageNumber: 0));
+            }
+        }
+
+        public async Task Throw_When_PageSizeInvalid_Ingr()
+        {
+            var options = Utility.GetOptions(nameof(Throw_When_PageSizeInvalid_Ingr));
+            await Utility.ArrangeContextAsync(options);
+
+            var mockMapper = new Mock<IIngredientMapper>();
+
+            using var assertContext = new CMContext(options);
+            {
+                var sut = new IngredientServices(assertContext, mockMapper.Object);
+                await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => sut.PageIngredientsAsync(pageSize: 0));
+            }
+        }
+
+        [TestMethod]
         public async Task ReturnAllPaged_When_NoSearchStringProvided()
         {
             var options = Utility.GetOptions(nameof(ReturnAllPaged_When_NoSearchStringProvided));
@@ -36,7 +80,7 @@ namespace CM.ServicesTests.IngredientServicesTests
 
             var sut = new IngredientServices(assertContext, mockMapper.Object);
 
-            var result = await sut.PageIngredientsAsync(null);
+            var result = await sut.PageIngredientsAsync();
             var expected = await assertContext.Ingredients.ToListAsync();
 
             Assert.AreNotEqual(0, expected.Count);
@@ -64,7 +108,7 @@ namespace CM.ServicesTests.IngredientServicesTests
 
             var sut = new IngredientServices(assertContext, mockMapper.Object);
 
-            var result = await sut.PageIngredientsAsync(null, pageNumber, pageSize);
+            var result = await sut.PageIngredientsAsync("", pageNumber, pageSize);
             var expected = await assertContext.Ingredients.ToListAsync();
 
             Assert.AreEqual(pageSize, result.Count);
@@ -84,13 +128,11 @@ namespace CM.ServicesTests.IngredientServicesTests
                           Name = i.Name
                       });
 
-            string search = null;
-
             using var assertContext = new CMContext(options);
 
             var sut = new IngredientServices(assertContext, mockMapper.Object);
 
-            var result = await sut.PageIngredientsAsync(search);
+            var result = await sut.PageIngredientsAsync();
             var expected = await assertContext.Ingredients.ToListAsync();
             Assert.AreEqual(0, expected.Count);
             Assert.AreEqual(expected.Count, result.Count);

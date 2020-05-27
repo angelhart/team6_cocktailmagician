@@ -65,15 +65,24 @@ namespace CM.DTOs.Mappers
             };
         }
 
-        //private BarCocktailDTO CreateBarCocktailDTO(BarCocktail bc)
-        //{
-        //    return new BarCocktailDTO
-        //    {
-        //        BarId = bc.BarId,
-        //        Bar = bc.Bar,
-        //        CocktailId = bc.CocktailId,
-        //        Cocktail = bc.Cocktail
-        //    };
-        //}
+        private BarCocktailDTO CreateBarCocktailDTO(BarCocktail cocktail)
+        {
+            return new BarCocktailDTO
+            {
+                Id = cocktail.BarId,
+                Name = cocktail.Bar?.Name
+            };
+        }
+
+        public BarComment CreateBarComment(BarCommentDTO newCommentDto)
+        {
+            return new BarComment
+            {
+                BarId = newCommentDto.BarId,
+                AppUserId = newCommentDto.UserId,
+                CommentedOn = newCommentDto.CommentedOn,
+                Text = newCommentDto.Text
+            };
+        }
     }
 }
