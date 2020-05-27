@@ -39,18 +39,18 @@ namespace CM.Services
 								//.Include(bar => bar.Cocktails)
 								.Include(bar => bar.Ratings)
 								.Where(bar => (!bar.IsUnlisted || allowUnlisted)
-																&& (bar.Name.Contains(searchString)
-																|| bar.Address.City.Name.Contains(searchString)
-																|| bar.Address.Street.Contains(searchString)))
-								.Select(bar => _barMapper.CreateBarDTO(bar));
+																&& (bar.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
+																	|| bar.Address.City.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
+																	|| bar.Address.Street.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)));
+			//.Select(bar => _barMapper.CreateBarDTO(bar));
 
 			//var sortedBars = Helper<Bar>.SortCollection(bars, sortBy, sortOrder);
 
 			bars = SortBars(bars, sortBy, sortOrder);
 
-			//var dtos = bars.Select(bar => _barMapper.CreateBarDTO(bar)).ToList();
+			var dtos = bars.Select(bar => _barMapper.CreateBarDTO(bar));
 
-			var pagedDtos = await PaginatedList<BarDTO>.CreateAsync(bars, pageNumber, pageSize);
+			var pagedDtos = await PaginatedList<BarDTO>.CreateAsync(dtos, pageNumber, pageSize);
 
 			return pagedDtos;
 		}
@@ -249,7 +249,7 @@ namespace CM.Services
 			return await _context.Cocktails
 				.FirstOrDefaultAsync(cocktail => cocktail.Id == cocktailId && cocktail.IsUnlisted == false) ?? throw new ArgumentNullException();
 		}
-		private IQueryable<BarDTO> SortBars(IQueryable<BarDTO> bars, string sortBy, string sortOrder)
+		private IQueryable<Bar> SortBars(IQueryable<Bar> bars, string sortBy, string sortOrder)
 		{
 			return sortBy switch
 			{

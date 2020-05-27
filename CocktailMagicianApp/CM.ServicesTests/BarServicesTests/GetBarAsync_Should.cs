@@ -25,7 +25,9 @@ namespace CM.ServicesTests.BarServicesTests
 			var bar = new Bar
 			{
 				Id = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
-				Name = "Dante",
+				Name = "TestBar",
+				Phone = "(000) 00-0000",
+				Details = "Test Details",
 			};
 
 
@@ -38,7 +40,13 @@ namespace CM.ServicesTests.BarServicesTests
 					  });
 
 			var mockMapperAddress = new Mock<IAddressServices>();
-			mockMapperAddress.Setup(x => x.CreateAddressAsync(It.IsAny<AddressDTO>()));
+			mockMapperAddress.Setup(x => x.CreateAddressAsync(It.IsAny<AddressDTO>()))
+							.ReturnsAsync(new AddressDTO
+							{
+								Id = new Guid("ff3a5da3-060e-4baa-99d9-372d5701d5f1"),
+								CityId = new Guid("320b050b-82f1-494c-9add-91ab28bf98dd"),
+								Street = "79-81 MACDOUGAL ST",
+							});
 
 
 			var lookUpId = Guid.Parse("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd");
@@ -56,7 +64,7 @@ namespace CM.ServicesTests.BarServicesTests
 				var sut = new BarServices(assertContext, mockMapper.Object, mockMapperAddress.Object);
 
 				var result = await sut.GetBarAsync(lookUpId);
-				var expected = await assertContext.Countries.FindAsync(lookUpId);
+				var expected = await assertContext.Bars.FindAsync(lookUpId);
 				Assert.AreEqual(expected.Name, result.Name);
 			}
 		}

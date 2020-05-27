@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using CM.Data;
 using CM.DTOs;
@@ -22,9 +20,6 @@ namespace CM.ServicesTests.BarServicesTests
 		{
 			//Arrange
 			var options = Utility.GetOptions(nameof(ReturnCorrectBarAfterAdd_ValidParams));
-			await Utility.ArrangeContextAsync(options);
-
-		
 
 			var barDTO = new BarDTO
 			{
@@ -43,7 +38,13 @@ namespace CM.ServicesTests.BarServicesTests
 					  });
 
 			var mockMapperAddress = new Mock<IAddressServices>();
-			mockMapperAddress.Setup(x => x.CreateAddressAsync(It.IsAny<AddressDTO>()));
+			mockMapperAddress.Setup(x => x.CreateAddressAsync(It.IsAny<AddressDTO>()))
+							.ReturnsAsync(new AddressDTO
+								{
+									Id = new Guid("ff3a5da3-060e-4baa-99d9-372d5701d5f1"),
+									CityId = new Guid("320b050b-82f1-494c-9add-91ab28bf98dd"),
+									Street = "79-81 MACDOUGAL ST",
+								});
 
 			//Act/Assert
 			using (var assertContext = new CMContext(options))
