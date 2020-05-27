@@ -6,6 +6,5 @@ namespace CM.DTOs.Mappers.Contracts
     {
         CocktailIngredientDTO CreateCocktailIngredientDTO(CocktailIngredient ingredient);
         IngredientDTO CreateIngredientDTO(Ingredient ingredient);
-        Ingredient CreateIngredient(IngredientDTO dto);
     }
 }

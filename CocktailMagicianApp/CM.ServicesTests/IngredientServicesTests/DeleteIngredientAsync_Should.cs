@@ -31,7 +31,7 @@ namespace CM.ServicesTests.IngredientServicesTests
                       });
             
             // Id of Ingredient C used
-            var inputId = Guid.Parse("bce99872-9407-47a3-b3fc-50cb707cb19c");// Guid.Parse("eb5d7135-f194-4443-a5ff-cc955396648e");
+            var inputId = Guid.Parse("bce99872-9407-47a3-b3fc-50cb707cb19c");
 
             using var assertContext = new CMContext(options);
 

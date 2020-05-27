@@ -71,7 +71,11 @@ namespace CM.Services
             if (nameExists)
                 throw new DbUpdateException("Ingredient with this name already exists in the records.");
 
-            Ingredient newIngredient = _ingredientMapper.CreateIngredient(dto);
+            Ingredient newIngredient = new Ingredient
+            {
+                Name = dto.Name,
+                // TODO: picture
+            };
 
             await _context.Ingredients.AddAsync(newIngredient);
             await _context.SaveChangesAsync();
@@ -125,11 +129,18 @@ namespace CM.Services
         /// <param name="pageNumber">The required page of the paginated list.</param>
         /// <param name="pageSize">Number of ingredients per page.</param>
         /// <returns><see cref="PaginatedList<<see cref="IngredientDTO"/>>"/></returns>
-        public async Task<PaginatedList<IngredientDTO>> PageIngredientsAsync(string searchString, int pageNumber = 1, int pageSize = 10)
+        public async Task<PaginatedList<IngredientDTO>> PageIngredientsAsync(string searchString = "", int pageNumber = 1, int pageSize = 10)
         {
+            if (searchString == null)
+                throw new ArgumentNullException("Search string cannot be null.");
+
+            if (pageNumber < 1 || pageSize < 1)
+                throw new ArgumentOutOfRangeException("Page number and page size must be positive integers.");
+
             var ingredients = _context.Ingredients
-                                      .Where(i => i.Name.Contains(searchString ?? ""))
+                                      .Where(i => i.Name.Contains(searchString))
                                       .Include(i => i.Cocktails)
+                                      .OrderBy(i => i.Name)
                                       .Select(i => _ingredientMapper.CreateIngredientDTO(i));
 
             var outputDtos = await PaginatedList<IngredientDTO>.CreateAsync(ingredients, pageNumber, pageSize);

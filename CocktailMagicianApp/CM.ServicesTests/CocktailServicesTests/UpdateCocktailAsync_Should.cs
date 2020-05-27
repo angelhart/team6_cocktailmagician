@@ -39,13 +39,6 @@ namespace CM.ServicesTests.CocktailServicesTests
                                          .ToList(),
                       });
 
-            mockMapper.Setup(x => x.CreateCocktailIngredient(It.IsAny<Guid>(), It.IsAny<CocktailIngredientDTO>()))
-                      .Returns<Guid, CocktailIngredientDTO>((guid, dto) => new CocktailIngredient
-                      {
-                          CocktailId = guid,
-                          IngredientId = dto.IngredientId
-                      });
-
             var updatedDto = new CocktailDTO
             {
                 Id = Guid.Parse("e8601248-4de3-4ccb-ab20-563926dedbd5"),  // cocktail B has ingredients A and B
@@ -56,7 +49,9 @@ namespace CM.ServicesTests.CocktailServicesTests
                     // should keep only ingredient A after update
                     new CocktailIngredientDTO
                     {
-                        IngredientId = Guid.Parse("eb5d7135-f194-4443-a5ff-cc955396648e") // Ingredient A
+                        IngredientId = Guid.Parse("eb5d7135-f194-4443-a5ff-cc955396648e"), // Ingredient A
+                        Ammount = 2,
+                        Unit = Unit.ml.ToString(),
                     }
                 }
             };

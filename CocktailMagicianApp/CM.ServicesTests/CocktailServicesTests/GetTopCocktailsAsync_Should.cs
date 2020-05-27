@@ -51,5 +51,23 @@ namespace CM.ServicesTests.CocktailServicesTests
                 Assert.IsTrue(result[0].AverageRating >= result[1].AverageRating);
             }
         }
+
+        [TestMethod]
+        public async Task Throw_When_AmmountInvalid()
+        {
+            var options = Utility.GetOptions(nameof(Throw_When_AmmountInvalid));
+            await Utility.ArrangeContextAsync(options);
+
+            var mockMapper = new Mock<ICocktailMapper>();
+
+            var ammount = 0;
+
+            using var assertContext = new CMContext(options);
+            {
+                var sut = new CocktailServices(assertContext, mockMapper.Object);
+                await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>
+                                (() => sut.GetTopCocktailsAsync(ammount));
+            }
+        }
     }
 }

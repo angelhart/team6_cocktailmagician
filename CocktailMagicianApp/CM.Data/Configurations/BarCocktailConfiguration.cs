@@ -11,7 +11,15 @@ namespace CM.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<BarCocktail> builder)
         {
-            builder.HasKey(cc => new { cc.CocktailId, cc.BarId });
+            builder.HasKey(bc => new { bc.CocktailId, bc.BarId });
+            builder.HasOne(bc => bc.Cocktail)
+                .WithMany(c => c.Bars)
+                .HasForeignKey(bc => bc.CocktailId)
+                .OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(bc => bc.Bar)
+                .WithMany(b => b.Cocktails)
+                .HasForeignKey(bc => bc.BarId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

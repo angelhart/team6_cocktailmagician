@@ -6,6 +6,7 @@ namespace CM.DTOs
 {
     public class CocktailCommentDTO
     {
+        public Guid Id { get; set; }
         public Guid CocktailId { get; set; }
         public string CocktailName { get; set; }
         public Guid UserId { get; set; }

@@ -10,5 +10,6 @@ namespace CM.DTOs.Mappers.Contracts
         BarCommentDTO CreateBarCommentDTO(BarComment barComment);
         BarDTO CreateBarDTO(Bar bar);
         BarRatingDTO CreateBarRatingDTO(BarRating rating);
+        BarComment CreateBarComment(BarCommentDTO newCommentDto);
     }
 }
