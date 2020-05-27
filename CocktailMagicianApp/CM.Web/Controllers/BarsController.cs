@@ -110,7 +110,7 @@ namespace CM.Web.Controllers
                 //TODO View model to dto mapper
                 var addressDTO = new AddressDTO
                 {
-                    City = await this._addressServices.GetCityAsync(barViewModel.City),
+                    City = await this._addressServices.GetCityAsync(barViewModel.CityID),
                     Street = barViewModel.Street,
                 };
 
