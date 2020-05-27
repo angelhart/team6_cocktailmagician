@@ -7,7 +7,7 @@ using CM.Models.BaseClasses;
 
 namespace CM.DTOs
 {
-	public class BarDTO : ISortable
+	public class BarDTO
 	{
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -19,6 +19,6 @@ namespace CM.DTOs
         public bool IsUnlisted { get; set; }
 
         public ICollection<BarCommentDTO> Comments { get; set; }
-        public ICollection<BarCocktailDTO> Cocktails { get; set; }
+        public ICollection<CocktailDTO> Cocktails { get; set; }
     }
 }

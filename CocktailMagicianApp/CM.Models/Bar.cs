@@ -6,7 +6,7 @@ using CM.Models.BaseClasses;
 
 namespace CM.Models
 {
-	public class Bar: ISortable
+	public class Bar
     {
         public Bar()
         {

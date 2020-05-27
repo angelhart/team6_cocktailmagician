@@ -61,12 +61,10 @@ namespace CM.Web.Controllers
 				AverageRating = barDTO.AverageRating,
 				ImagePath = barDTO.ImagePath,
 
-				Cocktails = barDTO.Cocktails.Select(bc => new BarCocktailViewModel
+				Cocktails = barDTO.Cocktails.Select(cocktailDTO => new CocktailViewModel
 				{
-					BarId = bc.BarId,
-					Bar = bc.Bar,
-					Cocktail = bc.Cocktail,
-					CocktailId = bc.CocktailId
+					Id = cocktailDTO.Id,
+					CocktailName = cocktailDTO.Name
 				}).ToList()
 			};
 
@@ -134,7 +132,6 @@ namespace CM.Web.Controllers
 
 		public async Task<IActionResult> Edit(Guid id)
 		{
-
 			if (id == null)
 			{
 				return NotFound();

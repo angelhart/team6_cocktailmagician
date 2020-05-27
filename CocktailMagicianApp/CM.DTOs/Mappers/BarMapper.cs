@@ -9,10 +9,12 @@ namespace CM.DTOs.Mappers
     public class BarMapper : IBarMapper
     {
         private readonly IAddressMapper _addressMapper;
+        private readonly ICocktailMapper _cocktailMapper;
 
-        public BarMapper(IAddressMapper addressMapper)
+        public BarMapper(IAddressMapper addressMapper, ICocktailMapper cocktailMapper)
         {
-            _addressMapper = addressMapper ?? throw new ArgumentNullException(nameof(_addressMapper));
+            _addressMapper = addressMapper ?? throw new ArgumentNullException(nameof(addressMapper));
+            _cocktailMapper = cocktailMapper ?? throw new ArgumentNullException(nameof(cocktailMapper));
         }
 
 
@@ -23,7 +25,6 @@ namespace CM.DTOs.Mappers
                 Id = bar.Id,
                 Name = bar.Name,
                 AverageRating = bar.AverageRating,
-                //Address = String.Concat(bar.Address.Country.Name, ',', bar.Address.City, ',', bar.Address.Street),
 
                 Address = this._addressMapper.CreateAddressDTO(bar.Address),
                 Phone = bar.Phone,
@@ -31,7 +32,7 @@ namespace CM.DTOs.Mappers
                 IsUnlisted = bar.IsUnlisted,
 
                 Cocktails = bar.Cocktails
-                        .Select(cocktail => CreateBarCocktailDTO(cocktail))
+                        .Select(bc => _cocktailMapper.CreateCocktailDTO(bc.Cocktail))
                         .ToList(),
                 Comments = bar.Comments
                         .Select(barComment => CreateBarCommentDTO(barComment))
@@ -64,15 +65,15 @@ namespace CM.DTOs.Mappers
             };
         }
 
-        private BarCocktailDTO CreateBarCocktailDTO(BarCocktail bc)
-        {
-            return new BarCocktailDTO
-            {
-                BarId = bc.BarId,
-                Bar = bc.Bar,
-                CocktailId = bc.CocktailId,
-                Cocktail = bc.Cocktail
-            };
-        }
+        //private BarCocktailDTO CreateBarCocktailDTO(BarCocktail bc)
+        //{
+        //    return new BarCocktailDTO
+        //    {
+        //        BarId = bc.BarId,
+        //        Bar = bc.Bar,
+        //        CocktailId = bc.CocktailId,
+        //        Cocktail = bc.Cocktail
+        //    };
+        //}
     }
 }
