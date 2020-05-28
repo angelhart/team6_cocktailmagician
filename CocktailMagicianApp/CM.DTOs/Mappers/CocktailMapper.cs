@@ -1,19 +1,13 @@
 ﻿using CM.DTOs.Mappers.Contracts;
 using CM.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace CM.DTOs.Mappers
 {
     public class CocktailMapper : ICocktailMapper
     {
-        private readonly IBarMapper _barMapper;
-
-        public CocktailMapper(IBarMapper barMapper)
-        {
-            _barMapper = barMapper ?? throw new ArgumentNullException(nameof(barMapper));
-        }
-
         public CocktailDTO CreateCocktailDTO(Cocktail cocktail)
         {
             return new CocktailDTO
@@ -24,7 +18,7 @@ namespace CM.DTOs.Mappers
                 IsUnlisted = cocktail.IsUnlisted,
                 AverageRating = cocktail.AverageRating,
                 Bars = cocktail.Bars
-                        .Select(b => _barMapper.CreateBarDTO(b.Bar))
+                        .Select(b => CreateCocktailBarDTO(b))
                         .ToList(),
                 Comments = cocktail.Comments
                         .Select(c => CreateCocktailCommentDTO(c))
@@ -47,14 +41,14 @@ namespace CM.DTOs.Mappers
             };
         }
 
-        //private BarCocktailDTO CreateCocktailBarDTO(BarCocktail bar)
-        //{
-        //    return new BarCocktailDTO
-        //    {
-        //        Id = bar.BarId,
-        //        Name = bar.Bar?.Name
-        //    };
-        //}
+        private BarCocktailDTO CreateCocktailBarDTO(BarCocktail bar)
+        {
+            return new BarCocktailDTO
+            {
+                BarId = bar.BarId,
+                Bar = bar.Bar?.Name
+            };
+        }
 
         public CocktailCommentDTO CreateCocktailCommentDTO(CocktailComment comment)
         {
