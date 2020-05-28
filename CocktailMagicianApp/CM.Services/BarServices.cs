@@ -30,85 +30,35 @@ namespace CM.Services
 		/// Retrieves a collection of all bars in the database.
 		/// </summary>
 		/// <returns>ICollection</returns>
-		//public async Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", string sortBy = "", string sortOrder = "", int pageNumber = 1, int pageSize = 2, bool allowUnlisted = false)
-
-		//var bars = _context.Bars
-		//					.Include(bar => bar.Address)
-		//						.ThenInclude(a => a.City)
-		//							.ThenInclude(c => c.Country)
-		//					.Include(bar => bar.Ratings)
-		//					.Where(bar => (!bar.IsUnlisted || allowUnlisted)
-		//													&& (bar.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
-		//														|| bar.Address.City.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
-		//														|| bar.Address.Street.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)));
-		//---------------------------------------------------------------------------------------------------------------------------------------------------------------------
-		//
-		//var bars = _context.Bars
-		//					.Include(bar => bar.Address)
-		//						.ThenInclude(a => a.City)
-		//							.ThenInclude(c => c.Country)
-		//					.Include(bar => bar.Ratings)
-		//					.Where(bar => !bar.IsUnlisted);
-
-		//var sortedBars = SortBars(bars, sortBy, sortOrder);
-
-		//var dtos = sortedBars.Select(bar => _barMapper.CreateBarDTO(bar));
-
-		//var pagedDtos = await PaginatedList<BarDTO>.CreateAsync(dtos, pageNumber, pageSize);
-
-		//return pagedDtos;
-		//public async Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", string sortBy = "", string sortOrder = "", int pageNumber = 1, int pageSize = 2, bool allowUnlisted = false)
-		//{
-		//	var sortCriteria = String.Concat(sortBy, '_', sortOrder);
-
-		//	IQueryable<Bar> bars = _context.Bars
-		//			.Where(bar => (!bar.IsUnlisted || allowUnlisted))
-		//			.Include(bar => bar.Address)
-		//				.ThenInclude(a => a.City)
-		//					.ThenInclude(c => c.Country)
-		//			.Include(bar => bar.Ratings);
-
-		//	switch (sortCriteria)
-		//	{
-		//		case "rating_desc":
-		//			bars = bars.OrderByDescending(b => b.AverageRating).ThenBy(b => b.Name);
-		//			break;
-		//		case "rating_":
-		//			bars = bars.OrderBy(b => b.AverageRating).ThenBy(b => b.Name);
-		//			break;
-		//		default:
-		//			bars = bars.OrderBy(c => c.Name).ThenBy(c => c.Name);
-		//			break;
-		//	}
-
-		//	var dtos = bars.Select(bar => _barMapper.CreateBarDTO(bar));
-
-		//	if (searchString != "")
-		//		dtos = FilterBars(dtos, searchString);
-
-		//	var pagedBars = await PageBars(dtos, pageNumber, pageSize);
-
-		//	return pagedBars;
-		public async Task<ICollection<BarDTO>> GetAllBarsAsync(string searchString = "", bool allowUnlisted = false)
+		public async Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", string sortBy = "", string sortOrder = "", int pageNumber = 1, int pageSize = 2, bool allowUnlisted = false)
 		{
-			var bars =  _context.Bars
+			var bars = _context.Bars
 							.Where(bar => !bar.IsUnlisted || allowUnlisted)
 							.Include(bar => bar.Address)
 								.ThenInclude(a => a.City)
 									.ThenInclude(c => c.Country)
-							.Include(bar => bar.Ratings)
-							.Select(bar => _barMapper.CreateBarDTO(bar));
+							.Include(bar => bar.Ratings);
 
-			var filteredbars = bars;
+			var sorteBars = SortBarsAsync(bars, sortBy, sortOrder);
 
-			if (searchString != "")
+			sorteBars = sorteBars.Skip(pageNumber - 1)
+								 .Take(pageSize);
+
+			var filteredbars = sorteBars;
+
+			if (!String.IsNullOrEmpty(searchString))
 				filteredbars = bars.Where(bar => bar.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
-											|| bar.Address.CountryName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
-											|| bar.Address.CityName.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
+											|| bar.Address.City.Country.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
+											|| bar.Address.City.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
 											|| bar.Address.Street.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
 
-			return await filteredbars.ToListAsync();
+			var dtos = await filteredbars.Select(bar => _barMapper.CreateBarDTO(bar)).ToListAsync();
+
+			var pagedDtos = await PaginatedList<BarDTO>.CreateAsync(dtos, pageNumber, pageSize);
+
+			return pagedDtos;
 		}
+
 
 		/// <summary>
 		/// Returns Top Rated Bars.
@@ -306,18 +256,18 @@ namespace CM.Services
 			return await _context.Cocktails
 				.FirstOrDefaultAsync(cocktail => cocktail.Id == cocktailId && cocktail.IsUnlisted == false) ?? throw new ArgumentNullException();
 		}
-		//private IQueryable<BarDTO> SortBars(IQueryable<BarDTO> bars, string sortBy, string sortOrder)
-		//{
-		//	return sortBy switch
-		//	{
-		//		"rating" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(c => c.AverageRating)
-		//															   .ThenBy(c => c.Name) :
-		//													  bars.OrderByDescending(c => c.AverageRating)
-		//															   .ThenBy(c => c.Name),
+		private IQueryable<Bar> SortBarsAsync(IQueryable<Bar> bars, string sortBy, string sortOrder)
+		{
+			return sortBy switch
+			{
+				"rating" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(c => c.AverageRating)
+																	   .ThenBy(c => c.Name) :
+															  bars.OrderByDescending(c => c.AverageRating)
+																	   .ThenBy(c => c.Name),
 
-		//		_ => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(c => c.Name) :
-		//											   bars.OrderByDescending(c => c.Name),
-		//	};
-		//}
+				_ => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(c => c.Name) :
+													   bars.OrderByDescending(c => c.Name),
+			};
+		}
 	}
 }
