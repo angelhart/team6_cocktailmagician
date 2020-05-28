@@ -1,57 +1,159 @@
 ﻿@model BarViewModel
 
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Details";
+	//Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-	<h1>@Html.DisplayFor(model => model.Name)</h1>
+<head>
+	<meta charset="utf-8" />
+	<title>Rate this bar</title>
+	<link rel="stylesheet" href="~/css/site.css" />
+	<link rel="stylesheet" href="~/css/StarRating" />
+	<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-<div>
-	<h4>@Html.DisplayFor(model => model.Country)</h4>
-	<h6>@Html.DisplayFor(model => model.City)</h6>
-    <hr />
-	<dl class="row">
-		<dt class="col-sm-2">
-			Address
-		</dt>
-		<dd class="col-sm-10">
-			@Html.DisplayFor(model => model.Street)
-		</dd>
-		<dt class="col-sm-2">
-			@Html.DisplayNameFor(model => model.Phone)
-		</dt>
-		<dd class="col-sm-10">
-			@Html.DisplayFor(model => model.Phone)
-		</dd>
-		<dt class="col-sm-2">
-			@Html.DisplayNameFor(model => model.ImagePath)
-		</dt>
-		<dd class="col-sm-10">
-			@Html.DisplayFor(model => model.ImagePath)
-		</dd>
-		<dt class="col-sm-2">
-			@Html.DisplayNameFor(model => model.Details)
-		</dt>
-		<dd class="col-sm-10">
-			@Html.DisplayFor(model => model.Details)
-		</dd>
-		<dt class="col-sm-2">
-			@Html.DisplayNameFor(model => model.Cocktails)
-		</dt>
-		<dd class="col-sm-10">
-			@foreach (var cocktail in Model.Cocktails)
+</head>
+
+
+<h1>@Html.DisplayFor(model => model.Name)</h1>
+<body>
+	<div>
+		<h4>@Html.DisplayFor(model => model.Country)</h4>
+		<h6>@Html.DisplayFor(model => model.City)</h6>
+		<hr />
+		<dl class="row">
+			<dt class="col-sm-2">
+				Address
+			</dt>
+			<dd class="col-sm-10">
+				@Html.DisplayFor(model => model.Street)
+			</dd>
+			<dt class="col-sm-2">
+				@Html.DisplayNameFor(model => model.Phone)
+			</dt>
+			<dd class="col-sm-10">
+				@Html.DisplayFor(model => model.Phone)
+			</dd>
+			<dt class="col-sm-2">
+				@Html.DisplayNameFor(model => model.ImagePath)
+			</dt>
+			<dd class="col-sm-10">
+				@Html.DisplayFor(model => model.ImagePath)
+			</dd>
+			<dt class="col-sm-2">
+				@Html.DisplayNameFor(model => model.Details)
+			</dt>
+			<dd class="col-sm-10">
+				@Html.DisplayFor(model => model.Details)
+			</dd>
+			<dt class="col-sm-2">
+				@Html.DisplayNameFor(model => model.Cocktails)
+			</dt>
+			<dd class="col-sm-10">
+				@foreach (var cocktail in Model.Cocktails)
+				{
+					<td>
+						<p>
+							<a asp-controller="Cocktails" asp-action="Details" asp-route-id="@cocktail.Id">@Html.DisplayFor(modelItem => cocktail.CocktailName)</a>
+						</p>
+					</td>
+				}
+			</dd>
+		</dl>
+	</div>
+	<div>
+		<a class="btn btn-primary" asp-controller="Beers" asp-action="AddComment" asp-route-beerId=" @Model.Id">Add Comment</a>
+
+	</div>
+
+	@*------------------------------
+		Rating
+		--------------------------------*@
+
+	@if (User.IsInRole("Member"))
+	{
+
+		<div class="rating-box">
+			<br />
+			<h3>Rate this bar:</h3>
+			<form asp-controller="Bars"
+				  asp-action="AddRating"
+				  asp-route-beerId="@Model.Id"
+				  asp-route-Score="rating-value"
+				  method="post">
+
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+				<div class="rating">
+					<span class="fa fa-star-o"></span>
+					<span class="fa fa-star-o"></span>
+					<span class="fa fa-star-o"></span>
+					<span class="fa fa-star-o"></span>
+					<span class="fa fa-star-o"></span>
+				</div>
+				<br />
+				<br />
+				<div class="form-group">
+					<br />
+					<input name="Rating" type="number" hidden id="rating-value" value="rating-value" />
+					<input asp-for="Score" type="submit" value="Submit Rating" class="btn btn-primary">
+				</div>
+			</form>
+		</div>
+		<script src="~/js/StarRating"></script>
+	}
+</body>
+<br />
+
+@*------------------------------
+	endOfRating
+	--------------------------------*@
+
+@*------------------------------
+	Comment
+	--------------------------------*@
+
+@if (User.IsInRole("Member"))
+{
+	<table class="table">
+		<thead>
+			<tr>
+				<th>
+					@Html.DisplayNameFor(model => model.Comments)
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.Comments)
 			{
-			<td>
-				<p>
-					<a asp-controller="Cocktails" asp-action="Details" asp-route-id="@cocktail.Id">@Html.DisplayFor(modelItem => cocktail.CocktailName)</a>
-				</p>
-			</td>
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.Text)<br />
+
+						<sub>@Html.DisplayFor(modelItem => item.UserName)</sub>
+					</td>
+					@*@if(item.User == User.Identity.Name || User.IsInRole("Admin"))
+						{
+							<td>
+								Edit/Remove for user who created the review or an Admin can come here
+							</td>
+						}*@
+				</tr>
 			}
-		</dd>
-	</dl>
-</div>
+		</tbody>
+	</table>
+}
+@if (User.IsInRole("Admin"))
+{
+	<div>
+		<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
+	</div>
+}
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+	<a asp-action="Index">Back to List</a>
 </div>
+
+@*------------------------------
+	endOfReview
+	--------------------------------*@

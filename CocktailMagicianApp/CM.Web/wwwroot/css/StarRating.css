@@ -1,0 +1,27 @@
+﻿body {
+	margin: 0;
+	font-family: sans-serif;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+.rating-box {
+	background-color: none;
+	max-width: 600px;
+	margin: 0;
+}
+
+	.rating-box h1 {
+		margin: 0 0 30px;
+		font-size: 40px;
+	}
+
+	.rating-box .rating .fa {
+		font-size: 40px;
+		color: #FF9800;
+		background-color: none;
+		float: left;
+		cursor: pointer;
+	}

@@ -56,6 +56,7 @@ namespace CM.Web
             services.AddScoped<IBarServices, BarServices>();
             services.AddScoped<IAddressServices, AddressServices>();
             services.AddScoped<IAppUserServices, AppUserServices>();
+            services.AddScoped<IRatingServices, RatingServices>();
 
         }
 

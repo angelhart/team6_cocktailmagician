@@ -8,6 +8,7 @@ using CM.Services.Contracts;
 using CM.Web.Models;
 using CM.DTOs;
 using CM.DTOs.Mappers.Contracts;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CM.Web.Controllers
 {
@@ -16,12 +17,16 @@ namespace CM.Web.Controllers
 		private readonly IBarServices _barServices;
 		private readonly IAddressServices _addressServices;
 		private readonly IAddressMapper _addressMapper;
+		private readonly IRatingServices _ratingServices;
+		private readonly IAppUserServices _appUserServices;
 
-		public BarsController(IBarServices barServices, IAddressServices addressServices, IAddressMapper addressMapper)
+		public BarsController(IAppUserServices appUserServices,IBarServices barServices, IAddressServices addressServices, IAddressMapper addressMapper, IRatingServices ratingServices)
 		{
 			_barServices = barServices ?? throw new ArgumentNullException(nameof(barServices));
 			_addressServices = addressServices ?? throw new ArgumentNullException(nameof(addressServices));
 			_addressMapper = addressMapper ?? throw new ArgumentNullException(nameof(addressMapper));
+			_ratingServices = ratingServices ?? throw new ArgumentNullException(nameof(ratingServices));
+			_appUserServices = appUserServices ?? throw new ArgumentNullException(nameof(appUserServices));
 		}
 
 		public async Task<IActionResult> Index()
@@ -261,6 +266,39 @@ namespace CM.Web.Controllers
 				return RedirectToAction(nameof(Index));
 			}
 			return View(barViewModel);
+		}
+
+		[HttpPost]
+		//TODO [Authorize]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> AddRating(int barId, [Bind("Id,Score, barId")] RateBarViewModel rateBarViewModel)
+		{
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					await _ratingServices.RateBarAsync(new BarRatingDTO
+					{
+						Score = rateBarViewModel.Score,
+						AppUserId = rateBarViewModel.AppUserId,
+						AppUserName = this.User.Identity.Name,
+						BarId = rateBarViewModel.BarId
+					});
+
+					//TODO Ntoast notif - success
+					return RedirectToAction(nameof(Details), new {id = barId});
+				}
+				catch (InvalidOperationException)
+				{
+					//TODO Ntoast notif when attempting to add another rating from same user
+					return RedirectToAction(nameof(Details), new { id = barId });
+				}
+				catch
+				{
+					return NotFound();
+				}
+			}
+			return RedirectToAction(nameof(Details), barId);
 		}
 
 		//public async Task<IActionResult> Delete(Guid? id)
