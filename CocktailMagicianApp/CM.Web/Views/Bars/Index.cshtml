@@ -7,7 +7,6 @@
 
 <head>
 	<link href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
-
 </head>
 
 <h1>World's Best Bars</h1>
@@ -16,7 +15,7 @@
 	<a asp-action="Create">Create New</a>
 </p>
 
-<input type="search" id="search" class="search" placeholder="Search..." />
+@*<input type="search" id="search" class="search" placeholder="Search..." />*@
 
 <div class="text-left">
 	<table class="table" id="table1">
@@ -35,6 +34,13 @@
 				<td>
 					<a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
 				</td>
+				@if (User.IsInRole("Member"))
+				{
+					<div>
+						<a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+					</div>
+				}
+
 				<td>@item.Country</td>
 				<td>@item.City</td>
 				<td>@item.AverageRating</td>
@@ -45,72 +51,5 @@
 </div>
 
 
-@section Scripts {
-	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-	<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.css">
-	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.js"></script>
-
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-}
-
-
-@*<nav class="d-flex justify-content-center" aria-label="...">
-		<ul class="pagination">
-			<li class="page-item">
-				<a class="page-link btn-primary btn-block"
-				   asp-action="Index"
-				   asp-route-sortOrder="@ViewData["CurrentSort"]"
-				   asp-route-pageNumber="@(Model.PagedBeers.PageIndex - 1)"
-				   asp-route-currentFilter="@ViewData["CurrentFilter"]">
-					Previous
-				</a>
-			</li>
-			@for (int pageNumber = 1; pageNumber <= Model.PagedBeers.TotalPages; pageNumber++)
-			{
-				if (pageNumber == 1 || pageNumber == Model.PagedBeers.PageIndex - 1
-						|| pageNumber == Model.PagedBeers.PageIndex
-						|| pageNumber == Model.PagedBeers.PageIndex + 1
-						|| pageNumber == Model.PagedBeers.TotalPages)
-				{
-					var currentDisabled = pageNumber == Model.PagedBeers.PageIndex ? "disabled" : "";
-					<li class="page-item @currentDisabled">
-						<a class="page-link"
-						   asp-action="Index"
-						   asp-route-sortOrder="@ViewData["CurrentSort"]"
-						   asp-route-pageNumber="@pageNumber"
-						   asp-route-currentFilter="@ViewData["CurrentFilter"]">@pageNumber</a>
-					</li>
-				}
-			}
-			<li class="page-item @nextDisabled">
-				<a class="page-link btn-primary btn-block"
-				   asp-action="Index"
-				   asp-route-sortOrder="@ViewData["CurrentSort"]"
-				   asp-route-pageNumber="@(Model.PagedBeers.PageIndex + 1)"
-				   asp-route-currentFilter="@ViewData["CurrentFilter"]">
-					Next
-				</a>
-			</li>
-		</ul>
-	</nav>*@
-
-@*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script>
-		$(document).ready(function () {
-			$("#search").on("keyup", function () {
-				var datasearch = $("#search").val();
-				$("#table1 tr").each(function () {
-					var stringdata = $("#table1 tr").val();
-
-					if (stringdata.indexOf(datasearch) == -1) {
-						$(this).hide();
-					}
-					else {
-						$(this).show();
-					}
-				});
-			});
-		});
-	</script>*@
 
 
