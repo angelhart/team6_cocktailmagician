@@ -87,9 +87,11 @@ namespace CM.Web.Controllers
 			return View();
 		}
 
-		public JsonResult GetCountryCitiesAsync(Guid Id)
+		[HttpGet]
+		[Route("Create")]
+		public async Task<IActionResult> GetCountryCitiesAsync(Guid Id)
 		{
-			var collectionOfCities = this._addressServices.GetCountryCitiesAsync(Id);
+			var collectionOfCities = await this._addressServices.GetCountryCitiesAsync(Id);
 
 			var listOfCities = collectionOfCities.ToList();
 

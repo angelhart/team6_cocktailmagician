@@ -42,13 +42,14 @@ namespace CM.Services
         /// Retrieves a list of all Cities for a specified Country in the database.
         /// </summary>
         /// <returns>ICollection</returns>
-        public ICollection<CityDTO> GetCountryCitiesAsync(Guid countryId)
+        public async Task<ICollection<CityDTO>> GetCountryCitiesAsync(Guid countryId)
         {
-            var citiesDTO =  _context.Cities
+            var citiesDTO = await  _context.Cities
+                     .Include(city => city.Country)
                     .Where(city => city.CountryId == countryId)
                     .Select(city => this._addressMapper
                     .CreateCityDTO(city))
-                    .ToList();
+                    .ToListAsync();
             
             return citiesDTO;
         }

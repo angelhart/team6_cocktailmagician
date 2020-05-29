@@ -6,6 +6,8 @@
 }
 
 <h3>Create new Bar</h3>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 
 <hr />
 <div class="row">
@@ -38,11 +40,11 @@
 
 
 
-			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 			<script>
 				$(document).ready(function () {
 					$("#CountryID").change(function () {
-						$.get("/Bars/GetCountryCitiesAsync", { CountryID: $("#CountryID").val() }, function (data) {
+						$.get("/Bars/Create/GetCountryCitiesAsync", { CountryID: $("#CountryID").val() })
+						.done(function (data) {
 							$("#CityID").empty();
 							$.each(data, function (index, row) {
 								$("#CityID").append("<option value='" + row.Id + "'>" + row.Name + "</option>")
