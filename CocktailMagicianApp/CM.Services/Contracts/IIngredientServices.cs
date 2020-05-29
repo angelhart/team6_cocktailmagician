@@ -15,5 +15,6 @@ namespace CM.Services.Contracts
         Task<PaginatedList<IngredientDTO>> PageIngredientsAsync(string searchString = "", int pageNumber = 1, int pageSize = 10);
         Task<IngredientDTO> GetIngredientDetailsAsync(Guid id);
         Task<IngredientDTO> UpdateIngredientAsync(IngredientDTO dto);
+        Task<int> CountAllIngredientsAsync();
     }
 }

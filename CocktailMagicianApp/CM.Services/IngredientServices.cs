@@ -147,5 +147,10 @@ namespace CM.Services
 
             return outputDtos;
         }
+
+        public async Task<int> CountAllIngredientsAsync()
+        {
+            return await _context.Ingredients.CountAsync();
+        }
     }
 }
