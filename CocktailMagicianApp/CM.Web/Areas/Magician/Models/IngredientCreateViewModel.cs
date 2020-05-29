@@ -22,7 +22,6 @@ namespace CM.Web.Areas.Magician.Models
         [MaxFileSize(1 * 1024 * 1024, ErrorMessage = ("Size must be less than 1 MB!"))]
         [Required(ErrorMessage = ("Provide an image for the ingredient."))]
         [Display(Name = "Ingredient Image")]
-        []
         public IFormFile Image { get; set; }
     }
 }
