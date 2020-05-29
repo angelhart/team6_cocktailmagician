@@ -17,7 +17,7 @@
 <div class="d-flex justify-content-center">
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createIngredientModal">
-        Launch demo modal
+        Add New Ingredient
     </button>
     <!-- Modal -->
     <div class="modal fade" id="createIngredientModal" tabindex="-1" role="dialog" aria-labelledby="createIngredientModalLabel" aria-hidden="true">
@@ -30,11 +30,11 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="ingrForm" asp-action="Create" asp-controller="Home" asp-area="Ingredients" method="post">
+                    <form id="ingrForm" asp-action="Create" asp-controller="Ingredients" asp-area="Magicia" method="post">
                         <input type="text" name="Name" value="Placeholder" />
                         <input type="text" name="ImagePath" value="Img Upload" class="form-control-file" />
                     </form>
-                    <a asp-action="Create" asp-controller="Home" asp-area="Ingredients">content</a>
+                    <a asp-action="Create" asp-controller="Ingredients" asp-area="Magicia">content</a>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

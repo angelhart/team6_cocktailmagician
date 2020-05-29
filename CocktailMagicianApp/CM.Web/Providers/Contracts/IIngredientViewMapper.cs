@@ -1,5 +1,6 @@
 ﻿using CM.DTOs;
-using CM.Web.Areas.Ingredients.Models;
+using CM.Web.Areas.Magician.Models;
+using CM.Web.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace CM.Web.Providers.Contracts
 {
     public interface IIngredientViewMapper
     {
-        CocktailIngredientViewModel CreateCocktailIngredientViewModel(CocktailIngredientDTO dto);
+        CocktailViewModel CreateCocktailViewModel(CocktailDTO dto);
         IngredientViewModel CreateIngredientViewModel(IngredientDTO dto);
     }
 }

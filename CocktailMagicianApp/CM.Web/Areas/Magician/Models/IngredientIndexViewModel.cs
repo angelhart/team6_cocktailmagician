@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CM.Web.Areas.Ingredients.Models
+namespace CM.Web.Areas.Magician.Models
 {
 
     [BindProperties]

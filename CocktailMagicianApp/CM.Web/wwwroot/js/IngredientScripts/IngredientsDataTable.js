@@ -5,7 +5,7 @@ $(document).ready(function () {
         filter: true, //disable search box
         orderMulti: false, //multiple column sort
         ajax: {
-            url: '/ingredients/home/indextable',
+            url: '/magician/ingredients/indextable',
             type: 'POST',
             dataSrc: 'data'
         },
@@ -25,7 +25,7 @@ $(document).ready(function () {
             {
                 // Edit button
                 render: function (data, type, full, meta) {
-                    return '<a class="btn btn-info" href="/ingredients/home/Edit/' + full.Id + '">Edit</a>';
+                    return '<a class="btn btn-info" href="/magician/ingredients/Edit/' + full.Id + '">Edit</a>';
                 },
                 orderable: false
             },
@@ -50,7 +50,7 @@ function DeleteData(CustomerID) {
 
 
 function Delete(Id) {
-    var url = '@Url.Content("~/")' + "ingredients/home/Delete";
+    var url = '@Url.Content("~/")' + "magician/ingredients/Delete";
 
     $.post(url, { ID: Id }, function (data) {
         if (data) {

@@ -5,23 +5,23 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using CM.DTOs;
 using CM.Services.Contracts;
-using CM.Web.Areas.Ingredients.Models;
+using CM.Web.Areas.Magician.Models;
 using CM.Web.Providers;
 using CM.Web.Providers.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CM.Web.Areas.Ingredients.Controllers
+namespace CM.Web.Areas.Magician.Controllers
 {
-    [Area("Ingredients")]
+    [Area("Magician")]
     //[Authorize(Roles = (""))] // TODO: add roles
-    public class HomeController : Controller
+    public class IngredientsController : Controller
     {
         private readonly IIngredientServices _ingredientServices;
         private readonly IIngredientViewMapper _ingredientViewMapper;
 
-        public HomeController(IIngredientServices ingredientServices,
+        public IngredientsController(IIngredientServices ingredientServices,
                                      IIngredientViewMapper ingredientViewMapper)
         {
             this._ingredientServices = ingredientServices;

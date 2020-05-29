@@ -1,5 +1,6 @@
 ﻿using CM.DTOs;
-using CM.Web.Areas.Ingredients.Models;
+using CM.Web.Areas.Magician.Models;
+using CM.Web.Models;
 using CM.Web.Providers.Contracts;
 using System;
 using System.Collections.Generic;
@@ -17,23 +18,19 @@ namespace CM.Web.Providers
                 Id = dto.Id,
                 Name = dto.Name,
                 // TODO: ImagePath = dto. ,
-                IngredientCocktails = dto.Cocktails
-                                         .Select(ci => CreateCocktailIngredientViewModel(ci))
+                Cocktails = dto.Cocktails
+                                         .Select(ci => CreateCocktailViewModel(ci))
                                          .ToList()
             };
         }
 
-        public CocktailIngredientViewModel CreateCocktailIngredientViewModel(CocktailIngredientDTO dto)
+        public CocktailViewModel CreateCocktailViewModel(CocktailDTO dto)
         {
-            return new CocktailIngredientViewModel
-            {
-                Ammount = dto.Ammount,
-                CocktailId = dto.CocktailId,
-                Cocktail = dto.CocktailName,
-                IngredientId = dto.IngredientId,
-                Ingredient = dto.IngredientName,
-                Unit = dto.Unit
-            };
+            throw new NotImplementedException();
+            //return new CocktailViewModel
+            //{
+                
+            //};
         }
     }
 }
