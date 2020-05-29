@@ -1,5 +1,4 @@
-﻿@using CM.Web
-@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+﻿@model CM.Web.Areas.Magician.Models.IngredientCreateViewModel
 
 @section Styles {
     <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
@@ -30,15 +29,32 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="ingrForm" asp-action="Create" asp-controller="Ingredients" asp-area="Magicia" method="post">
-                        <input type="text" name="Name" value="Placeholder" />
-                        <input type="text" name="ImagePath" value="Img Upload" class="form-control-file" />
+                    <!-- Form -->
+                    <form id="ingrForm" asp-action="Create" method="post" enctype="multipart/form-data">
+                        <dl>
+                            <dt>
+                                <label asp-for="Name"></label>
+                            </dt>
+                            <dd>
+                                <input asp-for="Name" type="text">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </dd>
+                        </dl>
+                        <dl>
+                            <dt>
+                                <label asp-for="Image"></label>
+                            </dt>
+                            <dd>
+                                <input asp-for="Image" type="file">
+                                <span asp-validation-for="Image" class="text-danger"></span>
+                            </dd>
+                        </dl>
                     </form>
-                    <a asp-action="Create" asp-controller="Ingredients" asp-area="Magicia">content</a>
+                    @*<partial name="CreatePartial", model="Model" />*@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" form="ingrForm" class="btn btn-primary">Save changes</button>
+                    <button type="submit" form="ingrForm" class="btn btn-primary">Add Ingredient</button>
                 </div>
             </div>
         </div>
@@ -76,4 +92,6 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 
     <script src="~/js/IngredientScripts/IngredientsDataTable.js"></script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }

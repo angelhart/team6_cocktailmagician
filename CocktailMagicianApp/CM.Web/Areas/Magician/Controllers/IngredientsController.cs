@@ -95,7 +95,7 @@ namespace CM.Web.Areas.Magician.Controllers
         // POST: IngredientsController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(string name, string ImagePath)
+        public ActionResult Create(IngredientCreateViewModel vm)
         {
             try
             {
