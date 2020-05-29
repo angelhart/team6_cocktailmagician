@@ -34,9 +34,9 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
+                                             Id = i.IngredientId,
                                          })
                                          .ToList(),
                       });

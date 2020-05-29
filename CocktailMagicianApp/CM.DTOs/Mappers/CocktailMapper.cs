@@ -18,35 +18,23 @@ namespace CM.DTOs.Mappers
                 IsUnlisted = cocktail.IsUnlisted,
                 AverageRating = cocktail.AverageRating,
                 Bars = cocktail.Bars
-                        .Select(b => CreateCocktailBarDTO(b))
+                        .Select(b => CreateBarDTO(b))
                         .ToList(),
                 Comments = cocktail.Comments
                         .Select(c => CreateCocktailCommentDTO(c))
                         .ToList(),
                 Ingredients = cocktail.Ingredients
-                        .Select(i => CreateCocktailIngredientDTO(i))
+                        .Select(i => CreateIngredientDTO(i))
                         .ToList()
             };
         }
 
-        public CocktailSearchDTO CreateCocktailSearchDTO(Cocktail cocktail)
+        private BarDTO CreateBarDTO(BarCocktail bar)
         {
-            return new CocktailSearchDTO
+            return new BarDTO
             {
-                Id = cocktail.Id,
-                Name = cocktail.Name,
-                Ingredients = cocktail.Ingredients
-                                .Select(i => i.Ingredient.Name)
-                                .ToList()
-            };
-        }
-
-        private BarCocktailDTO CreateCocktailBarDTO(BarCocktail bar)
-        {
-            return new BarCocktailDTO
-            {
-                BarId = bar.BarId,
-                Bar = bar.Bar?.Name
+                Id = bar.BarId,
+                Name = bar.Bar?.Name
             };
         }
 
@@ -64,12 +52,12 @@ namespace CM.DTOs.Mappers
             };
         }
 
-        public CocktailIngredientDTO CreateCocktailIngredientDTO(CocktailIngredient ingredient)
+        public IngredientDTO CreateIngredientDTO(CocktailIngredient ingredient)
         {
-            return new CocktailIngredientDTO
+            return new IngredientDTO
             {
-                IngredientId = ingredient.IngredientId,
-                IngredientName = ingredient.Ingredient?.Name,
+                Id = ingredient.IngredientId,
+                Name = ingredient.Ingredient?.Name,
                 Ammount = ingredient.Ammount,
                 Unit = ingredient.Unit.ToString()
             };

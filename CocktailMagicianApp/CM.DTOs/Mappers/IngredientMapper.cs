@@ -16,18 +16,18 @@ namespace CM.DTOs.Mappers
                 Id = ingredient.Id,
                 Name = ingredient.Name,
                 Cocktails = ingredient.Cocktails
-                            .Select(c => CreateCocktailIngredientDTO(c))
+                            .Select(c => CreateCocktailDTO(c))
                             .ToList()
                 // TODO: picture
             };
         }
 
-        public CocktailIngredientDTO CreateCocktailIngredientDTO(CocktailIngredient ingredient)
+        public CocktailDTO CreateCocktailDTO(CocktailIngredient ingredient)
         {
-            return new CocktailIngredientDTO
+            return new CocktailDTO
             {
-                CocktailId = ingredient.CocktailId,
-                CocktailName = ingredient.Cocktail?.Name
+                Id = ingredient.CocktailId,
+                Name = ingredient.Cocktail?.Name
             };
         }
     }

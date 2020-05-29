@@ -42,7 +42,7 @@ namespace CM.Services
             return cocktail;
         }
         
-        private async Task UpdateIngredientsAsync(Guid cocktailId, ICollection<CocktailIngredientDTO> newIngredients)
+        private async Task UpdateIngredientsAsync(Guid cocktailId, ICollection<IngredientDTO> newIngredients)
         {
             var currentIngredients = _context.CocktailIngredients
                                              .Where(ci => ci.CocktailId == cocktailId);
@@ -51,7 +51,7 @@ namespace CM.Services
 
             var ingredientsToAdd = newIngredients.Select(ci => new CocktailIngredient 
             {
-                IngredientId = ci.IngredientId,
+                IngredientId = ci.Id,
                 CocktailId = cocktailId,
                 Ammount = ci.Ammount,
                 Unit = Enum.Parse<Unit>(ci.Unit, true),
