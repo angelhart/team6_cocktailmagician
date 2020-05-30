@@ -7,14 +7,14 @@ using System.Threading.Tasks;
 namespace CM.Web.Providers
 {
     [BindProperties]
-    public class AjaxProvider<T>
+    public class DataTablesProvider<T>
     {
-        public AjaxProvider()
+        public DataTablesProvider()
         {
 
         }
 
-        public AjaxProvider(int draw, int recordsTotal, int recordsFiltered, ICollection<T> data)
+        public DataTablesProvider(int draw, int recordsTotal, int recordsFiltered, ICollection<T> data)
         {
             this.draw = draw;
             this.recordsTotal = recordsTotal;
@@ -27,9 +27,9 @@ namespace CM.Web.Providers
         public int recordsFiltered { get; set; }
         public ICollection<T> data { get; set; }
 
-        public static AjaxProvider<T> CreateResponse(int draw, int recordsTotal, int recordsFiltered, ICollection<T> data)
+        public static DataTablesProvider<T> CreateResponse(int draw, int recordsTotal, int recordsFiltered, ICollection<T> data)
         {
-            return new AjaxProvider<T>(draw, recordsTotal, recordsFiltered, data);
+            return new DataTablesProvider<T>(draw, recordsTotal, recordsFiltered, data);
         }
     }
 }
