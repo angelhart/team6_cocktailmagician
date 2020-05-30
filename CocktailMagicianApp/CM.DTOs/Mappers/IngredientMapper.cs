@@ -17,8 +17,8 @@ namespace CM.DTOs.Mappers
                 Name = ingredient.Name,
                 Cocktails = ingredient.Cocktails
                             .Select(c => CreateCocktailDTO(c))
-                            .ToList()
-                // TODO: picture
+                            .ToList(),
+                ImagePath = ingredient.ImagePath
             };
         }
 
@@ -27,7 +27,8 @@ namespace CM.DTOs.Mappers
             return new CocktailDTO
             {
                 Id = ingredient.CocktailId,
-                Name = ingredient.Cocktail?.Name
+                Name = ingredient.Cocktail?.Name,
+                ImagePath = ingredient.Cocktail?.ImagePath
             };
         }
     }

@@ -17,6 +17,7 @@ namespace CM.DTOs.Mappers
                 Recipe = cocktail.Recipe,
                 IsUnlisted = cocktail.IsUnlisted,
                 AverageRating = cocktail.AverageRating,
+                ImagePath = cocktail.ImagePath,
                 Bars = cocktail.Bars
                         .Select(b => CreateBarDTO(b))
                         .ToList(),
@@ -58,6 +59,7 @@ namespace CM.DTOs.Mappers
             {
                 Id = ingredient.IngredientId,
                 Name = ingredient.Ingredient?.Name,
+                ImagePath = ingredient.Ingredient?.ImagePath,
                 Ammount = ingredient.Ammount,
                 Unit = ingredient.Unit.ToString()
             };
