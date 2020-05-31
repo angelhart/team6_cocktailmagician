@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,7 +75,7 @@ namespace CM.Services
             Ingredient newIngredient = new Ingredient
             {
                 Name = dto.Name,
-                // TODO: picture
+                ImagePath = dto.ImagePath
             };
 
             await _context.Ingredients.AddAsync(newIngredient);
