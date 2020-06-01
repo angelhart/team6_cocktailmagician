@@ -44,12 +44,12 @@
 				$(document).ready(function () {
 					$("#CountryID").change(function () {
 						$.get("/Bars/Create/GetCountryCitiesAsync", { CountryID: $("#CountryID").val() })
-						.done(function (data) {
-							$("#CityID").empty();
-							$.each(data, function (index, row) {
-								$("#CityID").append("<option value='" + row.Id + "'>" + row.Name + "</option>")
+							.done(function (data) {
+								$("#CityID").empty();
+								$.each(data, function (index, row) {
+									$("#CityID").append("<option value='" + row.Id + "'>" + row.Name + "</option>")
+								});
 							});
-						});
 					});
 				});
 			</script>
@@ -92,3 +92,13 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 }
+
+
+<label for="exampleFormControlSelect2">Example multiple select</label>
+<select multiple class="form-control" id="exampleFormControlSelect2">
+	<option>1</option>
+	<option>2</option>
+	<option>3</option>
+	<option>4</option>
+	<option>5</option>
+</select>
