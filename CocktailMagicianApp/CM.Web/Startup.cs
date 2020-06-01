@@ -11,8 +11,8 @@ using CM.DTOs.Mappers;
 using CM.Models;
 using CM.Services;
 using CM.Services.Contracts;
-using CM.Services.Providers.Contracts;
-using CM.Services.Providers;
+using NToastNotify;
+using CM.Web.Middlewares;
 
 namespace CM.Web
 {
@@ -57,7 +57,16 @@ namespace CM.Web
             services.AddScoped<IAddressServices, AddressServices>();
             services.AddScoped<IAppUserServices, AppUserServices>();
             services.AddScoped<IRatingServices, RatingServices>();
+            services.AddScoped<ICommentServices, CommentServices>();
 
+            //services.AddMvc().AddFeatureFolders().AddNToastNotifyNoty(new NotyOptions
+            //{
+            //    ProgressBar = true,
+            //    Timeout = 5000,
+            //    Theme = "mint"
+            //});
+
+            services.AddMvc().AddNToastNotifyNoty();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -81,6 +90,10 @@ namespace CM.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            //app.UseMiddleware<MissingMiddleware>();
+
+            app.UseNToastNotify();
 
             app.UseEndpoints(endpoints =>
             {
