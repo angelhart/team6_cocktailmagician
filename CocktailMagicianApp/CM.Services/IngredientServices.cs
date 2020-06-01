@@ -95,7 +95,11 @@ namespace CM.Services
             var ingredient = await GetIngredientAsync(dto.Id);
 
             ingredient.Name = dto.Name;
-            // TODO: ingredient.Picture = dto.Picture
+
+            if (dto.ImagePath != null)
+            {
+                ingredient.ImagePath = dto.ImagePath;
+            }
 
             _context.Ingredients.Update(ingredient);
             await _context.SaveChangesAsync();
