@@ -53,40 +53,7 @@ namespace CM.Web.Areas.Magician.Controllers
                 var sortBy = Request.Form
                                 ["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"]
                                 .FirstOrDefault();
-                var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault();
-
-                int pageSize = length != null ? Convert.ToInt32(length) : 0;
-                int pageNumber = start != null ? (1 + ((int)Math.Ceiling(Convert.ToDouble(start) / pageSize))) : 0;
-                int recordsTotal = await _ingredientServices.CountAllIngredientsAsync();
-
-                var dtos = await _ingredientServices.PageIngredientsAsync(searchString, pageNumber, pageSize);
-                var vms = dtos.Select(d => _ingredientViewMapper.CreateIngredientViewModel(d)).ToList();
-
-                var recordsFiltered = dtos.SourceItems;
-
-                var output = DataTablesProvider<IngredientViewModel>.CreateResponse(draw, recordsTotal, recordsFiltered, vms);
-
-                return Ok(output);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        public async Task<ActionResult> CocktailsTable()
-        {
-            try
-            {
-                var drawString = HttpContext.Request.Form["draw"].FirstOrDefault();
-                int draw = drawString != null ? Convert.ToInt32(drawString) : 0;
-                var start = Request.Form["start"].FirstOrDefault();
-                var length = Request.Form["length"].FirstOrDefault();
-                var searchString = Request.Form["search[value]"].FirstOrDefault();
-                var sortBy = Request.Form
-                                ["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"]
-                                .FirstOrDefault();
-                var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault();
+                var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault(x => x.Equals("desc"));
 
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int pageNumber = start != null ? (1 + ((int)Math.Ceiling(Convert.ToDouble(start) / pageSize))) : 0;

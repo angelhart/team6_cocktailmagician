@@ -25,13 +25,13 @@ $(document).ready(function () {
                 // Name collumn
                 name: 'name',
                 render: function (data, type, full, meta) {
-                    return '<a class="btn btn-success" href="/magician/ingredients/details/' + full.id + '">' + full.name + '</a>';
+                    return '<a class="btn btn-success" href="/cocktails/details/' + full.id + '">' + full.name + '</a>';
                 },
             },
             {
                 // Edit button
                 render: function (data, type, full, meta) {
-                    return '<a class="btn btn-info" href="/magician/ingredients/edit/' + full.id + '">Edit</a>';
+                    return '<a class="btn btn-info" href="/magician/cocktails/edit/' + full.id + '">Edit</a>';
                 },
                 orderable: false
             },
@@ -48,7 +48,7 @@ $(document).ready(function () {
 });
 
 function DeleteData(id, name) {
-    if (confirm("Are you sure you want to delete ingredient " + name + "?")) {
+    if (confirm("Are you sure you want to remove this ingredient from cocktail " + name + "?")) {
         Delete(id);
     } else {
         return false;
@@ -57,13 +57,13 @@ function DeleteData(id, name) {
 
 
 function Delete(Id) {
-    var url = "ingredients/delete/";
+    var url = "ingredients/RemoveFromCocktail/";
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
 
     $.post(url,
         {
-            Id: Id,
+            CocktailId: Id,
             __RequestVerificationToken: token
         },
         function (data) {

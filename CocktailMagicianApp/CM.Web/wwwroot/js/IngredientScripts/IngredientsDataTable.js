@@ -25,15 +25,17 @@ $(document).ready(function () {
                 // Name collumn
                 name: 'name',
                 render: function (data, type, full, meta) {
-                    return '<a class="btn btn-success" href="/magician/ingredients/details/' + full.id + '">' + full.name + '</a>';
+                    return '<a class="btn btn-success" href="/magician/ingredients/edit/' + full.id + '">' + full.name + '</a>';
                 },
+                orderable: false
             },
             {
                 // Edit button
                 render: function (data, type, full, meta) {
                     return '<a class="btn btn-info" href="/magician/ingredients/edit/' + full.id + '">Edit</a>';
                 },
-                orderable: false
+                orderable: false,
+                visible: false
             },
             {
                 // Delete button

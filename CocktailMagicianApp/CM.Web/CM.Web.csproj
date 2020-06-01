@@ -30,10 +30,10 @@
 
   <ItemGroup>
     <Folder Include="Areas\Magician\Data\" />
-    <Folder Include="Areas\Member\Controllers\" />
-    <Folder Include="Areas\Member\Data\" />
-    <Folder Include="Areas\Member\Models\" />
-    <Folder Include="Areas\Member\Views\" />
+    <Folder Include="Areas\BarCrawler\Controllers\" />
+    <Folder Include="Areas\BarCrawler\Data\" />
+    <Folder Include="Areas\BarCrawler\Models\" />
+    <Folder Include="Areas\BarCrawler\Views\" />
   </ItemGroup>
 
 </Project>

@@ -145,7 +145,10 @@ namespace CM.Services
 
             cocktail.Name = dto.Name;
             cocktail.Recipe = dto.Recipe;
-            // TODO: cocktail.Picture
+            if (dto.ImagePath != null)
+            {
+                cocktail.ImagePath = dto.ImagePath;
+            }
             await UpdateIngredientsAsync(cocktail.Id, dto.Ingredients);
 
             _context.Cocktails.Update(cocktail);

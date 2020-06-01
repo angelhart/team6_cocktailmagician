@@ -153,6 +153,10 @@ namespace CM.Services
             return outputDtos;
         }
 
+        /// <summary>
+        /// Count all records in database.
+        /// </summary>
+        /// <returns>Integer of all entities in data base.</returns>
         public async Task<int> CountAllIngredientsAsync()
         {
             return await _context.Ingredients.CountAsync();
