@@ -1,11 +1,11 @@
 $(document).ready(function () {
-    $('#ingredientsTable').DataTable({
+    $('#cocktailsTable').DataTable({
         processing: true, //progress bar
         serverSide: true, //server side processing
         filter: true, //disable search box
         orderMulti: false, //multiple column sort
         ajax: {
-            url: '/magician/ingredients/indextable',
+            url: '/magician/ingredients/CocktailsTable',
             type: 'POST',
             dataSrc: 'data'
         },

@@ -14,6 +14,7 @@ using CM.Services.Contracts;
 using CM.Services.Providers.Contracts;
 using CM.Services.Providers;
 using CM.Web.Providers.Contracts;
+using CM.Web.Providers.ViewModelMappers;
 using CM.Web.Providers;
 
 namespace CM.Web
@@ -62,6 +63,8 @@ namespace CM.Web
             services.AddScoped<IIngredientServices, IngredientServices>();
 
             services.AddScoped<IIngredientViewMapper, IngredientViewMapper>();
+
+            services.AddScoped<IStorageProvider, AppStorageProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

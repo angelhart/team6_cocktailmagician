@@ -32,7 +32,7 @@ namespace CM.Web.Providers.CustomAttributes
                 return file.Length < MaxFileSize;
             }
 
-            return false;
+            return true;
         }
 
         // Set up attribute inclusion by tag helpers

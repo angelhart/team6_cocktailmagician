@@ -31,7 +31,7 @@ namespace CM.Web.Providers.CustomAttributes
                 return AllowedExtensions.Contains(extension, StringComparer.InvariantCultureIgnoreCase);                
             }
 
-            return false;
+            return true;
         }
     }
 }

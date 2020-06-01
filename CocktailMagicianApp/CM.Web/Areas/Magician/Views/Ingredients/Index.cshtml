@@ -1,4 +1,5 @@
-﻿@model CM.Web.Areas.Magician.Models.IngredientCreateViewModel
+@using CM.Web.Areas.Magician.Models
+@model CM.Web.Areas.Magician.Models.IngredientViewModel
 
 @section Styles {
     <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
@@ -29,32 +30,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <!-- Form -->
-                    <form id="ingrForm" asp-action="Create" method="post" enctype="multipart/form-data">
-                        <dl>
-                            <dt>
-                                <label asp-for="Name"></label>
-                            </dt>
-                            <dd>
-                                <input asp-for="Name" type="text">
-                                <span asp-validation-for="Name" class="text-danger"></span>
-                            </dd>
-                        </dl>
-                        <dl>
-                            <dt>
-                                <label asp-for="Image"></label>
-                            </dt>
-                            <dd>
-                                <input asp-for="Image" type="file">
-                                <span asp-validation-for="Image" class="text-danger"></span>
-                            </dd>
-                        </dl>
-                    </form>
-                    @*<partial name="CreatePartial", model="Model" />*@
+
+                    @{await Html.RenderPartialAsync("_CreatePartial", new IngredientViewModel());}
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" form="ingrForm" class="btn btn-primary">Add Ingredient</button>
                 </div>
             </div>
         </div>
@@ -73,16 +54,6 @@
             <th>Delete</th>
         </tr>
     </thead>
-    <tbody>
-        <tr>
-            <td>Row 1 Data 1</td>
-            <td>Row 1 Data 2</td>
-        </tr>
-        <tr>
-            <td>Row 2 Data 1</td>
-            <td>Row 2 Data 2</td>
-        </tr>
-    </tbody>
 </table>
 
 @section Scripts {
@@ -93,5 +64,23 @@
 
     <script src="~/js/IngredientScripts/IngredientsDataTable.js"></script>
 
+    <script src="~/js/UploadImage.js"></script>
+
+    <script src="~/js/IngredientScripts/CreateIngredient.js"></script>
+
+
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    @*<script src="~/lib/jquery-validation/dist/additional-methods.min.js"></script>*@
+
+    @*<script>
+            $.validator.unobtrusive.adapters.add('maxsize', ['maxfilesize'], function (options) {
+                        console.log(options);
+
+                var element = $(options.form).find('input#fileUploadInput');
+
+                options.rules['maxsize'] = [element, parseInt(options.params['file'])];
+                options.messages['maxsize'] = options.message;
+            });
+        </script>*@
 }

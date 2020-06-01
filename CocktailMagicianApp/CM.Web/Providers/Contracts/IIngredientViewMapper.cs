@@ -12,5 +12,6 @@ namespace CM.Web.Providers.Contracts
     {
         CocktailViewModel CreateCocktailViewModel(CocktailDTO dto);
         IngredientViewModel CreateIngredientViewModel(IngredientDTO dto);
+        IngredientDTO CreateIngredientDTO(IngredientViewModel model);
     }
 }

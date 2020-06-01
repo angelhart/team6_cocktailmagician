@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace CM.Web.Providers
+namespace CM.Web.Providers.ViewModelMappers
 {
     public class IngredientViewMapper : IIngredientViewMapper
     {
@@ -17,7 +17,7 @@ namespace CM.Web.Providers
             {
                 Id = dto.Id,
                 Name = dto.Name,
-                // TODO: ImagePath = dto. ,
+                ImagePath = dto.ImagePath,
                 Cocktails = dto.Cocktails
                                          .Select(ci => CreateCocktailViewModel(ci))
                                          .ToList()
@@ -26,11 +26,28 @@ namespace CM.Web.Providers
 
         public CocktailViewModel CreateCocktailViewModel(CocktailDTO dto)
         {
-            throw new NotImplementedException();
+            throw new NotImplementedException("CreateCocktailViewModel");
             //return new CocktailViewModel
             //{
-                
+
             //};
+        }
+
+        public IngredientDTO CreateIngredientDTO(IngredientViewModel model)
+        {
+            return new IngredientDTO
+            {
+                Name = model.Name,
+                ImagePath = model.ImagePath,
+                Cocktails = model.Cocktails
+                                 .Select(ci => CreateCocktailDto(ci))
+                                 .ToList()
+            };
+        }
+
+        private CocktailDTO CreateCocktailDto(CocktailViewModel ci)
+        {
+            throw new NotImplementedException("CreateCocktailDto");
         }
     }
 }
