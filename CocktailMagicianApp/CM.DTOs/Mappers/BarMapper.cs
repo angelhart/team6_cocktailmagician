@@ -64,16 +64,5 @@ namespace CM.DTOs.Mappers
                 Score = rating.Score
             };
         }
-
-        public BarComment CreateBarComment(BarCommentDTO newCommentDto)
-        {
-            return new BarComment
-            {
-                BarId = newCommentDto.BarId,
-                AppUserId = newCommentDto.UserId,
-                CommentedOn = newCommentDto.CommentedOn,
-                Text = newCommentDto.Text
-            };
-        }
     }
 }
