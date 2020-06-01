@@ -9,6 +9,7 @@ using CM.Web.Models;
 using CM.DTOs;
 using CM.DTOs.Mappers.Contracts;
 using Microsoft.AspNetCore.Authorization;
+using NToastNotify;
 
 namespace CM.Web.Controllers
 {
@@ -18,15 +19,20 @@ namespace CM.Web.Controllers
 		private readonly IAddressServices _addressServices;
 		private readonly IAddressMapper _addressMapper;
 		private readonly IRatingServices _ratingServices;
+		private readonly ICommentServices _commentServices;
 		private readonly IAppUserServices _appUserServices;
+		private readonly IToastNotification _toastNotification;
 
-		public BarsController(IAppUserServices appUserServices,IBarServices barServices, IAddressServices addressServices, IAddressMapper addressMapper, IRatingServices ratingServices)
+		public BarsController(IAppUserServices appUserServices,IBarServices barServices, IAddressServices addressServices, IAddressMapper addressMapper, IRatingServices ratingServices,
+			IToastNotification toastNotification, ICommentServices commentServices)
 		{
 			_barServices = barServices ?? throw new ArgumentNullException(nameof(barServices));
 			_addressServices = addressServices ?? throw new ArgumentNullException(nameof(addressServices));
 			_addressMapper = addressMapper ?? throw new ArgumentNullException(nameof(addressMapper));
 			_ratingServices = ratingServices ?? throw new ArgumentNullException(nameof(ratingServices));
+			_commentServices = commentServices ?? throw new ArgumentNullException(nameof(commentServices));
 			_appUserServices = appUserServices ?? throw new ArgumentNullException(nameof(appUserServices));
+			_toastNotification = toastNotification ?? throw new ArgumentNullException(nameof(toastNotification));
 		}
 
 		public async Task<IActionResult> Index()
@@ -53,7 +59,7 @@ namespace CM.Web.Controllers
 			}
 
 			var barDTO = await this._barServices.GetBarAsync(id);
-			//TODO dto=>view model mappers
+
 			var barViewModel = new BarViewModel
 			{
 				Id = barDTO.Id,
@@ -106,7 +112,6 @@ namespace CM.Web.Controllers
 			{
 				try
 				{
-					//TODO View model to dto mapper
 					var addressDTO = new AddressDTO
 					{
 						CityId = barViewModel.CityID,
@@ -123,18 +128,18 @@ namespace CM.Web.Controllers
 						Address = addressDTO,
 					};
 
-					//TODO Ntoast notif
+					_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully created!");
 					await this._barServices.CreateBarAsync(barDTO);
 					return RedirectToAction(nameof(Index));
 				}
 				catch (Exception)
 				{
+					_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
 					return View(barViewModel);
-					//TODO Ntoast notif
 				}
 			}
+			_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
 			return View(barViewModel);
-
 		}
 
 		public async Task<IActionResult> Edit(Guid id)
@@ -182,7 +187,7 @@ namespace CM.Web.Controllers
 				Details = barViewModel.Details,
 				ImagePath = barViewModel.ImagePath,
 			};
-			//TODO add Ntoast notif
+
 			if (ModelState.IsValid)
 			{
 				try
@@ -191,26 +196,25 @@ namespace CM.Web.Controllers
 				}
 				catch (DbUpdateConcurrencyException)
 				{
-					if (!BarExists(barViewModel.Id))
+					if (await BarExists(barViewModel.Id) == false)
 					{
 						return NotFound();
 					}
 					else
 					{
+						_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
 						throw;
 					}
 				}
+				_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully updated!");
 				return RedirectToAction(nameof(Index));
 			}
+			_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
 			return View(barViewModel);
 		}
 		public async Task<IActionResult> ChangeAddress(Guid barId)
 		{
 
-			if (barId == null)
-			{
-				return NotFound();
-			}
 			try
 			{
 				var barDTO = await this._barServices.GetBarAsync(barId);
@@ -256,88 +260,127 @@ namespace CM.Web.Controllers
 				}
 				catch (DbUpdateConcurrencyException)
 				{
-					if (!BarExists(barViewModel.Id))
+					if (await BarExists(barViewModel.Id) == false)
 					{
 						return NotFound();
 					}
 					else
 					{
+						_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
 						throw;
 					}
 				}
+				_toastNotification.AddSuccessToastMessage($"The address of Bar {barDTO.Name} was successfully updated!");
 				return RedirectToAction(nameof(Index));
 			}
+			_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
 			return View(barViewModel);
 		}
 
 		[HttpPost]
-		//TODO [Authorize]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> AddRating(int barId, [Bind("Id,Score, barId")] RateBarViewModel rateBarViewModel)
+		public async Task<IActionResult> AddRating([Bind("Score, BarId")] RateBarViewModel rateBarViewModel)
 		{
 			if (ModelState.IsValid)
 			{
 				try
 				{
+					var appUserId = await this._appUserServices.GetUserIdAsync(User.Identity.Name);
+
 					await _ratingServices.RateBarAsync(new BarRatingDTO
 					{
 						Score = rateBarViewModel.Score,
-						AppUserId = rateBarViewModel.AppUserId,
+						AppUserId = appUserId.Id,
 						AppUserName = this.User.Identity.Name,
 						BarId = rateBarViewModel.BarId
 					});
 
-					//TODO Ntoast notif - success
-					return RedirectToAction(nameof(Details), new {id = barId});
+					_toastNotification.AddSuccessToastMessage($"You rated this Bar with {rateBarViewModel.Score} stars!");
+					return RedirectToAction(nameof(Details), new {id = rateBarViewModel.BarId });
 				}
 				catch (InvalidOperationException)
 				{
-					//TODO Ntoast notif when attempting to add another rating from same user
-					return RedirectToAction(nameof(Details), new { id = barId });
+					_toastNotification.AddErrorToastMessage("You already rated this bar!");
+					return RedirectToAction(nameof(Details), new { id = rateBarViewModel.BarId });
 				}
 				catch
 				{
 					return NotFound();
 				}
 			}
-			return RedirectToAction(nameof(Details), barId);
+			return RedirectToAction(nameof(Details), rateBarViewModel.BarId);
 		}
 
-		//public async Task<IActionResult> Delete(Guid? id)
-		//{
-		//    throw new NotImplementedException();
-
-		//    //if (            id == null)
-		//    //{
-		//    //    return NotFound();
-		//    //}
-
-		//    //var bar = await _context.Bars
-		//    //    .FirstOrDefaultAsync(m => m.Id == id);
-		//    //if (bar == null)
-		//    //{
-		//    //    return NotFound();
-		//    //}
-
-		//    //return View(bar);
-		//}
-
-		//[HttpPost, ActionName("Delete")]
-		//[ValidateAntiForgeryToken]
-		//public async Task<IActionResult> DeleteConfirmed(Guid id)
-		//{
-		//    throw new NotImplementedException();
-
-		//    //var bar = await _context.Bars.FindAsync(id);
-		//    //_context.Bars.Remove(bar);
-		//    //await _context.SaveChangesAsync();
-		//    //return RedirectToAction(nameof(Index));
-		//}
-
-		private bool BarExists(Guid id)
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> AddComment([Bind("Text, BarId")] BarCommentViewModel barCommentViewModel)
 		{
-			throw new NotImplementedException();
-			//return _context.Bars.Any(e => e.Id == id);
+			if (ModelState.IsValid)
+			{
+				try
+				{
+					var appUserId = await this._appUserServices.GetUserIdAsync(User.Identity.Name);
+
+					await this._commentServices.AddBarCommentAsync(new BarCommentDTO
+					{
+						BarId = barCommentViewModel.BarId,
+						Text = barCommentViewModel.Text,
+						UserId = appUserId.Id,
+						UserName = this.User.Identity.Name
+					});
+
+					_toastNotification.AddSuccessToastMessage("Your comment was successfully added.");
+					return RedirectToAction(nameof(Details), new { id = barCommentViewModel.BarId });
+				}
+				catch
+				{
+					return NotFound();
+				}
+			}
+			return View(barCommentViewModel);
+		}
+
+		public async Task<IActionResult> Delete(Guid id)
+		{
+			var barDTO = await this._barServices.GetBarAsync(id);
+
+			if (barDTO == null)
+			{
+				return NotFound();
+			}
+
+			var barViewModel = new BarViewModel
+			{
+				Id = barDTO.Id,
+				Name = barDTO.Name,
+				Phone = barDTO.Phone,
+				Details = barDTO.Details,
+				ImagePath = barDTO.ImagePath,
+			};
+
+			return View(barViewModel);
+		}
+
+		[HttpPost, ActionName("Delete")]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> DeleteConfirmed(Guid id)
+		{
+			try
+			{
+				await this._barServices.DeleteBar(id);
+				_toastNotification.AddSuccessToastMessage("Bar was successfully deleted!}");
+				return RedirectToAction(nameof(Index));
+			}
+			catch (Exception)
+			{
+				_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
+				throw;
+			}
+		}
+
+		private async Task<bool> BarExists(Guid id)
+		{
+			return await this._barServices.BarExists(id);
 		}
 	}
 }

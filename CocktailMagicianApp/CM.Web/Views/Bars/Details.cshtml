@@ -5,13 +5,12 @@
 	//Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<head>
+@section Styles {
 	<meta charset="utf-8" />
-	<title>Rate this bar</title>
 	<link rel="stylesheet" href="~/css/site.css" />
-	<link rel="stylesheet" href="~/wwwroot/css/StarRating.css" />
-	<link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
-</head>
+	<link rel="stylesheet" href="~/css/StarRating.css" />
+	<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+}
 
 <h1>@Html.DisplayFor(model => model.Name)</h1>
 <body>
@@ -59,10 +58,6 @@
 			</dd>
 		</dl>
 	</div>
-	<div>
-		<a class="btn btn-primary" asp-controller="Bars" asp-action="AddComment" asp-route-beerId=" @Model.Id">Add Comment</a>
-
-	</div>
 
 	@*------------------------------
 		Rating
@@ -76,8 +71,6 @@
 			<h3>Rate this bar:</h3>
 			<form asp-controller="Bars"
 				  asp-action="AddRating"
-				  asp-route-barId="@Model.Id"
-				  asp-route-Score="rating-value"
 				  method="post">
 
 				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -93,12 +86,72 @@
 				<br />
 				<div class="form-group">
 					<br />
-					<input name="Rating" type="number" hidden id="rating-value" value="rating-value" />
-					<input asp-for="Score" type="submit" value="Submit Rating" class="btn btn-primary">
+					<input name="Score" type="number" hidden id="rating-value" value="rating-value" />
+					<input name="BarId" asp-for="@Model.Id" />
+					<input type="submit" value="Submit Rating" class="btn btn-primary">
 				</div>
 			</form>
 		</div>
-		<script src="~/wwwroot/js/StarRating.js"></script>
+		<script src="~/js/StarRating.js"></script>
+	}
+
+	<table class="table">
+		<thead>
+			<tr>
+				<th>
+					@Html.DisplayNameFor(model => model.Comments)
+				</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach (var item in Model.Comments)
+			{
+				<tr>
+					<td>
+						@Html.DisplayFor(modelItem => item.Text)<br />
+
+						<sub>@Html.DisplayFor(modelItem => item.UserName)</sub>
+						<sub>@Html.DisplayFor(modelItem => item.CommentedOn)</sub>
+					</td>
+					@*@if(item.User == User.Identity.Name || User.IsInRole("Admin"))
+						{
+							<td>
+								Edit/Remove for user who created the review or an Admin can come here
+							</td>
+						}*@
+				</tr>
+			}
+		</tbody>
+	</table>
+	<h4>Comment</h4>
+	<hr />
+	<div class="row">
+		<div class="col-md-4">
+			<form asp-controller="Bars"
+				  asp-action="AddComment"
+				  method="post">
+
+				<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+				<div class="form-group">
+					<label name="Text" class="control-label"></label>
+					<input name="BarId" value="@Model.Id">
+					<textarea name="Text" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+					<input type="submit" value="Add Comment" class="btn btn-primary" />
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<div>
+		<a asp-action="Index">Back to List</a>
+	</div>
+	@{
+		ViewData["BarId"] = Model.Id;
+	}
+	@*<partial name="_CommentPartial.cshtml" model="new BarCommentViewModel()" view-data="ViewData">*@
+	@*@{await Html.RenderPartialAsync("_CommentPartial", new BarCommentViewModel(), ViewData);*@
 	}
 </body>
 <br />
@@ -107,51 +160,3 @@
 	endOfRating
 	--------------------------------*@
 
-@*------------------------------
-	Comment
-	--------------------------------*@
-
-@*@if (User.IsInRole("Member"))
-	{
-		<table class="table">
-			<thead>
-				<tr>
-					<th>
-						@Html.DisplayNameFor(model => model.Comments)
-					</th>
-					<th></th>
-				</tr>
-			</thead>
-			<tbody>
-				@foreach (var item in Model.Comments)
-				{
-					@*<tr>
-						<td>
-							@Html.DisplayFor(modelItem => item.Text)<br />
-
-							<sub>@Html.DisplayFor(modelItem => item.UserName)</sub>
-						</td>*@
-@*@if(item.User == User.Identity.Name || User.IsInRole("Admin"))
-	{
-		<td>
-			Edit/Remove for user who created the review or an Admin can come here
-		</td>
-	}
-				</tr>
-			}
-		</tbody>
-	</table>
-}*@
-@if (User.IsInRole("Admin"))
-{
-	<div>
-		<a asp-action="Edit" asp-route-id="@Model.Id">Edit</a>
-	</div>
-}
-<div>
-	<a asp-action="Index">Back to List</a>
-</div>
-
-@*------------------------------
-	endOfReview
-	--------------------------------*@

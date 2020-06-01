@@ -4,11 +4,8 @@ using CM.DTOs.Mappers.Contracts;
 using CM.Models;
 using CM.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CM.Services
@@ -29,8 +26,12 @@ namespace CM.Services
         }
         public async Task<BarRatingDTO> RateBarAsync(BarRatingDTO barRatingDTO)
         {
-            var bar = _context.Bars
-               .FirstOrDefault(bar => bar.Id == barRatingDTO.BarId) ?? throw new NullReferenceException();
+            var bar = await _context.Bars
+                .Include(bar => bar.Ratings)
+                .FirstOrDefaultAsync(bar => bar.Id == barRatingDTO.BarId) ?? throw new NullReferenceException();
+
+            if (bar.Ratings.Any(rating => rating.AppUserId == barRatingDTO.AppUserId))
+                throw new InvalidOperationException();
 
             var newRating = new BarRating
             {
@@ -39,7 +40,6 @@ namespace CM.Services
                 Score = barRatingDTO.Score
             };
 
-            //TODO Ntoast notif
             await _context.AddAsync(newRating);
             await _context.SaveChangesAsync();
 
