@@ -92,6 +92,7 @@ namespace CM.Services
 								.ThenInclude(c => c.Country)
 						.Include(bar => bar.Cocktails)
 							.ThenInclude(bc => bc.Cocktail)
+							.Include(bar => bar.Comments)
 						.FirstOrDefaultAsync(bar => bar.Id == id);
 
 			if (bar == null)

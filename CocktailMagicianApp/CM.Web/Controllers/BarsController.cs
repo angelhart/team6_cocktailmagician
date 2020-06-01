@@ -10,6 +10,7 @@ using CM.DTOs;
 using CM.DTOs.Mappers.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using NToastNotify;
+using CM.Models;
 
 namespace CM.Web.Controllers
 {
@@ -71,6 +72,12 @@ namespace CM.Web.Controllers
 				Details = barDTO.Details,
 				AverageRating = barDTO.AverageRating,
 				ImagePath = barDTO.ImagePath,
+
+				Comments = barDTO.Comments.Select(barDTO => new BarCommentViewModel
+				{
+					Text = barDTO.Text,
+					UserName = barDTO.UserName
+				}).ToList(),
 
 				Cocktails = barDTO.Cocktails.Select(cocktailDTO => new CocktailViewModel
 				{

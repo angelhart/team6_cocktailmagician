@@ -37,7 +37,12 @@ namespace CM.Services
             if (newCommentDto == null)
                 throw new ArgumentNullException("New comment object cannot be null");
 
-            var newComment = _barMapper.CreateBarComment(newCommentDto);
+            var newComment = new BarComment
+            {
+                BarId = newCommentDto.BarId,
+                AppUserId = newCommentDto.UserId,
+                Text = newCommentDto.Text
+            }; ;
 
             await _context.AddAsync(newComment);
             await _context.SaveChangesAsync();

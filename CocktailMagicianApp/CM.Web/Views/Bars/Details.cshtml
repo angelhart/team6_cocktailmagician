@@ -110,20 +110,13 @@
 				<tr>
 					<td>
 						@Html.DisplayFor(modelItem => item.Text)<br />
-
-						<sub>@Html.DisplayFor(modelItem => item.UserName)</sub>
-						<sub>@Html.DisplayFor(modelItem => item.CommentedOn)</sub>
 					</td>
-					@*@if(item.User == User.Identity.Name || User.IsInRole("Admin"))
-						{
-							<td>
-								Edit/Remove for user who created the review or an Admin can come here
-							</td>
-						}*@
 				</tr>
 			}
 		</tbody>
 	</table>
+
+
 	<h4>Comment</h4>
 	<hr />
 	<div class="row">
