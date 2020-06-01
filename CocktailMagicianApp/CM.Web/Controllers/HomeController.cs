@@ -22,6 +22,10 @@ namespace CM.Web.Controllers
         {
             return View();
         }
+        public IActionResult Missing()
+        {
+            return View();
+        }
 
         public IActionResult Privacy()
         {
