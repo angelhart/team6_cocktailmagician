@@ -12,5 +12,6 @@ namespace CM.Services.Contracts
         public Task<List<AppUserDTO>> GetAllUsersAsync();
         public Task<AppUserDTO> CreateUserAsync(AppUserDTO appUserDto);
         public Task<AppUserDTO> DeleteUserAsync(Guid id);
-    }
+		Task<AppUserDTO> GetUserIdAsync(string name);
+	}
 }

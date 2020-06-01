@@ -42,6 +42,23 @@ namespace CM.Services
 		}
 
 		/// <summary>
+		/// Retrieves user Id from the database by given UserName.
+		/// </summary>
+		/// <param name="name">The UserName of the User.</param>
+		/// <returns>AppUserDTO with the Id.</returns>
+		public async Task<AppUserDTO> GetUserIdAsync(string name)
+		{
+			if (name == null)
+				throw new ArgumentNullException();
+			var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == name || u.NormalizedUserName == name)
+						?? throw new NullReferenceException();
+
+			var userTO = new AppUserDTO { Id = user.Id };
+
+			return userTO;
+		}
+
+		/// <summary>
 		/// Retrieves all registered users from the database.
 		/// </summary>
 		/// <returns>List of AppUserDTO</returns>
