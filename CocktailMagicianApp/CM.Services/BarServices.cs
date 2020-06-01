@@ -160,7 +160,6 @@ namespace CM.Services
 				await _context.Bars.AddAsync(bar);
 				await _context.SaveChangesAsync();
 
-				//TODO Ntoast notif
 				return barDTO;
 			}
 			catch (Exception)
@@ -243,6 +242,18 @@ namespace CM.Services
 			return barDTO;
 		}
 
+		/// <summary>
+		/// Checks if a bar exists in the database by given Id.
+		/// </summary>
+		/// <param name="id">The Id of the bar to be checked.</param>
+		/// <returns></returns>
+		public async Task<bool> BarExists(Guid id)
+		{
+			return await _context.Bars.AnyAsync(e => e.Id == id);
+		}
+
+
+
 		private async Task<Bar> GetBarEntityWithCocktails(Guid barId)
 		{
 			return await _context.Bars
@@ -256,6 +267,7 @@ namespace CM.Services
 			return await _context.Cocktails
 				.FirstOrDefaultAsync(cocktail => cocktail.Id == cocktailId && cocktail.IsUnlisted == false) ?? throw new ArgumentNullException();
 		}
+
 		private IQueryable<Bar> SortBarsAsync(IQueryable<Bar> bars, string sortBy, string sortOrder)
 		{
 			return sortBy switch

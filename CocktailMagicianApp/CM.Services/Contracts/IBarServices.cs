@@ -16,6 +16,6 @@ namespace CM.Services.Contracts
 		Task<BarDTO> AddCocktailToBar(Guid barId, Guid cocktailId);
 		Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", string sortBy = "", string sortOrder = "", int pageNumber = 1, int pageSize = 10, bool allowUnlisted = false);
 		Task<ICollection<BarDTO>> GetTopBarsAsync(int ammount = 3);
-		//public Task<ICollection<BarDTO>> GetAllBarsAsync(string searchString = "", bool allowUnlisted = false);
+		Task<bool> BarExists(Guid id);
 	}
 }
