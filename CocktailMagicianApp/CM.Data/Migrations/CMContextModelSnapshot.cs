@@ -86,6 +86,22 @@ namespace CM.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"),
+                            ConcurrencyStamp = "3acc5e71-bf16-40e0-a9a3-7a30b02628bd",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"),
+                            ConcurrencyStamp = "99c5fee4-bbf3-4b3c-b5ad-1db0698c9523",
+                            Name = "Member",
+                            NormalizedName = "MEMBER"
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.AppUser", b =>
@@ -161,6 +177,32 @@ namespace CM.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "ba34caf3-d927-45f7-80c2-6a27de5ef690",
+                            EmailConfirmed = false,
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "testUser@test.com"
+                        },
+                        new
+                        {
+                            Id = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "f43f75d3-df00-4c5c-ba62-eef65cb445fe",
+                            EmailConfirmed = false,
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "testUser1@test.com"
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.Bar", b =>
@@ -171,6 +213,9 @@ namespace CM.Data.Migrations
 
                     b.Property<Guid>("AddressID")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double?>("AverageRating")
+                        .HasColumnType("float");
 
                     b.Property<string>("Details")
                         .HasColumnType("nvarchar(max)");
@@ -288,6 +333,20 @@ namespace CM.Data.Migrations
                     b.HasIndex("AppUserId");
 
                     b.ToTable("BarRatings");
+
+                    b.HasData(
+                        new
+                        {
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            AppUserId = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
+                            Score = 5
+                        },
+                        new
+                        {
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            AppUserId = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
+                            Score = 1
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.City", b =>

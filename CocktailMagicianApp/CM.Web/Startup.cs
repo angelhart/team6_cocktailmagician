@@ -16,6 +16,8 @@ using CM.Services.Providers;
 using CM.Web.Providers.Contracts;
 using CM.Web.Providers.ViewModelMappers;
 using CM.Web.Providers;
+using NToastNotify;
+using CM.Web.Middlewares;
 
 namespace CM.Web
 {
@@ -63,7 +65,17 @@ namespace CM.Web
             services.AddScoped<IIngredientServices, IngredientServices>();
 
             services.AddScoped<IIngredientViewMapper, IngredientViewMapper>();
+            services.AddScoped<IRatingServices, RatingServices>();
+            services.AddScoped<ICommentServices, CommentServices>();
 
+            //services.AddMvc().AddFeatureFolders().AddNToastNotifyNoty(new NotyOptions
+            //{
+            //    ProgressBar = true,
+            //    Timeout = 5000,
+            //    Theme = "mint"
+            //});
+
+            services.AddMvc().AddNToastNotifyNoty();
             services.AddScoped<IStorageProvider, AppStorageProvider>();
         }
 
@@ -88,6 +100,10 @@ namespace CM.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            //app.UseMiddleware<MissingMiddleware>();
+
+            app.UseNToastNotify();
 
             app.UseEndpoints(endpoints =>
             {

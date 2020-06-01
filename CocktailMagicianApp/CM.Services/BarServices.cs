@@ -2,15 +2,12 @@
 using CM.DTOs;
 using CM.DTOs.Mappers.Contracts;
 using CM.Models;
-using CM.Models.BaseClasses;
 using CM.Services.Contracts;
 using CM.Services.Providers;
-using CM.Services.Providers.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CM.Services
@@ -19,11 +16,13 @@ namespace CM.Services
 	{
 		private readonly CMContext _context;
 		private readonly IBarMapper _barMapper;
+		private readonly IAddressServices _addressServices;
 
-		public BarServices(CMContext context, IBarMapper barMapper)
+		public BarServices(CMContext context, IBarMapper barMapper, IAddressServices addressServices)
 		{
 			_context = context ?? throw new ArgumentNullException(nameof(context));
 			_barMapper = barMapper ?? throw new ArgumentNullException(nameof(barMapper));
+			_addressServices = addressServices ?? throw new ArgumentNullException(nameof(addressServices));
 		}
 
 
@@ -34,26 +33,32 @@ namespace CM.Services
 		public async Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", string sortBy = "", string sortOrder = "", int pageNumber = 1, int pageSize = 2, bool allowUnlisted = false)
 		{
 			var bars = _context.Bars
-								.Include(bar => bar.Address)
-									.ThenInclude(a => a.City)
-										.ThenInclude(c => c.Country)
-								//.Include(bar => bar.Cocktails)
-								.Include(bar => bar.Ratings)
-								.Where(bar => (!bar.IsUnlisted || allowUnlisted)
-																&& (bar.Name.Contains(searchString)
-																|| bar.Address.City.Name.Contains(searchString)
-																|| bar.Address.Street.Contains(searchString)));
+							.Where(bar => !bar.IsUnlisted || allowUnlisted)
+							.Include(bar => bar.Address)
+								.ThenInclude(a => a.City)
+									.ThenInclude(c => c.Country)
+							.Include(bar => bar.Ratings);
 
-			//var sortedBars = Helper<Bar>.SortCollection(bars, sortBy, sortOrder);
+			var sorteBars = SortBarsAsync(bars, sortBy, sortOrder);
 
-			bars = SortBars(bars, sortBy, sortOrder);
+			sorteBars = sorteBars.Skip(pageNumber - 1)
+								 .Take(pageSize);
 
-			var dtos = bars.Select(bar => _barMapper.CreateBarDTO(bar));
+			var filteredbars = sorteBars;
+
+			if (!String.IsNullOrEmpty(searchString))
+				filteredbars = bars.Where(bar => bar.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
+											|| bar.Address.City.Country.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
+											|| bar.Address.City.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
+											|| bar.Address.Street.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
+
+			var dtos = await filteredbars.Select(bar => _barMapper.CreateBarDTO(bar)).ToListAsync();
 
 			var pagedDtos = await PaginatedList<BarDTO>.CreateAsync(dtos, pageNumber, pageSize);
 
 			return pagedDtos;
 		}
+
 
 		/// <summary>
 		/// Returns Top Rated Bars.
@@ -63,13 +68,15 @@ namespace CM.Services
 		public async Task<ICollection<BarDTO>> GetTopBarsAsync(int ammount = 3)
 		{
 			var topBars = await _context.Bars
-									 .Where(bar => !bar.IsUnlisted)
-									 .OrderByDescending(c => c.AverageRating)
+									 .Where(bar => bar.IsUnlisted == false)
+									 .Include(bar => bar.Ratings)
+									 .OrderByDescending(bar => bar.AverageRating)
 									 .Take(ammount)
-									 .Select(bar => _barMapper.CreateBarDTO(bar))
 									 .ToListAsync();
 
-			return topBars;
+			var topBarsDTO = topBars.Select(bar => _barMapper.CreateBarDTO(bar)).ToList();
+
+			return topBarsDTO;
 		}
 
 		/// <summary>
@@ -80,16 +87,17 @@ namespace CM.Services
 		public async Task<BarDTO> GetBarAsync(Guid id)
 		{
 			var bar = await _context.Bars
-						.Include(a => a.Address)
+						.Include(bar => bar.Address)
 							.ThenInclude(a => a.City)
 								.ThenInclude(c => c.Country)
-						.Include(c => c.Cocktails)
-							.ThenInclude(c => c.Cocktail)
-						.FirstOrDefaultAsync(b => b.Id == id);
+						.Include(bar => bar.Cocktails)
+							.ThenInclude(bc => bc.Cocktail)
+							.Include(bar => bar.Comments)
+						.FirstOrDefaultAsync(bar => bar.Id == id);
 
 			if (bar == null)
 			{
-				throw new ArgumentNullException();
+				throw new ArgumentException("The Bar you were looking for was not found!");
 			}
 
 			var barDTO = this._barMapper.CreateBarDTO(bar);
@@ -106,9 +114,9 @@ namespace CM.Services
 		public async Task<BarDTO> UpdateBarAsync(Guid id, BarDTO barDTO)
 		{
 			var bar = await _context.Bars
-						.FirstOrDefaultAsync(b => b.Id == id);
+						.FirstOrDefaultAsync(bar => bar.Id == id);
 
-			if (bar == null)
+			if (bar == null || barDTO == null)
 			{
 				throw new ArgumentNullException();
 			}
@@ -132,15 +140,14 @@ namespace CM.Services
 		public async Task<BarDTO> CreateBarAsync(BarDTO barDTO)
 		{
 			if (await _context.Bars.FirstOrDefaultAsync(bar => bar.Name == barDTO.Name) != null)
-				throw new ArgumentException("Bar with the same name already exists!");
+				throw new DbUpdateException("Bar with the same name already exists!");
+
+			if (barDTO.Name == null)
+				throw new ArgumentNullException("Name cannot be null!");
 
 			try
 			{
-				var address = new Address
-				{
-					CityId = barDTO.Address.CityId,
-					Street = barDTO.Address.Street,
-				}; 
+				var address = await _addressServices.CreateAddressAsync(barDTO.Address);
 
 				var bar = new Bar
 				{
@@ -148,14 +155,12 @@ namespace CM.Services
 					Phone = barDTO.Phone,
 					ImagePath = barDTO.ImagePath,
 					Details = barDTO.Details,
-					Address = address,
+					AddressID = address.Id
 				};
 
 				await _context.Bars.AddAsync(bar);
-				await _context.Addresses.AddAsync(address);
 				await _context.SaveChangesAsync();
 
-				//TODO Ntoast notif
 				return barDTO;
 			}
 			catch (Exception)
@@ -238,6 +243,18 @@ namespace CM.Services
 			return barDTO;
 		}
 
+		/// <summary>
+		/// Checks if a bar exists in the database by given Id.
+		/// </summary>
+		/// <param name="id">The Id of the bar to be checked.</param>
+		/// <returns></returns>
+		public async Task<bool> BarExists(Guid id)
+		{
+			return await _context.Bars.AnyAsync(e => e.Id == id);
+		}
+
+
+
 		private async Task<Bar> GetBarEntityWithCocktails(Guid barId)
 		{
 			return await _context.Bars
@@ -251,7 +268,8 @@ namespace CM.Services
 			return await _context.Cocktails
 				.FirstOrDefaultAsync(cocktail => cocktail.Id == cocktailId && cocktail.IsUnlisted == false) ?? throw new ArgumentNullException();
 		}
-		private IQueryable<Bar> SortBars(IQueryable<Bar> bars, string sortBy, string sortOrder)
+
+		private IQueryable<Bar> SortBarsAsync(IQueryable<Bar> bars, string sortBy, string sortOrder)
 		{
 			return sortBy switch
 			{

@@ -44,11 +44,12 @@ namespace CM.Services
         /// <returns>ICollection</returns>
         public async Task<ICollection<CityDTO>> GetCountryCitiesAsync(Guid countryId)
         {
-            var citiesDTO =  _context.Cities
+            var citiesDTO = await  _context.Cities
+                     .Include(city => city.Country)
                     .Where(city => city.CountryId == countryId)
                     .Select(city => this._addressMapper
                     .CreateCityDTO(city))
-                    .ToList();
+                    .ToListAsync();
             
             return citiesDTO;
         }
@@ -122,9 +123,10 @@ namespace CM.Services
             if (cityDTO.Name == null)
                 throw new ArgumentNullException("City name cannot be null!");
 
-            var alredyExists = _context.Cities
-                .Any(city => city.Name == cityDTO.Name);
-            if (alredyExists)
+            if (await _context.Countries.FirstOrDefaultAsync(country => country.Id == countryId) == null)
+                throw new ArgumentNullException("Country was not found!");
+
+            if (await _context.Cities.FirstOrDefaultAsync(city => city.Name == cityDTO.Name) != null)
                 throw new DbUpdateException("A city with the same name already exists!");
 
             var city = new City { Name = cityDTO.Name, CountryId = countryId };
@@ -135,6 +137,35 @@ namespace CM.Services
             cityDTO.Id = cityDTO.Id;
 
             return cityDTO;
+        }
+
+        /// <summary>
+        /// Creates new Address and adds it to the database.
+        /// </summary>
+        /// <param name="cityId">The Id of the city where the ne address will be.</param>
+        /// <param name="street">The street of the address.</param>
+        /// <returns></returns>
+        public async Task<AddressDTO> CreateAddressAsync(AddressDTO addressDTO)
+        {
+
+            if (await _context.Cities.FirstOrDefaultAsync(city => city.Id == addressDTO.CityId) == null)
+                throw new DbUpdateException("City was not found!");
+
+            if (addressDTO.Street == null)
+                throw new ArgumentNullException("Please enter street!");
+
+            var address = new Address
+            {
+                CityId = addressDTO.CityId,
+                Street = addressDTO.Street
+            };
+
+            await _context.Addresses.AddAsync(address);
+            await _context.SaveChangesAsync();
+
+            addressDTO.Id = address.Id;
+
+            return addressDTO;
         }
     }
 }

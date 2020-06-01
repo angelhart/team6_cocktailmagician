@@ -144,5 +144,34 @@ namespace CM.ServicesTests.AddressServicesTests
 				await Assert.ThrowsExceptionAsync<DbUpdateException>(() => sut.CreateCityAsync(newCityDTO, new Guid("fb4effe9-32c1-45fd-8fce-9b45259c7ff6")));
 			}
 		}
+
+		[TestMethod]
+		public async Task ThrowsDbUpdateException_WhenCountryNotFound()
+		{
+			//Arrange
+			var options = Utility.GetOptions(nameof(ThrowsDbUpdateException_WhenCityExists));
+
+			var newCityDTO = new CityDTO
+			{
+				Name = "TestCity",
+			};
+
+
+			var mockMapper = new Mock<IAddressMapper>();
+			mockMapper.Setup(x => x.CreateCityDTO(It.IsAny<City>()))
+					  .Returns<City>(city => new CityDTO
+					  {
+						  Id = city.Id,
+						  Name = city.Name
+					  });
+
+			//Act/Assert
+			using (var assertContext = new CMContext(options))
+			{
+				var sut = new AddressServices(assertContext, mockMapper.Object);
+
+				await Assert.ThrowsExceptionAsync<DbUpdateException>(() => sut.CreateCityAsync(newCityDTO, new Guid("fb4effe9-32c1-45fd-8fce-9b45259c7ff6")));
+			}
+		}
 	}
 }

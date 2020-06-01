@@ -5,9 +5,7 @@ using CM.Models;
 using CM.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CM.Services
@@ -26,9 +24,29 @@ namespace CM.Services
             this._cocktailMapper = cocktailMapper;
             this._barMapper = barMapper;
         }
-        public async Task<BarRatingDTO> RateBarAsync(int id, BarRatingDTO barRatingDTO)
+        public async Task<BarRatingDTO> RateBarAsync(BarRatingDTO barRatingDTO)
         {
-            throw new NotImplementedException();
+            var bar = await _context.Bars
+                .Include(bar => bar.Ratings)
+                .FirstOrDefaultAsync(bar => bar.Id == barRatingDTO.BarId) ?? throw new NullReferenceException();
+
+            if (bar.Ratings.Any(rating => rating.AppUserId == barRatingDTO.AppUserId))
+                throw new InvalidOperationException();
+
+            var newRating = new BarRating
+            {
+                AppUserId = barRatingDTO.AppUserId,
+                BarId = barRatingDTO.BarId,
+                Score = barRatingDTO.Score
+            };
+
+            await _context.AddAsync(newRating);
+            await _context.SaveChangesAsync();
+
+            await UpdateBarAverageRatingAsync(bar);
+
+            var brDTO = _barMapper.CreateBarRatingDTO(newRating);
+            return brDTO;
         }
 
         private async Task<CocktailRating> GetCocktailRatingEntityAsync(Guid userId, Guid cocktailId)
@@ -136,6 +154,15 @@ namespace CM.Services
             await _context.SaveChangesAsync();
 
             return outputDto;
+        }
+
+        private async Task UpdateBarAverageRatingAsync(Bar bar)
+        {
+            bar.AverageRating = await _context.BarRatings
+                                                .Where(barRating => barRating.BarId == bar.Id)
+                                                .AverageAsync(barRating => barRating.Score);
+            _context.Update(bar);
+            await _context.SaveChangesAsync();
         }
     }
 }

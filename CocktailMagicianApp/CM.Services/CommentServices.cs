@@ -3,6 +3,7 @@ using CM.DTOs;
 using CM.DTOs.Mappers.Contracts;
 using CM.Models;
 using CM.Services.Contracts;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,7 +17,7 @@ namespace CM.Services
         private readonly ICocktailMapper _cocktailMapper;
         private readonly IBarMapper _barMapper;
 
-        public CommentServices(CMContext context, 
+        public CommentServices(CMContext context,
                                ICocktailMapper cocktailMapper,
                                IBarMapper barMapper)
         {
@@ -24,6 +25,8 @@ namespace CM.Services
             this._cocktailMapper = cocktailMapper;
             this._barMapper = barMapper;
         }
+
+        //TODO Test bar comments
 
         /// <summary>
         /// Adds new Comment to the collection of comments of a Bar.
@@ -34,7 +37,12 @@ namespace CM.Services
             if (newCommentDto == null)
                 throw new ArgumentNullException("New comment object cannot be null");
 
-            var newComment = _barMapper.CreateBarComment(newCommentDto);
+            var newComment = new BarComment
+            {
+                BarId = newCommentDto.BarId,
+                AppUserId = newCommentDto.UserId,
+                Text = newCommentDto.Text
+            }; ;
 
             await _context.AddAsync(newComment);
             await _context.SaveChangesAsync();
@@ -44,7 +52,59 @@ namespace CM.Services
             return outputDto;
         }
 
-        // TODO: R(eturn)U(pdate)D(Delete) operations for BarComment
+        /// <summary>
+        /// Returns a comment by given Id.
+        /// </summary>
+        /// <param name="commentId">The Id of the comment.</param>
+        /// <returns>BarCommentDTO</returns>
+        public async Task<BarCommentDTO> GetBarCommentAsync(Guid commentId)
+        {
+            var comment = await _context.BarComments.FirstOrDefaultAsync(comment => comment.Id == commentId);
+
+            var outputDto = _barMapper.CreateBarCommentDTO(comment);
+
+            return outputDto;
+        }
+
+        /// <summary>
+        /// Edits the text of a comment by given Id.
+        /// </summary>
+        /// <param name="commentId">The Id of the comment that should be edited.</param>
+        /// <param name="text">The new text of the comment.</param>
+        /// <returns></returns>
+        public async Task<BarCommentDTO> EditBarCommentAsync(Guid commentId, string text)
+        {
+            var comment = await _context.BarComments.FirstOrDefaultAsync(comment => comment.Id == commentId);
+
+            if (text == null || comment == null)
+                throw new ArgumentNullException();
+
+            comment.Text = text;
+
+            _context.Update(comment);
+            await _context.SaveChangesAsync();
+
+            var outputDto = _barMapper.CreateBarCommentDTO(comment);
+
+            return outputDto;
+        }
+
+        /// <summary>
+        /// Deletes a comment by give Id.
+        /// </summary>
+        /// <param name="commentId">The Id of the comment that should be deleted.</param>
+        /// <returns></returns>
+        public async Task<BarCommentDTO> DeleteBarCommentAsync(Guid commentId)
+        {
+            var comment = await _context.BarComments.FirstOrDefaultAsync(comment => comment.Id == commentId);
+
+            _context.Remove(comment);
+            await _context.SaveChangesAsync();
+
+            var outputDto = _barMapper.CreateBarCommentDTO(comment);
+
+            return outputDto;
+        }
 
         private async Task<CocktailComment> GetCocktailCommentEntityAsync(Guid commentId)
         {
@@ -55,6 +115,8 @@ namespace CM.Services
 
             return entry;
         }
+
+
 
         /// <summary>
         /// Adds a new comment for a cocktail.
