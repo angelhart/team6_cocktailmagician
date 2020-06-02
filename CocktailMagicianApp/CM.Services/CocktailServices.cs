@@ -42,7 +42,7 @@ namespace CM.Services
             return cocktail;
         }
         
-        private async Task UpdateIngredientsAsync(Guid cocktailId, ICollection<CocktailIngredientDTO> newIngredients)
+        private async Task UpdateIngredientsAsync(Guid cocktailId, ICollection<IngredientDTO> newIngredients)
         {
             var currentIngredients = _context.CocktailIngredients
                                              .Where(ci => ci.CocktailId == cocktailId);
@@ -51,7 +51,7 @@ namespace CM.Services
 
             var ingredientsToAdd = newIngredients.Select(ci => new CocktailIngredient 
             {
-                IngredientId = ci.IngredientId,
+                IngredientId = ci.Id,
                 CocktailId = cocktailId,
                 Ammount = ci.Ammount,
                 Unit = Enum.Parse<Unit>(ci.Unit, true),
@@ -145,7 +145,10 @@ namespace CM.Services
 
             cocktail.Name = dto.Name;
             cocktail.Recipe = dto.Recipe;
-            // TODO: cocktail.Picture
+            if (dto.ImagePath != null)
+            {
+                cocktail.ImagePath = dto.ImagePath;
+            }
             await UpdateIngredientsAsync(cocktail.Id, dto.Ingredients);
 
             _context.Cocktails.Update(cocktail);
@@ -190,6 +193,7 @@ namespace CM.Services
                                      .Take(ammount)
                                      .Select(c => _cocktailMapper.CreateCocktailDTO(c))
                                      .ToListAsync();
+
 
             return topCocktails;
         }

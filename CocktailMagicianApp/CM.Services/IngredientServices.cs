@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -74,7 +75,7 @@ namespace CM.Services
             Ingredient newIngredient = new Ingredient
             {
                 Name = dto.Name,
-                // TODO: picture
+                ImagePath = dto.ImagePath
             };
 
             await _context.Ingredients.AddAsync(newIngredient);
@@ -94,7 +95,11 @@ namespace CM.Services
             var ingredient = await GetIngredientAsync(dto.Id);
 
             ingredient.Name = dto.Name;
-            // TODO: ingredient.Picture = dto.Picture
+
+            if (dto.ImagePath != null)
+            {
+                ingredient.ImagePath = dto.ImagePath;
+            }
 
             _context.Ingredients.Update(ingredient);
             await _context.SaveChangesAsync();
@@ -146,6 +151,15 @@ namespace CM.Services
             var outputDtos = await PaginatedList<IngredientDTO>.CreateAsync(ingredients, pageNumber, pageSize);
 
             return outputDtos;
+        }
+
+        /// <summary>
+        /// Count all records in database.
+        /// </summary>
+        /// <returns>Integer of all entities in data base.</returns>
+        public async Task<int> CountAllIngredientsAsync()
+        {
+            return await _context.Ingredients.CountAsync();
         }
     }
 }

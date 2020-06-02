@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CM.Models;
+using CM.Models.BaseClasses;
 
 namespace CM.DTOs
 {
-	public class BarDTO
+	public class BarDTO : ISortable
 	{
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -15,6 +16,7 @@ namespace CM.DTOs
         public string Details { get; set; }
         public double? AverageRating { get; set; }
         public string ImagePath { get; set; }
+        public bool IsUnlisted { get; set; }
 
         public ICollection<BarCommentDTO> Comments { get; set; }
         public ICollection<BarCocktailDTO> Cocktails { get; set; }

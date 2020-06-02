@@ -5,37 +5,50 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+	<h1>@Html.DisplayFor(model => model.Name)</h1>
 
 <div>
-    <h4>Bar</h4>
+	<h4>@Html.DisplayFor(model => model.Country)</h4>
+	<h6>@Html.DisplayFor(model => model.City)</h6>
     <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Phone)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImagePath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImagePath)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Details)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Details)
-        </dd>
-    </dl>
+	<dl class="row">
+		<dt class="col-sm-2">
+			Address
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.Street)
+		</dd>
+		<dt class="col-sm-2">
+			@Html.DisplayNameFor(model => model.Phone)
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.Phone)
+		</dd>
+		<dt class="col-sm-2">
+			@Html.DisplayNameFor(model => model.ImagePath)
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.ImagePath)
+		</dd>
+		<dt class="col-sm-2">
+			@Html.DisplayNameFor(model => model.Details)
+		</dt>
+		<dd class="col-sm-10">
+			@Html.DisplayFor(model => model.Details)
+		</dd>
+		<dt class="col-sm-2">
+			@Html.DisplayNameFor(model => model.Cocktails)
+		</dt>
+		<dd class="col-sm-10">
+			@foreach (var cocktail in Model.Cocktails)
+			{
+
+				<p>
+					@cocktail.Cocktail<br />
+				</p>
+			}
+		</dd>
+	</dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |

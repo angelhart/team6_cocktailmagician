@@ -79,10 +79,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });
@@ -116,10 +116,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });
@@ -153,10 +153,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });
@@ -192,10 +192,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });
@@ -230,10 +230,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });
@@ -269,10 +269,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });
@@ -307,10 +307,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });

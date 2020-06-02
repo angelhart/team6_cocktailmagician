@@ -1,6 +1,7 @@
 ﻿using CM.Data;
 using CM.DTOs;
 using CM.DTOs.Mappers.Contracts;
+using CM.Models;
 using CM.Services.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -26,9 +27,10 @@ namespace CM.Services
         /// Retrieves a list of all Countries in the database.
         /// </summary>
         /// <returns>ICollection</returns>
-        public async Task<IEnumerable<CountryDTO>> GetAllCountriesAsync()
+        public async Task<ICollection<CountryDTO>> GetAllCountriesAsync()
         {
             var countriesDTO = await _context.Countries
+                .Include(country =>country.Cities)
                 .Select(country => this._addressMapper
                 .CreateCountryDTO(country))
                 .ToListAsync();
@@ -42,22 +44,26 @@ namespace CM.Services
         /// <returns>ICollection</returns>
         public async Task<ICollection<CityDTO>> GetCountryCitiesAsync(Guid countryId)
         {
-            var citiesDTO = await _context.Cities
-                    .Where(city => city.Country.Id == countryId)
+            var citiesDTO =  _context.Cities
+                    .Where(city => city.CountryId == countryId)
                     .Select(city => this._addressMapper
                     .CreateCityDTO(city))
-                    .ToListAsync();
+                    .ToList();
             
             return citiesDTO;
         }
 
         /// <summary>
-        /// Retrieves Country by name.
+        /// Retrieves Country by given Id.
         /// </summary>
         /// <returns>Country</returns>
-        public async Task<CountryDTO> GetCountryAsync(string countryName)
+        public async Task<CountryDTO> GetCountryAsync(Guid countryId)
         {
-            var country = await _context.Countries.FirstOrDefaultAsync(country => country.Name == countryName);
+            //TODO Do we need this?
+            var country = await _context.Countries.FirstOrDefaultAsync(country => country.Id == countryId);
+           
+            if (country == null)
+                throw new ArgumentException();
 
             var countryDTO = this._addressMapper.CreateCountryDTO(country);
 
@@ -65,17 +71,70 @@ namespace CM.Services
         }
 
         /// <summary>
-        /// Retrieves City by name.
+        /// Retrieves City by given Id.
         /// </summary>
         /// <returns>City</returns>
-        public async Task<CityDTO> GetCityAsync(string cityName)
+        public async Task<CityDTO> GetCityAsync(Guid cityId)
         {
-            var city = await _context.Cities.FirstOrDefaultAsync(city => city.Name == cityName);
+            var city = await _context.Cities.FirstOrDefaultAsync(city => city.Id == cityId);
 
+            if (city == null)
+                throw new ArgumentException();
+            
             var cityDTO = this._addressMapper.CreateCityDTO(city);
 
             return cityDTO;
+        }
 
+        /// <summary>
+        /// Creates new Country and adds it to the database.
+        /// </summary>
+        /// <param name="countryDTO">The params needed for the country to be created.</param>
+        /// <returns>Returns CountryDTO with the params of the created country.</returns>
+        public async Task<CountryDTO> CreateCountryAsync(CountryDTO countryDTO)
+        {
+            if (countryDTO.Name == null)
+                throw new ArgumentNullException("Country name cannot be null!");
+
+            var countryAlredyExists = _context.Countries
+                .Any(country => country.Name == countryDTO.Name);
+            if (countryAlredyExists)
+                throw new DbUpdateException("A country with the same name already exists!");
+
+
+            var country = new Country { Name = countryDTO.Name };
+
+            await _context.Countries.AddAsync(country);
+            await _context.SaveChangesAsync();
+
+            countryDTO.Id = countryDTO.Id;
+
+            return countryDTO;
+        }
+
+        /// <summary>
+        /// Creates new City and adds it to the database.
+        /// </summary>
+        /// <param name="cityDTO">The params needed for the city to be created.</param>
+        /// <returns>Returns CityDTO with the params of the created city.</returns>
+        public async Task<CityDTO> CreateCityAsync(CityDTO cityDTO, Guid countryId)
+        {
+            if (cityDTO.Name == null)
+                throw new ArgumentNullException("City name cannot be null!");
+
+            var alredyExists = _context.Cities
+                .Any(city => city.Name == cityDTO.Name);
+            if (alredyExists)
+                throw new DbUpdateException("A city with the same name already exists!");
+
+            var city = new City { Name = cityDTO.Name, CountryId = countryId };
+
+            await _context.Cities.AddAsync(city);
+            await _context.SaveChangesAsync();
+
+            cityDTO.Id = cityDTO.Id;
+
+            return cityDTO;
         }
     }
 }

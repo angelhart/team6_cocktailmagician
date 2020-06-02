@@ -12,11 +12,13 @@ namespace CM.Services.Providers
     {
         public int PageNumber { get; private set; }
         public int TotalPages { get; private set; }
+        public int SourceItems { get; set; }
 
         public PaginatedList(List<T> items, int count, int pageNumber, int pageSize)
         {
             PageNumber = pageNumber;
             TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+            SourceItems = count;
 
             this.AddRange(items);
         }

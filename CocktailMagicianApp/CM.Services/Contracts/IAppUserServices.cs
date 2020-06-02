@@ -8,13 +8,9 @@ namespace CM.Services.Contracts
 {
     public interface IAppUserServices
     {
-        List<AppUserDTO> ListUsers();
-        AppUserDTO GetUser(int id);
-        AppUserDTO GetUser(string name);
-        AppUserDTO CreateUser(AppUserDTO dto);
-        AppUserDTO DeleteUser(int id);
-        AppUserDTO EditUser(int id, AppUserDTO editedUser);
-
-        Task<AppUserDTO> AdminGetUserAsync(int id);
+        public Task<AppUserDTO> GetUserAsync(Guid id);
+        public Task<List<AppUserDTO>> GetAllUsersAsync();
+        public Task<AppUserDTO> CreateUserAsync(AppUserDTO appUserDto);
+        public Task<AppUserDTO> DeleteUserAsync(Guid id);
     }
 }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CM.Data.Migrations
 {
-    public partial class initial : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -72,8 +72,10 @@ namespace CM.Data.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     Name = table.Column<string>(maxLength: 256, nullable: false),
+                    Recipe = table.Column<string>(nullable: true),
                     ImagePath = table.Column<string>(nullable: true),
-                    IsUnlisted = table.Column<bool>(nullable: false)
+                    IsUnlisted = table.Column<bool>(nullable: false),
+                    AverageRating = table.Column<double>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -97,7 +99,8 @@ namespace CM.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    ImagePath = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -216,6 +219,7 @@ namespace CM.Data.Migrations
                 {
                     AppUserId = table.Column<Guid>(nullable: false),
                     BarId = table.Column<Guid>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false),
                     Text = table.Column<string>(maxLength: 500, nullable: false),
                     CommentedOn = table.Column<DateTimeOffset>(nullable: false)
                 },
@@ -270,33 +274,34 @@ namespace CM.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BarCocktails", x => new { x.BarId, x.CocktailId });
+                    table.PrimaryKey("PK_BarCocktails", x => new { x.CocktailId, x.BarId });
                     table.ForeignKey(
                         name: "FK_BarCocktails_Bars_BarId",
                         column: x => x.BarId,
                         principalTable: "Bars",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_BarCocktails_Cocktails_CocktailId",
                         column: x => x.CocktailId,
                         principalTable: "Cocktails",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "CocktailComments",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(nullable: false),
                     AppUserId = table.Column<Guid>(nullable: false),
-                    CocktailId = table.Column<Guid>(nullable: false),
                     Text = table.Column<string>(maxLength: 500, nullable: false),
-                    CommentedOn = table.Column<DateTimeOffset>(nullable: false)
+                    CommentedOn = table.Column<DateTimeOffset>(nullable: false),
+                    CocktailId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CocktailComments", x => new { x.CocktailId, x.AppUserId });
+                    table.PrimaryKey("PK_CocktailComments", x => x.Id);
                     table.ForeignKey(
                         name: "FK_CocktailComments_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
@@ -387,7 +392,6 @@ namespace CM.Data.Migrations
                 {
                     Id = table.Column<Guid>(nullable: false),
                     CityId = table.Column<Guid>(nullable: false),
-                    City = table.Column<string>(nullable: true),
                     Street = table.Column<string>(nullable: true),
                     BarId = table.Column<Guid>(nullable: false)
                 },
@@ -419,12 +423,12 @@ namespace CM.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Cocktails",
-                columns: new[] { "Id", "ImagePath", "IsUnlisted", "Name" },
+                columns: new[] { "Id", "AverageRating", "ImagePath", "IsUnlisted", "Name", "Recipe" },
                 values: new object[,]
                 {
-                    { new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"), null, false, "Loch Lomond" },
-                    { new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"), null, false, "Strawberry Lemonade" },
-                    { new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"), null, false, "Rum Milk Punch" }
+                    { new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"), null, null, false, "Loch Lomond", null },
+                    { new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"), null, null, false, "Strawberry Lemonade", null },
+                    { new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"), null, null, false, "Rum Milk Punch", null }
                 });
 
             migrationBuilder.InsertData(
@@ -438,12 +442,12 @@ namespace CM.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "BarCocktails",
-                columns: new[] { "BarId", "CocktailId" },
+                columns: new[] { "CocktailId", "BarId" },
                 values: new object[,]
                 {
-                    { new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), new Guid("a3fd2a00-52c4-4293-a184-6f448d008015") },
-                    { new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9") },
-                    { new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"), new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea") }
+                    { new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"), new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd") },
+                    { new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"), new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd") },
+                    { new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"), new Guid("0899e918-977c-44d5-a5cb-de9559ad822c") }
                 });
 
             migrationBuilder.InsertData(
@@ -457,13 +461,13 @@ namespace CM.Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "Addresses",
-                columns: new[] { "Id", "BarId", "City", "CityId", "Street" },
-                values: new object[] { new Guid("73f2c4c2-78ae-45ab-b82c-b06a48271a6d"), new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), null, new Guid("320b050b-82f1-494c-9add-91ab28bf98dd"), "79-81 MACDOUGAL ST" });
+                columns: new[] { "Id", "BarId", "CityId", "Street" },
+                values: new object[] { new Guid("73f2c4c2-78ae-45ab-b82c-b06a48271a6d"), new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), new Guid("320b050b-82f1-494c-9add-91ab28bf98dd"), "79-81 MACDOUGAL ST" });
 
             migrationBuilder.InsertData(
                 table: "Addresses",
-                columns: new[] { "Id", "BarId", "City", "CityId", "Street" },
-                values: new object[] { new Guid("dfaa43d9-d6d8-4a15-bda9-48823fa4b886"), new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"), null, new Guid("0eea5eb5-6151-41be-ac73-b35e056ca97e"), "Mayfair W1K 2AL" });
+                columns: new[] { "Id", "BarId", "CityId", "Street" },
+                values: new object[] { new Guid("dfaa43d9-d6d8-4a15-bda9-48823fa4b886"), new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"), new Guid("0eea5eb5-6151-41be-ac73-b35e056ca97e"), "Mayfair W1K 2AL" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Addresses_BarId",
@@ -516,9 +520,9 @@ namespace CM.Data.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_BarCocktails_CocktailId",
+                name: "IX_BarCocktails_BarId",
                 table: "BarCocktails",
-                column: "CocktailId");
+                column: "BarId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_BarComments_AppUserId",
@@ -539,6 +543,11 @@ namespace CM.Data.Migrations
                 name: "IX_CocktailComments_AppUserId",
                 table: "CocktailComments",
                 column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CocktailComments_CocktailId",
+                table: "CocktailComments",
+                column: "CocktailId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CocktailIngredients_IngredientId",

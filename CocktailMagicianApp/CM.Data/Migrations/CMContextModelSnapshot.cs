@@ -216,33 +216,33 @@ namespace CM.Data.Migrations
 
             modelBuilder.Entity("CM.Models.BarCocktail", b =>
                 {
-                    b.Property<Guid>("BarId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("CocktailId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("BarId", "CocktailId");
+                    b.Property<Guid>("BarId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasIndex("CocktailId");
+                    b.HasKey("CocktailId", "BarId");
+
+                    b.HasIndex("BarId");
 
                     b.ToTable("BarCocktails");
 
                     b.HasData(
                         new
                         {
-                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
-                            CocktailId = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015")
+                            CocktailId = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"),
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd")
                         },
                         new
                         {
-                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
-                            CocktailId = new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9")
+                            CocktailId = new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"),
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd")
                         },
                         new
                         {
-                            BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"),
-                            CocktailId = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea")
+                            CocktailId = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"),
+                            BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c")
                         });
                 });
 
@@ -256,6 +256,9 @@ namespace CM.Data.Migrations
 
                     b.Property<DateTimeOffset>("CommentedOn")
                         .HasColumnType("datetimeoffset");
+
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -326,6 +329,9 @@ namespace CM.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double?>("AverageRating")
+                        .HasColumnType("float");
+
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
@@ -336,6 +342,9 @@ namespace CM.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
+
+                    b.Property<string>("Recipe")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -364,10 +373,14 @@ namespace CM.Data.Migrations
 
             modelBuilder.Entity("CM.Models.CocktailComment", b =>
                 {
-                    b.Property<Guid>("CocktailId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AppUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CocktailId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("CommentedOn")
@@ -378,9 +391,11 @@ namespace CM.Data.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasMaxLength(500);
 
-                    b.HasKey("CocktailId", "AppUserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("CocktailId");
 
                     b.ToTable("CocktailComments");
                 });
@@ -456,6 +471,9 @@ namespace CM.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -586,13 +604,13 @@ namespace CM.Data.Migrations
                     b.HasOne("CM.Models.Bar", "Bar")
                         .WithMany("Cocktails")
                         .HasForeignKey("BarId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("CM.Models.Cocktail", "Cocktail")
                         .WithMany("Bars")
                         .HasForeignKey("CocktailId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
