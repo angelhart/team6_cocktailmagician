@@ -1,8 +1,14 @@
-﻿@model CM.Models.Cocktail
+﻿@model CocktailViewModel
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    var selectListItems = ViewData["Ingredients"] as SelectList;
+}
+
+@section Styles{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+
 }
 
 <h1>Create</h1>
@@ -20,23 +26,26 @@
             </div>
             <div class="form-group">
                 <label asp-for="Recipe" class="control-label"></label>
-                <input asp-for="Recipe" class="form-control" />
+                <textarea asp-for="Recipe" class="form-control" />
                 <span asp-validation-for="Recipe" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImagePath" class="control-label"></label>
-                <input asp-for="ImagePath" class="form-control" />
-                <span asp-validation-for="ImagePath" class="text-danger"></span>
-            </div>
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsUnlisted" /> @Html.DisplayNameFor(model => model.IsUnlisted)
-                </label>
+                <label asp-for="Image" class="control-label"></label>
+                <input id="fileUploadInput" asp-for="Image" type="file" class="file" accept="image/*" hidden>
+                <div class="input-group my-3">
+                    <input type="text" class="form-control col-sm-12" disabled placeholder="Upload Image" id="file">
+                    <div class="input-group-append">
+                        <button type="button" class="browse btn btn-primary">Browse</button>
+                    </div>
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
             </div>
             <div class="form-group">
-                <label asp-for="AverageRating" class="control-label"></label>
-                <input asp-for="AverageRating" class="form-control" />
-                <span asp-validation-for="AverageRating" class="text-danger"></span>
+                <label asp-for="Ingredients" class="control-label"></label>
+                <select asp-for="Ingredients" asp-items="@selectListItems" class="form-control selectpicker">
+                    <option value="">Choose ingredients</option>
+                </select>
+                <span asp-validation-for="Ingredients" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -51,4 +60,9 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script src="~/js/UploadImage.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
 }
