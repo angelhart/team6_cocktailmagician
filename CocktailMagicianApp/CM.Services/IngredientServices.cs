@@ -161,5 +161,17 @@ namespace CM.Services
         {
             return await _context.Ingredients.CountAsync();
         }
+
+        /// <summary>
+        /// Provides a collection of all entries in the database.
+        /// </summary>
+        /// <returns>All ingredients as sorted in database.</returns>
+        public async Task<ICollection<IngredientDTO>> GetAllIngredientsAsync()
+        {
+            var dtos = await _context.Ingredients
+                                            .Select(i => _ingredientMapper.CreateIngredientDTO(i))
+                                            .ToListAsync();
+            return dtos;
+        }
     }
 }

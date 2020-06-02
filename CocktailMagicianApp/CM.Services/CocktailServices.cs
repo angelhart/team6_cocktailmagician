@@ -120,7 +120,7 @@ namespace CM.Services
             {
                 Name = dto.Name,
                 Recipe = dto.Recipe,
-                // TODO: picture
+                ImagePath = dto.ImagePath,
             };
             await _context.Cocktails.AddAsync(cocktail);
             await _context.SaveChangesAsync();

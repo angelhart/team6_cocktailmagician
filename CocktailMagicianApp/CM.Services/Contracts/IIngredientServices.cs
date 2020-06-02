@@ -16,5 +16,6 @@ namespace CM.Services.Contracts
         Task<IngredientDTO> GetIngredientDetailsAsync(Guid id);
         Task<IngredientDTO> UpdateIngredientAsync(IngredientDTO dto);
         Task<int> CountAllIngredientsAsync();
+        Task<ICollection<IngredientDTO>> GetAllIngredientsAsync();
     }
 }
