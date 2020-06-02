@@ -12,12 +12,16 @@ using CM.DTOs.Mappers.Contracts;
 using Microsoft.AspNetCore.Hosting;
 using CM.Web.Providers.Contracts;
 using NToastNotify;
+using CM.Web.Models;
+using CM.DTOs;
 
 namespace CM.Web.Areas.Magician.Controllers
 {
     [Area("Magician")]
     public class CocktailsController : Controller
     {
+        private const string ROOTSTORAGE = "\\images\\Cocktails";
+
         private readonly ICocktailServices _cocktailServices;
         private readonly ICocktailMapper _cocktailMapper;
         private readonly ICocktailViewMapper _cocktailViewMapper;
@@ -26,6 +30,8 @@ namespace CM.Web.Areas.Magician.Controllers
         private readonly IRatingServices _ratingServices;
         private readonly IToastNotification _toastNotification;
         private readonly ICommentServices _commentServices;
+        private readonly IIngredientServices _ingredientServices;
+        private readonly IIngredientViewMapper _ingredientViewMapper;
 
         public CocktailsController(ICocktailServices cocktailServices,
                                    ICocktailMapper cocktailMapper,
@@ -34,7 +40,9 @@ namespace CM.Web.Areas.Magician.Controllers
                                    IStorageProvider storageProvider,
                                    IRatingServices ratingServices,
                                    IToastNotification toastNotification,
-                                   ICommentServices commentServices)
+                                   ICommentServices commentServices,
+                                   IIngredientServices ingredientServices,
+                                   IIngredientViewMapper ingredientViewMapper)
         {
             this._cocktailServices = cocktailServices;
             this._cocktailMapper = cocktailMapper;
@@ -44,6 +52,8 @@ namespace CM.Web.Areas.Magician.Controllers
             this._ratingServices = ratingServices;
             this._toastNotification = toastNotification;
             this._commentServices = commentServices;
+            this._ingredientServices = ingredientServices;
+            this._ingredientViewMapper = ingredientViewMapper;
         }
 
         // GET: Magician/Cocktails
@@ -56,26 +66,32 @@ namespace CM.Web.Areas.Magician.Controllers
         }
 
         // GET: Magician/Cocktails/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(Guid id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                var dto = await _cocktailServices.GetCocktailDetailsAsync(id, isAdmin: false);
 
-            var cocktail = await _context.Cocktails
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (cocktail == null)
+                var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
+
+                return View(vm);
+            }
+            catch (Exception ex)
             {
-                return NotFound();
+                _toastNotification.AddAlertToastMessage(ex.Message);
+                return RedirectToAction(nameof(Index));
             }
-
-            return View(cocktail);
         }
 
         // GET: Magician/Cocktails/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var ingredients = await _ingredientServices.GetAllIngredientsAsync();
+
+            var selectListItems = new SelectList(ingredients, nameof(IngredientDTO.Id), nameof(IngredientDTO.Name));
+
+            ViewData["Ingredients"] = selectListItems;
+
             return View();
         }
 
@@ -84,32 +100,67 @@ namespace CM.Web.Areas.Magician.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Recipe,ImagePath,IsUnlisted,AverageRating")] Cocktail cocktail)
+        public async Task<IActionResult> Create(CocktailViewModel model)
         {
             if (ModelState.IsValid)
             {
-                cocktail.Id = Guid.NewGuid();
-                _context.Add(cocktail);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    if (model.Image != null)
+                        model.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, model.Image.FileName, model.Name);
+
+                    var dto = _cocktailViewMapper.CreateCocktailDTO(model);
+                    dto = await _cocktailServices.CreateCocktailAsync(dto);
+
+                    var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
+
+                    if (model.Image != null)
+                        await _storageProvider.StoreImageAsync(model.ImagePath, model.Image);
+
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    _toastNotification.AddWarningToastMessage(ex.Message);
+                    return View(model);
+                }
             }
-            return View(cocktail);
+
+            foreach (var item in ModelState.Values)
+            {
+                foreach (var error in item.Errors)
+                {
+                    _toastNotification.AddWarningToastMessage(error.ErrorMessage);
+                }
+            }
+            return View(model);
         }
 
         // GET: Magician/Cocktails/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(Guid id)
         {
-            if (id == null)
+            try
             {
-                return NotFound();
-            }
+                var dto = await _cocktailServices.GetCocktailDetailsAsync(id);
+                var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
 
-            var cocktail = await _context.Cocktails.FindAsync(id);
-            if (cocktail == null)
-            {
-                return NotFound();
+                var ingredients = await _ingredientServices.GetAllIngredientsAsync();
+                var selectListItems = new SelectList(ingredients, nameof(IngredientDTO.Id), nameof(IngredientDTO.Name));
+                foreach (var item in selectListItems)
+                {
+                    if (item.Value == id.ToString())
+                        item.Selected = true;
+                }
+
+                ViewData["Ingredients"] = selectListItems;
+
+                return View(vm);
             }
-            return View(cocktail);
+            catch (Exception ex)
+            {
+                _toastNotification.AddWarningToastMessage(ex.Message);
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: Magician/Cocktails/Edit/5
@@ -117,52 +168,46 @@ namespace CM.Web.Areas.Magician.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Recipe,ImagePath,IsUnlisted,AverageRating")] Cocktail cocktail)
+        public async Task<IActionResult> Edit(CocktailViewModel model)
         {
-            if (id != cocktail.Id)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _context.Update(cocktail);
-                    await _context.SaveChangesAsync();
+                    if (model.Image != null)
+                        model.ImagePath = _storageProvider.GenerateRelativePath("images\\Cocktails", model.Image.FileName, model.Name);
+
+                    var dto = _cocktailViewMapper.CreateCocktailDTO(model);
+                    dto = await _cocktailServices.UpdateCocktailAsync(dto);
+
+                    if (model.Image != null)
+                        await _storageProvider.StoreImageAsync(model.ImagePath, model.Image);
+
+                        var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (Exception ex)
                 {
-                    if (!CocktailExists(cocktail.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    _toastNotification.AddWarningToastMessage(ex.Message);
+                    return View(model);
                 }
-                return RedirectToAction(nameof(Index));
             }
-            return View(cocktail);
+
+            foreach (var item in ModelState.Values)
+            {
+                foreach (var error in item.Errors)
+                {
+                    _toastNotification.AddWarningToastMessage(error.ErrorMessage);
+                }
+            }
+            return View(model);
         }
 
         // GET: Magician/Cocktails/Delete/5
         public async Task<IActionResult> Delete(Guid? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            throw new NotImplementedException();
 
-            var cocktail = await _context.Cocktails
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (cocktail == null)
-            {
-                return NotFound();
-            }
-
-            return View(cocktail);
         }
 
         // POST: Magician/Cocktails/Delete/5
@@ -170,15 +215,7 @@ namespace CM.Web.Areas.Magician.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            var cocktail = await _context.Cocktails.FindAsync(id);
-            _context.Cocktails.Remove(cocktail);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool CocktailExists(Guid id)
-        {
-            return _context.Cocktails.Any(e => e.Id == id);
+            throw new NotImplementedException();
         }
     }
 }
