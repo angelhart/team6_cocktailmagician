@@ -17,7 +17,7 @@ $(document).ready(function () {
                 // Thumbnail
                 data: "imagePath",
                 render: function (url, type, full) {
-                    return '<img class="img-thumbnail" height="75%" width="75%" src="' + full.imagePath + '"/>';
+                    return '<img class="img-thumbnail" height="75px" width="75px" src="' + full.imagePath + '"/>';
                 },
                 orderable: false
             },

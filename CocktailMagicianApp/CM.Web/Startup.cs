@@ -65,6 +65,8 @@ namespace CM.Web
             services.AddScoped<IIngredientServices, IngredientServices>();
 
             services.AddScoped<IIngredientViewMapper, IngredientViewMapper>();
+            services.AddScoped<ICocktailViewMapper, CocktailViewMapper>();
+
             services.AddScoped<IRatingServices, RatingServices>();
             services.AddScoped<ICommentServices, CommentServices>();
 
