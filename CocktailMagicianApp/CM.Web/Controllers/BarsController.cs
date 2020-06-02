@@ -11,6 +11,8 @@ using CM.DTOs.Mappers.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using NToastNotify;
 using CM.Models;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
+using CM.Services.Providers.Contracts;
 
 namespace CM.Web.Controllers
 {
@@ -23,9 +25,11 @@ namespace CM.Web.Controllers
 		private readonly ICommentServices _commentServices;
 		private readonly IAppUserServices _appUserServices;
 		private readonly IToastNotification _toastNotification;
+		private readonly IDateTimeProvider _dateTimeProvider;
+
 
 		public BarsController(IAppUserServices appUserServices,IBarServices barServices, IAddressServices addressServices, IAddressMapper addressMapper, IRatingServices ratingServices,
-			IToastNotification toastNotification, ICommentServices commentServices)
+			IToastNotification toastNotification, ICommentServices commentServices, IDateTimeProvider dateTimeProvider)
 		{
 			_barServices = barServices ?? throw new ArgumentNullException(nameof(barServices));
 			_addressServices = addressServices ?? throw new ArgumentNullException(nameof(addressServices));
@@ -34,6 +38,7 @@ namespace CM.Web.Controllers
 			_commentServices = commentServices ?? throw new ArgumentNullException(nameof(commentServices));
 			_appUserServices = appUserServices ?? throw new ArgumentNullException(nameof(appUserServices));
 			_toastNotification = toastNotification ?? throw new ArgumentNullException(nameof(toastNotification));
+			_dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
 		}
 
 		public async Task<IActionResult> Index()
@@ -326,7 +331,11 @@ namespace CM.Web.Controllers
 			{
 				try
 				{
-					var appUserId = await this._appUserServices.GetUserIdAsync(User.Identity.Name);
+					var appUserId = await this._appUserServices.GetUserIdAsync(HttpContext.User.Identity.Name);
+					
+					barCommentViewModel.UserId = appUserId.Id;
+					barCommentViewModel.UserName = HttpContext.User.Identity.Name;
+					barCommentViewModel.CommentedOn = this._dateTimeProvider.GetDateTimeDateTimeOffset();
 
 					await this._commentServices.AddBarCommentAsync(new BarCommentDTO
 					{
@@ -341,7 +350,7 @@ namespace CM.Web.Controllers
 				}
 				catch
 				{
-					return NotFound();
+					throw new ArgumentException();
 				}
 			}
 			return View(barCommentViewModel);

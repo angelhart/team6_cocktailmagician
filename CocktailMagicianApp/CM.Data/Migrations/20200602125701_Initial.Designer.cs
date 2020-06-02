@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CM.Data.Migrations
 {
     [DbContext(typeof(CMContext))]
-    [Migration("20200528210439_RolesSeeded")]
-    partial class RolesSeeded
+    [Migration("20200602125701_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -93,14 +93,14 @@ namespace CM.Data.Migrations
                         new
                         {
                             Id = new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"),
-                            ConcurrencyStamp = "3acc5e71-bf16-40e0-a9a3-7a30b02628bd",
+                            ConcurrencyStamp = "af9b64d7-5e38-4065-9189-1e7bc48a55a0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = new Guid("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"),
-                            ConcurrencyStamp = "99c5fee4-bbf3-4b3c-b5ad-1db0698c9523",
+                            ConcurrencyStamp = "e112db0a-5051-4430-8eda-fce5c716568a",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });
@@ -185,7 +185,7 @@ namespace CM.Data.Migrations
                         {
                             Id = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ba34caf3-d927-45f7-80c2-6a27de5ef690",
+                            ConcurrencyStamp = "70a93072-42d0-4bee-8101-d4fc5ecffe35",
                             EmailConfirmed = false,
                             IsDeleted = false,
                             LockoutEnabled = false,
@@ -197,7 +197,7 @@ namespace CM.Data.Migrations
                         {
                             Id = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f43f75d3-df00-4c5c-ba62-eef65cb445fe",
+                            ConcurrencyStamp = "80cd8e6d-5de7-40ea-953d-19d131d7b626",
                             EmailConfirmed = false,
                             IsDeleted = false,
                             LockoutEnabled = false,
@@ -295,26 +295,29 @@ namespace CM.Data.Migrations
 
             modelBuilder.Entity("CM.Models.BarComment", b =>
                 {
-                    b.Property<Guid>("BarId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AppUserId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("BarId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTimeOffset>("CommentedOn")
                         .HasColumnType("datetimeoffset");
-
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(500)")
                         .HasMaxLength(500);
 
-                    b.HasKey("BarId", "AppUserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("BarId");
 
                     b.ToTable("BarComments");
                 });

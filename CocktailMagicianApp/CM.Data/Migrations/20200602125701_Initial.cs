@@ -217,14 +217,15 @@ namespace CM.Data.Migrations
                 name: "BarComments",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(nullable: false),
                     AppUserId = table.Column<Guid>(nullable: false),
-                    BarId = table.Column<Guid>(nullable: false),
                     Text = table.Column<string>(maxLength: 500, nullable: false),
-                    CommentedOn = table.Column<DateTimeOffset>(nullable: false)
+                    CommentedOn = table.Column<DateTimeOffset>(nullable: false),
+                    BarId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_BarComments", x => new { x.BarId, x.AppUserId });
+                    table.PrimaryKey("PK_BarComments", x => x.Id);
                     table.ForeignKey(
                         name: "FK_BarComments_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
@@ -279,27 +280,28 @@ namespace CM.Data.Migrations
                         column: x => x.BarId,
                         principalTable: "Bars",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_BarCocktails_Cocktails_CocktailId",
                         column: x => x.CocktailId,
                         principalTable: "Cocktails",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
                 name: "CocktailComments",
                 columns: table => new
                 {
+                    Id = table.Column<Guid>(nullable: false),
                     AppUserId = table.Column<Guid>(nullable: false),
-                    CocktailId = table.Column<Guid>(nullable: false),
                     Text = table.Column<string>(maxLength: 500, nullable: false),
-                    CommentedOn = table.Column<DateTimeOffset>(nullable: false)
+                    CommentedOn = table.Column<DateTimeOffset>(nullable: false),
+                    CocktailId = table.Column<Guid>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CocktailComments", x => new { x.CocktailId, x.AppUserId });
+                    table.PrimaryKey("PK_CocktailComments", x => x.Id);
                     table.ForeignKey(
                         name: "FK_CocktailComments_AspNetUsers_AppUserId",
                         column: x => x.AppUserId,
@@ -411,12 +413,21 @@ namespace CM.Data.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"), "af9b64d7-5e38-4065-9189-1e7bc48a55a0", "Admin", "ADMIN" },
+                    { new Guid("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"), "e112db0a-5051-4430-8eda-fce5c716568a", "Member", "MEMBER" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DeletedOn", "Email", "EmailConfirmed", "ImagePath", "IsDeleted", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"), 0, "3bcb87fd-de3b-4b3c-8863-a29ce1b6736c", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser@test.com" },
-                    { new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"), 0, "01c8e44c-ac2c-4655-8061-ebd0200d6fce", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser1@test.com" }
+                    { new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"), 0, "70a93072-42d0-4bee-8101-d4fc5ecffe35", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser@test.com" },
+                    { new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"), 0, "80cd8e6d-5de7-40ea-953d-19d131d7b626", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser1@test.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -546,6 +557,11 @@ namespace CM.Data.Migrations
                 column: "AppUserId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_BarComments_BarId",
+                table: "BarComments",
+                column: "BarId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_BarRatings_AppUserId",
                 table: "BarRatings",
                 column: "AppUserId");
@@ -559,6 +575,11 @@ namespace CM.Data.Migrations
                 name: "IX_CocktailComments_AppUserId",
                 table: "CocktailComments",
                 column: "AppUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_CocktailComments_CocktailId",
+                table: "CocktailComments",
+                column: "CocktailId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_CocktailIngredients_IngredientId",

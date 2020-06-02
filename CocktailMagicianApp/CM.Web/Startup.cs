@@ -13,6 +13,8 @@ using CM.Services;
 using CM.Services.Contracts;
 using NToastNotify;
 using CM.Web.Middlewares;
+using CM.Services.Providers.Contracts;
+using CM.Services.Providers;
 
 namespace CM.Web
 {
@@ -58,6 +60,7 @@ namespace CM.Web
             services.AddScoped<IAppUserServices, AppUserServices>();
             services.AddScoped<IRatingServices, RatingServices>();
             services.AddScoped<ICommentServices, CommentServices>();
+            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
 
             //services.AddMvc().AddFeatureFolders().AddNToastNotifyNoty(new NotyOptions
             //{

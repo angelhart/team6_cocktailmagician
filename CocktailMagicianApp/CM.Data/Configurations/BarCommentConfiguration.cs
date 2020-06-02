@@ -8,7 +8,7 @@ namespace CM.Data.Configurations
 	{
         public void Configure(EntityTypeBuilder<BarComment> builder)
         {
-            builder.HasKey(barComment => new { barComment.BarId, barComment.AppUserId });
+            builder.HasKey(cc => cc.Id);
             builder.HasOne(barComment => barComment.Bar)
                 .WithMany(c => c.Comments)
                 .HasForeignKey(barComment => barComment.BarId)
