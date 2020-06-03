@@ -147,18 +147,35 @@ namespace CM.Services
 
 			try
 			{
-				var address = await _addressServices.CreateAddressAsync(barDTO.Address);
 
 				var bar = new Bar
 				{
+					Id = Guid.NewGuid(),
 					Name = barDTO.Name,
 					Phone = barDTO.Phone,
 					ImagePath = barDTO.ImagePath,
 					Details = barDTO.Details,
-					AddressID = address.Id
 				};
 
+				barDTO.Address.BarId = bar.Id;
 				await _context.Bars.AddAsync(bar);
+				await _context.SaveChangesAsync();
+
+				var address = await _addressServices.CreateAddressAsync(barDTO.Address);
+				bar.AddressID = address.Id;
+
+				var cocktails = barDTO.Cocktails.Select(sc =>
+				new BarCocktail
+				{
+					BarId = bar.Id,
+					CocktailId = sc.Id
+				});
+
+				foreach (var item in cocktails)
+				{
+					await _context.BarCocktails.AddAsync(item);
+				}
+
 				await _context.SaveChangesAsync();
 
 				return barDTO;

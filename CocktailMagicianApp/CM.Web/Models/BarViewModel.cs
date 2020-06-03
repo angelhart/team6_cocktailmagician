@@ -13,5 +13,6 @@ namespace CM.Web.Models
         public int? Score { get; set; }
         public ICollection<BarCommentViewModel> Comments { get; set; }
         public ICollection<CocktailViewModel> Cocktails { get; set; }
+        public Guid [] SelectedCocktails { get; set; }
     }
 }
