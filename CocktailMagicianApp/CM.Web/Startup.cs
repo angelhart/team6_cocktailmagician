@@ -103,7 +103,7 @@ namespace CM.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //app.UseMiddleware<MissingMiddleware>();
+            app.UseMiddleware<MissingMiddleware>();
 
             app.UseNToastNotify();
 
