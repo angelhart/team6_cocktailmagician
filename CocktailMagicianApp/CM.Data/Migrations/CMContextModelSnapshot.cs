@@ -4,16 +4,14 @@ using CM.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CM.Data.Migrations
 {
     [DbContext(typeof(CMContext))]
-    [Migration("20200602125701_Initial")]
-    partial class Initial
+    partial class CMContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -93,14 +91,14 @@ namespace CM.Data.Migrations
                         new
                         {
                             Id = new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"),
-                            ConcurrencyStamp = "af9b64d7-5e38-4065-9189-1e7bc48a55a0",
+                            ConcurrencyStamp = "9f2925da-1031-4e5a-b1c4-1b82cb3538f7",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = new Guid("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"),
-                            ConcurrencyStamp = "e112db0a-5051-4430-8eda-fce5c716568a",
+                            ConcurrencyStamp = "a2d82895-70f6-4d5d-ad7b-403fdfce50a5",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });
@@ -185,7 +183,7 @@ namespace CM.Data.Migrations
                         {
                             Id = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "70a93072-42d0-4bee-8101-d4fc5ecffe35",
+                            ConcurrencyStamp = "d78a9d75-e36a-4052-981d-33ac5f35bb13",
                             EmailConfirmed = false,
                             IsDeleted = false,
                             LockoutEnabled = false,
@@ -197,7 +195,7 @@ namespace CM.Data.Migrations
                         {
                             Id = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "80cd8e6d-5de7-40ea-953d-19d131d7b626",
+                            ConcurrencyStamp = "c1925453-9b40-4f27-a5a1-f7a207090967",
                             EmailConfirmed = false,
                             IsDeleted = false,
                             LockoutEnabled = false,
@@ -535,6 +533,9 @@ namespace CM.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");

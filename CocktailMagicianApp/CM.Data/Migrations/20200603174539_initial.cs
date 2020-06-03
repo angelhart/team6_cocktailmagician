@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CM.Data.Migrations
 {
-    public partial class Initial : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -100,7 +100,8 @@ namespace CM.Data.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(nullable: false),
-                    Name = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: true),
+                    ImagePath = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -417,8 +418,8 @@ namespace CM.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"), "af9b64d7-5e38-4065-9189-1e7bc48a55a0", "Admin", "ADMIN" },
-                    { new Guid("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"), "e112db0a-5051-4430-8eda-fce5c716568a", "Member", "MEMBER" }
+                    { new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"), "9f2925da-1031-4e5a-b1c4-1b82cb3538f7", "Admin", "ADMIN" },
+                    { new Guid("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"), "a2d82895-70f6-4d5d-ad7b-403fdfce50a5", "Member", "MEMBER" }
                 });
 
             migrationBuilder.InsertData(
@@ -426,8 +427,8 @@ namespace CM.Data.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DeletedOn", "Email", "EmailConfirmed", "ImagePath", "IsDeleted", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"), 0, "70a93072-42d0-4bee-8101-d4fc5ecffe35", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser@test.com" },
-                    { new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"), 0, "80cd8e6d-5de7-40ea-953d-19d131d7b626", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser1@test.com" }
+                    { new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"), 0, "d78a9d75-e36a-4052-981d-33ac5f35bb13", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser@test.com" },
+                    { new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"), 0, "c1925453-9b40-4f27-a5a1-f7a207090967", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser1@test.com" }
                 });
 
             migrationBuilder.InsertData(
