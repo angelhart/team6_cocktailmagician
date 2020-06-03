@@ -87,7 +87,7 @@ namespace CM.Web.Controllers
 				Cocktails = barDTO.Cocktails.Select(cocktailDTO => new CocktailViewModel
 				{
 					Id = cocktailDTO.Id,
-					CocktailName = cocktailDTO.Name
+					Name = cocktailDTO.Name
 				}).ToList()
 			};
 

@@ -32,23 +32,10 @@ namespace CM.DTOs.Mappers
 
         private BarDTO CreateBarDTO(BarCocktail bar)
         {
-            return new CocktailSearchDTO
-            {
-                Id = cocktail.Id,
-                Name = cocktail.Name,
-                Ingredients = cocktail.Ingredients
-                                .Select(i => i.Ingredient.Name)
-                                .ToList()
-            };
-        }
-
-        private BarCocktailDTO CreateCocktailBarDTO(BarCocktail bar)
-        {
-            
             return new BarDTO
             {
-                BarId = bar.BarId,
-                Bar = bar.Bar?.Name
+                Id = bar.BarId,
+                Name = bar.Bar?.Name
             };
         }
 
