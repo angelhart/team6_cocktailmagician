@@ -27,6 +27,17 @@ namespace CM.Services
             this._cocktailMapper = cocktailMapper;
         }
 
+        public async Task<IEnumerable<CocktailDTO>> GetAllCocktailsDDLAsync()
+        {
+            var cocktails = await _context.Cocktails
+                            .Where(c => !c.IsUnlisted)
+                            .OrderBy(c => c.Name)
+                            .ToListAsync();
+
+            var cocktailsCollection = cocktails.Select(c => new CocktailDTO { Id = c.Id, Name = c.Name});
+
+            return cocktailsCollection;
+        }
         private async Task<Cocktail> GetCocktailAsync(Guid id, bool allowUnlisted = false)
         {
             var cocktail = await _context.Cocktails
