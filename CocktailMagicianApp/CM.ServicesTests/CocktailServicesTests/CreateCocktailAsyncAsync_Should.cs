@@ -32,9 +32,9 @@ namespace CM.ServicesTests.CocktailServicesTests
                           Id = c.Id,
                           Name = c.Name,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
+                                             Id = i.IngredientId,
                                          })
                                          .ToList(),
                       });
@@ -43,11 +43,11 @@ namespace CM.ServicesTests.CocktailServicesTests
             {
                 Name = "New Name",
                 Recipe = "Recipe text",
-                Ingredients = new List<CocktailIngredientDTO>
+                Ingredients = new List<IngredientDTO>
                 {
-                    new CocktailIngredientDTO
+                    new IngredientDTO
                     {
-                        IngredientId = Guid.Parse("eb5d7135-f194-4443-a5ff-cc955396648e"), // Ingredient A
+                        Id = Guid.Parse("eb5d7135-f194-4443-a5ff-cc955396648e"), // Ingredient A
                         Ammount = 2,
                         Unit = Unit.ml.ToString(),
                     }

@@ -306,6 +306,9 @@ namespace CM.Data.Migrations
                     b.Property<DateTimeOffset>("CommentedOn")
                         .HasColumnType("datetimeoffset");
 
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(500)")
@@ -533,6 +536,9 @@ namespace CM.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");

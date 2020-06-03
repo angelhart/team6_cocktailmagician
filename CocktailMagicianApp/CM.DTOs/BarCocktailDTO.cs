@@ -11,6 +11,6 @@ namespace CM.DTOs
 		public string Bar { get; set; }
 
 		public Guid CocktailId { get; set; }
-		public Cocktail Cocktail { get; set; }
+		public string Cocktail { get; set; }
 	}
 }

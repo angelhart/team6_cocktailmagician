@@ -15,7 +15,7 @@ namespace CM.Services.Contracts
 		public Task<ICollection<CountryDTO>> GetAllCountriesAsync();
 		public Task<CityDTO> GetCityAsync(Guid cityID);
 		public Task<CountryDTO> GetCountryAsync(Guid countryID);
-		public Task <ICollection<CityDTO>> GetCountryCitiesAsync(Guid countryId);
+		public Task<ICollection<CityDTO>> GetCountryCitiesAsync(Guid countryId);
         
     }
 }

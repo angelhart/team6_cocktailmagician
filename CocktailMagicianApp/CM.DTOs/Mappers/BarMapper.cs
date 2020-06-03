@@ -64,5 +64,27 @@ namespace CM.DTOs.Mappers
                 Score = rating.Score
             };
         }
+
+        private BarCocktailDTO CreateBarCocktailDTO(BarCocktail bc)
+        {
+            return new BarCocktailDTO
+            {
+                BarId = bc.BarId,
+                Bar = bc.Bar?.Name,
+                CocktailId = bc.CocktailId,
+                Cocktail = bc.Cocktail?.Name
+            };
+        }
+
+        public BarComment CreateBarComment(BarCommentDTO newCommentDto)
+        {
+            return new BarComment
+            {
+                BarId = newCommentDto.BarId,
+                AppUserId = newCommentDto.UserId,
+                CommentedOn = newCommentDto.CommentedOn,
+                Text = newCommentDto.Text
+            };
+        }
     }
 }

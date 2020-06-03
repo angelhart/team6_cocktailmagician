@@ -142,6 +142,27 @@ namespace CM.ServicesTests
                 // Cocktail C has no ingredients
             };
 
+			var comments = new List<CocktailComment>
+			{
+				new CocktailComment
+				{
+					Id = Guid.Parse("fb9ee201-c7fb-481f-a697-92f7d1c588f9"),
+					AppUser = user1,
+					CocktailId = Guid.Parse("9b9f85e3-51be-4fbf-918a-9fbd89546ef7"), // cocktail A
+                    CommentedOn = DateTimeOffset.UtcNow,
+					Text = "Lorem ipsum 1",
+				},
+
+				new CocktailComment
+				{
+					Id = Guid.Parse("8bcb165b-6bca-42ae-8700-85ce663b4b03"),
+					AppUser = user1,
+					CocktailId = Guid.Parse("9b9f85e3-51be-4fbf-918a-9fbd89546ef7"), // cocktail A
+                    CommentedOn = DateTimeOffset.UtcNow,
+					Text = "Lorem ipsum 2",
+				},
+			};
+
 			var bars = new List<Bar>
 			{
 				new Bar
