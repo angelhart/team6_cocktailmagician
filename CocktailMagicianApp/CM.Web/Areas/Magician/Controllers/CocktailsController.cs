@@ -84,23 +84,24 @@ namespace CM.Web.Areas.Magician.Controllers
         }
 
         // GET: Magician/Cocktails/Create
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(CocktailModifyViewModel model)
         {
             var ingredients = await _ingredientServices.GetAllIngredientsAsync();
 
             var selectListItems = new SelectList(ingredients, nameof(IngredientDTO.Id), nameof(IngredientDTO.Name));
 
-            ViewData["Ingredients"] = selectListItems;
+            model.AllIngredients = selectListItems;
 
-            return View();
+            return View(model);
         }
 
         // POST: Magician/Cocktails/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [ActionName("Create")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CocktailViewModel model)
+        public async Task<IActionResult> CreateConfirmed(CocktailModifyViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -122,7 +123,7 @@ namespace CM.Web.Areas.Magician.Controllers
                 catch (Exception ex)
                 {
                     _toastNotification.AddWarningToastMessage(ex.Message);
-                    return View(model);
+                    return RedirectToAction(nameof(Create), model);
                 }
             }
 
@@ -137,24 +138,19 @@ namespace CM.Web.Areas.Magician.Controllers
         }
 
         // GET: Magician/Cocktails/Edit/5
-        public async Task<IActionResult> Edit(Guid id)
+        public async Task<IActionResult> Edit(CocktailModifyViewModel model)
         {
             try
             {
-                var dto = await _cocktailServices.GetCocktailDetailsAsync(id);
-                var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
+                var dto = await _cocktailServices.GetCocktailDetailsAsync(model.Id);
+                model = _cocktailViewMapper.CreateCocktailModifyViewModel(dto);
 
                 var ingredients = await _ingredientServices.GetAllIngredientsAsync();
-                var selectListItems = new SelectList(ingredients, nameof(IngredientDTO.Id), nameof(IngredientDTO.Name));
-                foreach (var item in selectListItems)
-                {
-                    if (item.Value == id.ToString())
-                        item.Selected = true;
-                }
+                var selectListItems = new SelectList(ingredients, nameof(IngredientDTO.Id), nameof(IngredientDTO.Name), dto.Ingredients.ToList());
 
-                ViewData["Ingredients"] = selectListItems;
+                model.AllIngredients = selectListItems;
 
-                return View(vm);
+                return View(model);
             }
             catch (Exception ex)
             {
@@ -167,8 +163,9 @@ namespace CM.Web.Areas.Magician.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(CocktailViewModel model)
+        public async Task<IActionResult> EditConfirmed(CocktailViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -183,7 +180,7 @@ namespace CM.Web.Areas.Magician.Controllers
                     if (model.Image != null)
                         await _storageProvider.StoreImageAsync(model.ImagePath, model.Image);
 
-                        var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
+                    var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
                     return RedirectToAction(nameof(Index));
                 }
                 catch (Exception ex)
@@ -204,10 +201,20 @@ namespace CM.Web.Areas.Magician.Controllers
         }
 
         // GET: Magician/Cocktails/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var dto = await _cocktailServices.GetCocktailDetailsAsync(id);
+                var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
 
+                return View(vm);
+            }
+            catch (Exception ex)
+            {
+                _toastNotification.AddAlertToastMessage(ex.Message);
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         // POST: Magician/Cocktails/Delete/5
@@ -215,7 +222,19 @@ namespace CM.Web.Areas.Magician.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                var dto = await _cocktailServices.DeleteAsync(id);
+
+                _storageProvider.DeleteImage(dto.ImagePath);
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _toastNotification.AddAlertToastMessage(ex.Message);
+                return RedirectToAction(nameof(Index));
+            }
         }
     }
 }

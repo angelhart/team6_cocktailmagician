@@ -53,8 +53,8 @@ namespace CM.Services
             {
                 IngredientId = ci.Id,
                 CocktailId = cocktailId,
-                Ammount = ci.Ammount,
-                Unit = Enum.Parse<Unit>(ci.Unit, true),
+                //Ammount = ci.Ammount,
+                //Unit = Enum.Parse<Unit>(ci.Unit, true),
             });
 
             await _context.AddRangeAsync(ingredientsToAdd);
@@ -238,5 +238,15 @@ namespace CM.Services
             return pagedDtos;
         }
 
+        public async Task<CocktailDTO> DeleteAsync(Guid id)
+        {
+            var entity = await _context.Cocktails.FindAsync(id);
+            var dto = _cocktailMapper.CreateCocktailDTO(entity);
+            
+            _context.Remove(entity);
+            await _context.SaveChangesAsync();
+
+            return dto;
+        }
     }
 }

@@ -1,9 +1,8 @@
-﻿@model CocktailViewModel
+﻿@model CocktailModifyViewModel
 
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var selectListItems = ViewData["Ingredients"] as SelectList;
 }
 
 @section Styles{
@@ -17,16 +16,16 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control" placeholder="Enter name..."/>
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Recipe" class="control-label"></label>
-                <textarea asp-for="Recipe" class="form-control" />
+                <textarea asp-for="Recipe" class="form-control"></textarea>
                 <span asp-validation-for="Recipe" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -39,11 +38,13 @@
                     </div>
                     <span asp-validation-for="Image" class="text-danger"></span>
                 </div>
+                <div class="form-group">
+                    <img src="https://placehold.it/80x80" id="preview" class="img-thumbnail">
+                </div>
             </div>
             <div class="form-group">
                 <label asp-for="Ingredients" class="control-label"></label>
-                <select asp-for="Ingredients" asp-items="@selectListItems" class="form-control selectpicker">
-                    <option value="">Choose ingredients</option>
+                <select asp-for="Ingredients" asp-items="Model.AllIngredients" class="form-control selectpicker" data-live-search="true">
                 </select>
                 <span asp-validation-for="Ingredients" class="text-danger"></span>
             </div>

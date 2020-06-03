@@ -2,6 +2,7 @@
 using CM.Web.Models;
 using CM.Web.Providers.CustomAttributes;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 
 namespace CM.Web.Areas.Magician.Models
 {
+    [BindProperties]
     public class IngredientViewModel
     {
         public IngredientViewModel()

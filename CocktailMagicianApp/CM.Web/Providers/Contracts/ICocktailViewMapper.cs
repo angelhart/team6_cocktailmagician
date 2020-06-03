@@ -7,5 +7,7 @@ namespace CM.Web.Providers.Contracts
     {
         CocktailViewModel CreateCocktailViewModel(CocktailDTO dto);
         CocktailDTO CreateCocktailDTO(CocktailViewModel model);
+        CocktailDTO CreateCocktailDTO(CocktailModifyViewModel model);
+        CocktailModifyViewModel CreateCocktailModifyViewModel(CocktailDTO dto);
     }
 }

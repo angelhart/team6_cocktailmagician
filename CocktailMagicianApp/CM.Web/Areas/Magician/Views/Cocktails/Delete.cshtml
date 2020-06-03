@@ -1,4 +1,4 @@
-﻿@model CM.Models.Cocktail
+﻿@model CocktailViewModel
 
 @{
     ViewData["Title"] = "Delete";
@@ -23,24 +23,6 @@
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Recipe)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImagePath)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImagePath)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsUnlisted)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.IsUnlisted)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AverageRating)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AverageRating)
         </dd>
     </dl>
     
