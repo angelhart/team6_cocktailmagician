@@ -5,35 +5,42 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@section Styles {
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/StarRating.css" />
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+}
+
 <h1>Details</h1>
 
 <div>
-    <h4>Cocktail</h4>
+    <h4>@Model.Name</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Recipe)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Recipe)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.AverageRating)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.AverageRating)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.ImagePath)
         </dt>
-        <dd class = "col-sm-10">
-            <img src="@Model.ImagePath" alt="@Model.Name"/>
+        <dd class="col-sm-10">
+            <img src="@Model.ImagePath" alt="@Model.Name" width="250" height="250" />
         </dd>
     </dl>
 </div>
@@ -41,3 +48,40 @@
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
 </div>
+
+<!-- Rating -->
+@*@if (User.IsInRole("Member"))
+    {*@
+
+<div class="rating-box">
+    <br />
+    <h3>Rate this bar:</h3>
+    <form asp-controller="Cocktails"
+          asp-action="AddRating"
+          method="post">
+
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="rating">
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+            <span class="fa fa-star-o"></span>
+        </div>
+        <br />
+        <br />
+        <div class="form-group">
+            <br />
+            <input name="Score" type="number" hidden id="rating-value" value="rating-value" />
+            <input name="CocktailId" asp-for="@Model.Id" />
+            <input type="submit" value="Submit Rating" class="btn btn-primary">
+        </div>
+    </form>
+</div>
+<script src="~/js/StarRating.js"></script>
+@*}*@
+
+@section Scripts{
+
+}

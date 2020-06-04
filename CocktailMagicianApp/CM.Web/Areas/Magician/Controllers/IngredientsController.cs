@@ -60,18 +60,20 @@ namespace CM.Web.Areas.Magician.Controllers
                 var sortBy = Request.Form
                                 ["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"]
                                 .FirstOrDefault();
-                var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault(x => x.Equals("desc"));
+                var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault();
 
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int pageNumber = start != null ? (1 + ((int)Math.Ceiling(Convert.ToDouble(start) / pageSize))) : 0;
                 int recordsTotal = await _ingredientServices.CountAllIngredientsAsync();
 
-                var dtos = await _ingredientServices.PageIngredientsAsync(searchString, pageNumber, pageSize);
+                var dtos = await _ingredientServices.PageIngredientsAsync(searchString, sortOrder, pageNumber, pageSize);
                 var vms = dtos.Select(d => _ingredientViewMapper.CreateIngredientViewModel(d)).ToList();
 
                 var recordsFiltered = dtos.SourceItems;
 
-                var output = DataTablesProvider<IngredientViewModel>.CreateResponse(draw, recordsTotal, recordsFiltered, vms);
+                var role = User.IsInRole("Magician") ? "Magician" : "";
+
+                var output = DataTablesProvider<IngredientViewModel>.CreateResponse(draw, recordsTotal, recordsFiltered, role, vms);
 
                 return Ok(output);
             }
@@ -136,11 +138,11 @@ namespace CM.Web.Areas.Magician.Controllers
         }
 
         // GET: IngredientsController/Edit/5
-        public async Task<ActionResult> Edit(Guid id)
+        public async Task<ActionResult> Edit(IngredientViewModel model)
         {
             try
             {
-                var dto = await _ingredientServices.GetIngredientDetailsAsync(id);
+                var dto = await _ingredientServices.GetIngredientDetailsAsync(model.Id);
 
                 var vm = _ingredientViewMapper.CreateIngredientViewModel(dto);
 
@@ -155,8 +157,9 @@ namespace CM.Web.Areas.Magician.Controllers
 
         // POST: IngredientsController/Edit/5
         [HttpPost]
+        [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind]IngredientViewModel model)
+        public async Task<ActionResult> EditConfirmed(IngredientViewModel model)
         {
             if (ModelState.IsValid)
             {

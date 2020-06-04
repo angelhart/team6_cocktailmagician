@@ -74,6 +74,8 @@ namespace CM.Web.Areas.Magician.Controllers
 
                 var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
 
+                // TODO: Comments
+
                 return View(vm);
             }
             catch (Exception ex)
@@ -165,7 +167,7 @@ namespace CM.Web.Areas.Magician.Controllers
         [HttpPost]
         [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditConfirmed(CocktailViewModel model)
+        public async Task<IActionResult> EditConfirmed(CocktailModifyViewModel model)
         {
             if (ModelState.IsValid)
             {

@@ -26,11 +26,11 @@ namespace CM.Web.Providers.ViewModelMappers
 
         public CocktailViewModel CreateCocktailViewModel(CocktailDTO dto)
         {
-            throw new NotImplementedException("CreateCocktailViewModel");
-            //return new CocktailViewModel
-            //{
-
-            //};
+            return new CocktailViewModel
+            {
+                Id = dto.Id,
+                Name = dto.Name
+            };
         }
 
         public IngredientDTO CreateIngredientDTO(IngredientViewModel model)

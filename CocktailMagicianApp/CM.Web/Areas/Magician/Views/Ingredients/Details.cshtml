@@ -29,7 +29,7 @@
         <dd class="col-sm-10">
             @foreach (var item in Model.Cocktails)
             {
-                <a class="btn btn-success" asp-controller="Cocktails" asp-action="Details" >@item.Name</a>
+                <a class="btn btn-success" asp-controller="Cocktails" asp-action="Details" asp-route-id="@item.Id">@item.Name</a>
             }
         </dd>
     </dl>
