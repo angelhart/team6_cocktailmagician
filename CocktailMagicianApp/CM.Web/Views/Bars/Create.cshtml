@@ -20,7 +20,9 @@
 			</div>
 			<div class="form-group">
 				<label asp-for="CountryID" class="control-label"></label>
-				<select asp-for="CountryID" class="form-control" asp-items="@(new SelectList(ViewBag.ListOfCountries, "Id", "Name"))">--Select Country--</select>
+				<select asp-for="CountryID" class="form-control" asp-items="@(new SelectList(ViewBag.ListOfCountries, "Id", "Name"))">
+					<option value="">--Select Country--</option>
+				</select>
 				<span asp-validation-for="CountryID" class="text-danger"></span>
 				<a asp-controller="Addresses" asp-action="CreateCountry">Add new Country</a>
 			</div>
@@ -28,7 +30,9 @@
 			</div>
 			<div class="form-group">
 				<label asp-for="CityID" class="control-label"></label>
-				<select asp-for="CityID" class="form-control" asp-items="@(new SelectList(string.Empty, "Id", "Name"))">--Select City--</select>
+				<select asp-for="CityID" class="form-control" asp-items="@(new SelectList(string.Empty, "Id", "Name"))">
+					<option value="">--Select City--</option>
+				</select>
 				<span asp-validation-for="CityID" class="text-danger"></span>
 				<a asp-controller="Addresses" asp-action="CreateCity">Add new City</a>
 			</div>
@@ -73,7 +77,7 @@
 
 @section Scripts {
 	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-	<script src="~/js/SetDefaultSelect.js"></script>
+	@*<script src="~/js/SetDefaultSelect.js"></script>*@
 	<script type="text/javascript" src="~/js/DependentDropdown.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
