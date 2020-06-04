@@ -145,6 +145,7 @@ namespace CM.Services
 
             cocktail.Name = dto.Name;
             cocktail.Recipe = dto.Recipe;
+            cocktail.IsUnlisted = dto.IsUnlisted;
             if (dto.ImagePath != null)
             {
                 cocktail.ImagePath = dto.ImagePath;
@@ -238,6 +239,11 @@ namespace CM.Services
             return pagedDtos;
         }
 
+        /// <summary>
+        /// Permanently removes a cocktail entity from the database.
+        /// </summary>
+        /// <param name="id">Id of entity to be removed.</param>
+        /// <returns><see cref="CocktailDTO"/></returns>
         public async Task<CocktailDTO> DeleteAsync(Guid id)
         {
             var entity = await _context.Cocktails.FindAsync(id);
