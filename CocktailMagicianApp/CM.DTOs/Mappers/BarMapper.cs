@@ -25,6 +25,7 @@ namespace CM.DTOs.Mappers
                 Id = bar.Id,
                 Name = bar.Name,
                 AverageRating = bar.AverageRating,
+                ImagePath = bar.ImagePath,
 
                 Address = this._addressMapper.CreateAddressDTO(bar.Address),
                 Phone = bar.Phone,

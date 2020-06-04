@@ -70,7 +70,10 @@ namespace CM.Services
 			var topBars = await _context.Bars
 									 .Where(bar => bar.IsUnlisted == false)
 									 .Include(bar => bar.Ratings)
-									 .OrderByDescending(bar => bar.AverageRating)
+									 .Include(bar => bar.Address)
+										.ThenInclude(a => a.City)
+											.ThenInclude(c => c.Country)
+												 .OrderByDescending(bar => bar.AverageRating)
 									 .Take(ammount)
 									 .ToListAsync();
 
