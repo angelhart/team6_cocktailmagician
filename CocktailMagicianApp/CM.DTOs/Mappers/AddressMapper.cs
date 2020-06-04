@@ -35,10 +35,10 @@ namespace CM.DTOs.Mappers
 			return new AddressDTO
 			{
 				Id = address.Id,
-				City = CreateCityDTO(address.City),
+				CountryName = address.City.Country.Name,
+				CityName = address.City.Name,
 				CityId = address.CityId,
 				Street = address.Street,
-				CountryName = address.City.Country.Name
 			};
 		}
 

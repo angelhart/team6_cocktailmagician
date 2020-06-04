@@ -11,6 +11,8 @@ using CM.DTOs.Mappers;
 using CM.Models;
 using CM.Services;
 using CM.Services.Contracts;
+using NToastNotify;
+using CM.Web.Middlewares;
 using CM.Services.Providers.Contracts;
 using CM.Services.Providers;
 using CM.Web.Providers.Contracts;
@@ -58,6 +60,18 @@ namespace CM.Web
 
             services.AddScoped<IAddressServices, AddressServices>();
             services.AddScoped<IAppUserServices, AppUserServices>();
+            services.AddScoped<IRatingServices, RatingServices>();
+            services.AddScoped<ICommentServices, CommentServices>();
+            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+
+            //services.AddMvc().AddFeatureFolders().AddNToastNotifyNoty(new NotyOptions
+            //{
+            //    ProgressBar = true,
+            //    Timeout = 5000,
+            //    Theme = "mint"
+            //});
+
+            services.AddMvc().AddNToastNotifyNoty();
             services.AddScoped<IBarServices, BarServices>();
             services.AddScoped<ICocktailServices, CocktailServices>();
             services.AddScoped<IIngredientServices, IngredientServices>();
@@ -88,6 +102,10 @@ namespace CM.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            //app.UseMiddleware<MissingMiddleware>();
+
+            app.UseNToastNotify();
 
             app.UseEndpoints(endpoints =>
             {
