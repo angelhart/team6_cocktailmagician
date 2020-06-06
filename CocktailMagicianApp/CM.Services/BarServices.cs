@@ -30,7 +30,7 @@ namespace CM.Services
 		/// Retrieves a collection of all bars in the database.
 		/// </summary>
 		/// <returns>ICollection</returns>
-		public async Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", string sortBy = "", string sortOrder = "", int pageNumber = 1, int pageSize = 2, bool allowUnlisted = false)
+		public async Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", int pageNumber = 1, int pageSize = 10, string sortBy = "", string sortOrder = "", bool allowUnlisted = false)
 		{
 			var bars = _context.Bars
 							.Where(bar => !bar.IsUnlisted || allowUnlisted)
@@ -194,7 +194,7 @@ namespace CM.Services
 		/// </summary>
 		/// <param name="id">The Id of the bar that should be marked as deleted.</param>
 		/// <returns>BarDTO</returns>
-		public async Task<BarDTO> DeleteBar(Guid id)
+		public async Task DeleteBar(Guid id)
 		{
 			var bar = await _context.Bars
 				.FirstOrDefaultAsync(bar => bar.Id == id && bar.IsUnlisted == false) ?? throw new ArgumentNullException();
@@ -203,10 +203,6 @@ namespace CM.Services
 
 			_context.Bars.Update(bar);
 			await _context.SaveChangesAsync();
-
-			var barDTO = this._barMapper.CreateBarDTO(bar);
-
-			return barDTO;
 		}
 
 		/// <summary>
@@ -273,6 +269,14 @@ namespace CM.Services
 			return await _context.Bars.AnyAsync(e => e.Id == id);
 		}
 
+		/// <summary>
+		/// Retrieves the Count of all Bar records in the database.
+		/// </summary>
+		/// <returns>Integer of all bars in the database.</returns>
+		public async Task<int> CountAllBarsAsync()
+		{
+			return await _context.Bars.CountAsync();
+		}
 
 
 		private async Task<Bar> GetBarEntityWithCocktails(Guid barId)
@@ -293,10 +297,18 @@ namespace CM.Services
 		{
 			return sortBy switch
 			{
-				"rating" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(c => c.AverageRating)
-																	   .ThenBy(c => c.Name) :
+				"rating" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.AverageRating)
+																	   .ThenBy(bar => bar.Name) :
 															  bars.OrderByDescending(c => c.AverageRating)
-																	   .ThenBy(c => c.Name),
+																	   .ThenBy(bar => bar.Name),
+				"country" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.Address.City.Country)
+																		.ThenBy(bar => bar.Name) :
+															bars.OrderByDescending(c => c.AverageRating)
+																		.ThenBy(c => c.Name),
+				"city" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.Address.City)
+																		.ThenBy(bar => bar.Name) :
+															bars.OrderByDescending(c => c.AverageRating)
+																		.ThenBy(c => c.Name),
 
 				_ => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(c => c.Name) :
 													   bars.OrderByDescending(c => c.Name),
