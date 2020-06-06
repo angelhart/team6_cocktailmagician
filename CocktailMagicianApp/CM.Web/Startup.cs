@@ -70,6 +70,7 @@ namespace CM.Web
 
             services.AddScoped<IRatingServices, RatingServices>();
             services.AddScoped<ICommentServices, CommentServices>();
+            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
 
             //services.AddMvc().AddFeatureFolders().AddNToastNotifyNoty(new NotyOptions
             //{
@@ -79,6 +80,12 @@ namespace CM.Web
             //});
 
             services.AddMvc().AddNToastNotifyNoty();
+            services.AddScoped<IBarServices, BarServices>();
+            services.AddScoped<ICocktailServices, CocktailServices>();
+            services.AddScoped<IIngredientServices, IngredientServices>();
+
+            services.AddScoped<IIngredientViewMapper, IngredientViewMapper>();
+
             services.AddScoped<IStorageProvider, AppStorageProvider>();
         }
 
@@ -104,7 +111,7 @@ namespace CM.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //app.UseMiddleware<MissingMiddleware>();
+            app.UseMiddleware<MissingMiddleware>();
 
             app.UseNToastNotify();
 

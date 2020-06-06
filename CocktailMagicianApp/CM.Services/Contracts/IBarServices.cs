@@ -12,10 +12,11 @@ namespace CM.Services.Contracts
 		public Task<BarDTO> GetBarAsync(Guid id);
 		public Task<BarDTO> CreateBarAsync(BarDTO barDTO);
 		public Task<BarDTO> UpdateBarAsync(Guid id, BarDTO barDTO);
-		public Task<BarDTO> DeleteBar(Guid id);
+		public Task DeleteBar(Guid id);
 		Task<BarDTO> AddCocktailToBar(Guid barId, Guid cocktailId);
-		Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", string sortBy = "", string sortOrder = "", int pageNumber = 1, int pageSize = 10, bool allowUnlisted = false);
+		Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", int pageNumber = 1, int pageSize = 10, string sortBy = "", string sortOrder = "", bool allowUnlisted = false);
 		Task<ICollection<BarDTO>> GetTopBarsAsync(int ammount = 3);
 		Task<bool> BarExists(Guid id);
+		Task<int> CountAllBarsAsync();
 	}
 }

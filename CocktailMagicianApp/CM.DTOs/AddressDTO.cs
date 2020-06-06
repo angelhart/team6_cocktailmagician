@@ -6,7 +6,7 @@ namespace CM.DTOs
 	public class AddressDTO
 	{
         public Guid Id { get; set; }
-
+        public Guid BarId { get; set; }
         public Guid CityId { get; set; }
 
         public CityDTO City { get; set; }

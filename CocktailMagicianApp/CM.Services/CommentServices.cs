@@ -3,10 +3,10 @@ using CM.DTOs;
 using CM.DTOs.Mappers.Contracts;
 using CM.Models;
 using CM.Services.Contracts;
+using CM.Services.Providers.Contracts;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CM.Services
@@ -16,14 +16,17 @@ namespace CM.Services
         private readonly CMContext _context;
         private readonly ICocktailMapper _cocktailMapper;
         private readonly IBarMapper _barMapper;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public CommentServices(CMContext context,
                                ICocktailMapper cocktailMapper,
-                               IBarMapper barMapper)
+                               IBarMapper barMapper,
+                               IDateTimeProvider dateTimeProvider)
         {
             this._context = context;
             this._cocktailMapper = cocktailMapper;
             this._barMapper = barMapper;
+            this._dateTimeProvider = dateTimeProvider;
         }
 
         //TODO Test bar comments
@@ -32,24 +35,22 @@ namespace CM.Services
         /// Adds new Comment to the collection of comments of a Bar.
         /// </summary>
         /// <param name="barCommentDTO">The params need for the Comment to be created.</param>
-        public async Task<BarCommentDTO> AddBarCommentAsync(BarCommentDTO newCommentDto)
+        public async Task AddBarCommentAsync(BarCommentDTO newCommentDto)
         {
             if (newCommentDto == null)
                 throw new ArgumentNullException("New comment object cannot be null");
 
             var newComment = new BarComment
             {
+                Id = Guid.NewGuid(),
                 BarId = newCommentDto.BarId,
                 AppUserId = newCommentDto.UserId,
-                Text = newCommentDto.Text
-            }; ;
+                Text = newCommentDto.Text,
+                CommentedOn = this._dateTimeProvider.GetDateTimeDateTimeOffset()
+            };
 
-            await _context.AddAsync(newComment);
+            await _context.BarComments.AddAsync(newComment);
             await _context.SaveChangesAsync();
-
-            var outputDto = _barMapper.CreateBarCommentDTO(newComment);
-
-            return outputDto;
         }
 
         /// <summary>

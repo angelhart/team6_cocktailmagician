@@ -8,7 +8,6 @@
 <h3>Create new Bar</h3>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
-
 <hr />
 <div class="row">
 	<div class="col-md-4">
@@ -21,39 +20,22 @@
 			</div>
 			<div class="form-group">
 				<label asp-for="CountryID" class="control-label"></label>
-				@*<select asp-for="CountryID" class="form-control" asp-items="(new SelectList(ViewBag.ListOfCountries, "Id", "Name"))"></select>*@
-				@Html.DropDownListFor(model => model.CountryID, new SelectList(ViewBag.ListOfCountries, "Id", "Name"), "--Select Country--", new { @class = "form-control" })
-				@*<span asp-validation-for="CountryID" class="text-danger"></span>*@
+				<select asp-for="CountryID" class="form-control" asp-items="@(new SelectList(ViewBag.ListOfCountries, "Id", "Name"))">
+					<option value="">--Select Country--</option>
+				</select>
+				<span asp-validation-for="CountryID" class="text-danger"></span>
+				<a asp-controller="Addresses" asp-action="CreateCountry">Add new Country</a>
 			</div>
-
-
 			<div class="form-group">
 			</div>
-
 			<div class="form-group">
 				<label asp-for="CityID" class="control-label"></label>
-				@*<select asp-for="CityID" class="form-control" asp-items="@(new SelectList(string.Empty, "Id", "Name"))"><option value="">Pick one</option></select>*@
+				<select asp-for="CityID" class="form-control" asp-items="@(new SelectList(string.Empty, "Id", "Name"))">
+					<option value="">--Select City--</option>
+				</select>
 				<span asp-validation-for="CityID" class="text-danger"></span>
-				@Html.DropDownListFor(model => model.CityID, new SelectList(string.Empty, "Id", "Name"), "--Select City--", new { @class = "form-control" })
-
+				<a asp-controller="Addresses" asp-action="CreateCity">Add new City</a>
 			</div>
-
-
-
-			<script>
-				$(document).ready(function () {
-					$("#CountryID").change(function () {
-						$.get("/Bars/Create/GetCountryCitiesAsync", { CountryID: $("#CountryID").val() })
-							.done(function (data) {
-								$("#CityID").empty();
-								$.each(data, function (index, row) {
-									$("#CityID").append("<option value='" + row.Id + "'>" + row.Name + "</option>")
-								});
-							});
-					});
-				});
-			</script>
-
 			<div class="form-group">
 				<label asp-for="Street" class="control-label"></label>
 				<input asp-for="Street" class="form-control" />
@@ -74,12 +56,20 @@
 				<input asp-for="Details" class="form-control" />
 				<span asp-validation-for="Details" class="text-danger"></span>
 			</div>
+
+			<div class="form-group">
+				<label asp-for="SelectedCocktails" class="control-label"></label>
+				<select multiple class="form-control" asp-for="SelectedCocktails" asp-items="@(new SelectList(ViewBag.ListOfCocktails, "Id", "Name"))"><option value="">--Select--</option></select>
+				<span asp-validation-for="SelectedCocktails" class="text-danger"></span>
+			</div>
+
 			<div class="form-group">
 				<input type="submit" value="Create" class="btn btn-primary" />
 			</div>
 		</form>
 	</div>
 </div>
+
 
 <div>
 	<a asp-action="Index">Back to List</a>
@@ -88,17 +78,8 @@
 @section Scripts {
 	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 	@*<script src="~/js/SetDefaultSelect.js"></script>*@
-	@*<script type="text/javascript" src="~/js/DependentDropdown.js"></script>*@
+	<script type="text/javascript" src="~/js/DependentDropdown.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 }
 
-
-<label for="exampleFormControlSelect2">Example multiple select</label>
-<select multiple class="form-control" id="exampleFormControlSelect2">
-	<option>1</option>
-	<option>2</option>
-	<option>3</option>
-	<option>4</option>
-	<option>5</option>
-</select>

@@ -4,6 +4,7 @@ using CM.DTOs;
 using CM.DTOs.Mappers.Contracts;
 using CM.Models;
 using CM.Services;
+using CM.Services.Providers.Contracts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
@@ -23,12 +24,14 @@ namespace CM.ServicesTests.CommentServicesTests
             var options = Utility.GetOptions(nameof(Throw_When_CommentNotFound));
 
             var mockBarMapper = new Mock<IBarMapper>();
+            var mockMapperDateTime = new Mock<IDateTimeProvider>();
+
 
             var mockCocktailMapper = new Mock<ICocktailMapper>();
 
             using (var assertContext = new CMContext(options))
             {
-                var sut = new CommentServices(assertContext, mockCocktailMapper.Object, mockBarMapper.Object);
+                var sut = new CommentServices(assertContext, mockCocktailMapper.Object, mockBarMapper.Object, mockMapperDateTime.Object);
                 await Assert.ThrowsExceptionAsync<NullReferenceException>(() => sut.GetCocktailCommentAsync(Guid.Empty));
             }
         }
@@ -40,6 +43,8 @@ namespace CM.ServicesTests.CommentServicesTests
             await Utility.ArrangeContextAsync(options);
 
             var mockBarMapper = new Mock<IBarMapper>();
+            var mockMapperDateTime = new Mock<IDateTimeProvider>();
+
 
             var mockCocktailMapper = new Mock<ICocktailMapper>();
             mockCocktailMapper.Setup(x => x.CreateCocktailCommentDTO(It.IsAny<CocktailComment>()))
@@ -56,7 +61,7 @@ namespace CM.ServicesTests.CommentServicesTests
 
             using (var assertContext = new CMContext(options))
             {
-                var sut = new CommentServices(assertContext, mockCocktailMapper.Object, mockBarMapper.Object);
+                var sut = new CommentServices(assertContext, mockCocktailMapper.Object, mockBarMapper.Object, mockMapperDateTime.Object);
 
                 var result = await sut.GetCocktailCommentAsync(comment.Id);
                 Assert.AreEqual(comment.Id, result.Id);

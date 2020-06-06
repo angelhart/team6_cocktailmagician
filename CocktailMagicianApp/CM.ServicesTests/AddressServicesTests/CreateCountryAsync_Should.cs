@@ -20,10 +20,7 @@ namespace CM.ServicesTests.AddressServicesTests
 			//Arrange
 			var options = Utility.GetOptions(nameof(ReturnCorrectCountryAfterAdd_ValidParams));
 
-			var newCountryDTO = new CountryDTO
-			{
-				Name = "TestCountry"
-			};
+			var countryName = "TestCountry";
 
 			var mockMapper = new Mock<IAddressMapper>();
 			mockMapper.Setup(x => x.CreateCountryDTO(It.IsAny<Country>()))
@@ -38,7 +35,7 @@ namespace CM.ServicesTests.AddressServicesTests
 			{
 				var sut = new AddressServices(assertContext, mockMapper.Object);
 
-				var result = await sut.CreateCountryAsync(newCountryDTO);
+				var result = await sut.CreateCountryAsync(countryName);
 				var expected = await assertContext.Countries.ToListAsync();
 				Assert.AreEqual(expected.Count, 1);
 				Assert.AreEqual(expected[0].Name, result.Name);
@@ -51,10 +48,7 @@ namespace CM.ServicesTests.AddressServicesTests
 			//Arrange
 			var options = Utility.GetOptions(nameof(ThrowsArgumentNullException_InValidParams));
 
-			var newCountryDTO = new CountryDTO 
-			{
-				Name = null
-			};
+			string countryName = null;
 
 			var mockMapper = new Mock<IAddressMapper>();
 			mockMapper.Setup(x => x.CreateCountryDTO(It.IsAny<Country>()))
@@ -69,7 +63,7 @@ namespace CM.ServicesTests.AddressServicesTests
 			{
 				var sut = new AddressServices(assertContext, mockMapper.Object);
 
-				await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.CreateCountryAsync(newCountryDTO));
+				await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.CreateCountryAsync(countryName));
 			}
 		}
 
@@ -79,10 +73,7 @@ namespace CM.ServicesTests.AddressServicesTests
 			//Arrange
 			var options = Utility.GetOptions(nameof(ThrowsDbUpdateException_WhenCountryExists));
 
-			var newCountryDTO = new CountryDTO
-			{
-				Name = "TestCountry"
-			};
+			var countryName = "TestCountry";
 
 			var existingCountry = new Country
 			{
@@ -108,7 +99,7 @@ namespace CM.ServicesTests.AddressServicesTests
 			{
 				var sut = new AddressServices(assertContext, mockMapper.Object);
 
-				await Assert.ThrowsExceptionAsync<DbUpdateException>(() => sut.CreateCountryAsync(newCountryDTO));
+				await Assert.ThrowsExceptionAsync<DbUpdateException>(() => sut.CreateCountryAsync(countryName));
 			}
 		}
 
