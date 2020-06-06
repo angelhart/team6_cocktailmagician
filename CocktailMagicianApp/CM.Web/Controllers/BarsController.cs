@@ -10,11 +10,15 @@ using CM.DTOs.Mappers.Contracts;
 using NToastNotify;
 using CM.Services.Providers.Contracts;
 using CM.Web.Providers;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using CM.Web.Providers.Contracts;
 
 namespace CM.Web.Controllers
 {
 	public class BarsController : Controller
 	{
+		private const string ROOTSTORAGE = "\\images\\Bars";
+
 		private readonly IBarServices _barServices;
 		private readonly IAddressServices _addressServices;
 		private readonly IAddressMapper _addressMapper;
@@ -24,10 +28,12 @@ namespace CM.Web.Controllers
 		private readonly IToastNotification _toastNotification;
 		private readonly IDateTimeProvider _dateTimeProvider;
 		private readonly ICocktailServices _cocktailServices;
+		private readonly IStorageProvider _storageProvider;
+
 
 
 		public BarsController(IAppUserServices appUserServices, IBarServices barServices, IAddressServices addressServices, IAddressMapper addressMapper, IRatingServices ratingServices,
-			IToastNotification toastNotification, ICommentServices commentServices, IDateTimeProvider dateTimeProvider, ICocktailServices cocktailServices)
+			IToastNotification toastNotification, ICommentServices commentServices, IDateTimeProvider dateTimeProvider, ICocktailServices cocktailServices, IStorageProvider storageProvider)
 		{
 			_barServices = barServices ?? throw new ArgumentNullException(nameof(barServices));
 			_addressServices = addressServices ?? throw new ArgumentNullException(nameof(addressServices));
@@ -38,6 +44,7 @@ namespace CM.Web.Controllers
 			_toastNotification = toastNotification ?? throw new ArgumentNullException(nameof(toastNotification));
 			_dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
 			_cocktailServices = cocktailServices ?? throw new ArgumentNullException(nameof(cocktailServices));
+			_storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
 		}
 
 		public async Task<ActionResult> IndexTable()
@@ -71,7 +78,7 @@ namespace CM.Web.Controllers
 					Country = x.Address.CountryName,
 					City = x.Address.CityName,
 					Street = x.Address.Street,
-					AverageRating = Math.Round((double)x.AverageRating, 2),
+					AverageRating =x.AverageRating,
 					ImagePath = x.ImagePath,
 					IsUnlisted = x.IsUnlisted
 					
@@ -157,6 +164,12 @@ namespace CM.Web.Controllers
 			{
 				try
 				{
+
+					if (barViewModel.Image != null)
+					{
+						barViewModel.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, barViewModel.Image.FileName, barViewModel.Name);
+					}
+
 					var addressDTO = new AddressDTO
 					{
 						CityId = barViewModel.CityID,
@@ -206,38 +219,56 @@ namespace CM.Web.Controllers
 					ImagePath = barDTO.ImagePath,
 				};
 
+				var collectionOfCocktails = await this._cocktailServices.GetAllCocktailsDDLAsync();
+				var listOfCocktails = collectionOfCocktails.ToList();
+				ViewBag.listOfCocktails = listOfCocktails;
+
 				return View(barViewModel);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				return NotFound();
-			};
+				_toastNotification.AddWarningToastMessage(ex.Message);
+				return RedirectToAction(nameof(Index));
+			}
 		}
 
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Phone,ImagePath,Details")] BarViewModel barViewModel)
+		public async Task<IActionResult> Edit(BarViewModel barViewModel)
 		{
-			if (id != barViewModel.Id)
-			{
-				return NotFound();
-			}
-
-			var barDTO = new BarDTO
-			{
-				Id = barViewModel.Id,
-				Name = barViewModel.Name,
-				Phone = barViewModel.Phone,
-				Details = barViewModel.Details,
-				ImagePath = barViewModel.ImagePath,
-			};
-
 			if (ModelState.IsValid)
 			{
 				try
 				{
-					await _barServices.UpdateBarAsync(id, barDTO);
+					var oldImagePath = barViewModel.ImagePath;
+
+					if (barViewModel.Image != null)
+					{
+						barViewModel.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, barViewModel.Image.FileName, barViewModel.Name);
+					}
+
+					var barDTO = new BarDTO
+					{
+						Id = barViewModel.Id,
+						Name = barViewModel.Name,
+						Phone = barViewModel.Phone,
+						Details = barViewModel.Details,
+						ImagePath = barViewModel.ImagePath,
+
+						Cocktails = barViewModel.SelectedCocktails.Select(sc => new CocktailDTO { Id = sc }).ToList()
+					};
+
+					await _barServices.UpdateBarAsync(barViewModel.Id, barDTO);
+
+					if (barViewModel.Image != null)
+					{
+						_storageProvider.DeleteImage(oldImagePath);
+						_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully updated!");
+						await _storageProvider.StoreImageAsync(barViewModel.ImagePath, barViewModel.Image);
+					}
+
+					return RedirectToAction(nameof(Index));
 				}
 				catch (DbUpdateConcurrencyException)
 				{
@@ -251,10 +282,14 @@ namespace CM.Web.Controllers
 						throw;
 					}
 				}
-				_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully updated!");
-				return RedirectToAction(nameof(Index));
 			}
-			_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
+			foreach (var item in ModelState.Values)
+			{
+				foreach (var error in item.Errors)
+				{
+					_toastNotification.AddWarningToastMessage(error.ErrorMessage);
+				}
+			}
 			return View(barViewModel);
 		}
 
