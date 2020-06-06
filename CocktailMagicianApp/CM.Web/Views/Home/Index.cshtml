@@ -15,8 +15,8 @@
 		<div class="row">
 			@foreach (var item in Model.TopRatedBars)
 			{
-				<div class="col-sm-4">
-					<div class="card" style="width: 18rem;">
+				<div class="col-sm-2">
+					<div class="card">
 						@if (string.IsNullOrEmpty(@item.ImagePath))
 						{
 							<img src="/images/DefaultBar.png" class="card-img-top" alt="...">
@@ -47,7 +47,7 @@
 		<div class="row">
 			@foreach (var item in Model.TopRatedCocktails)
 			{
-				<div class="col-sm-4">
+				<div class="col-sm-2">
 					<div class="card-body">
 
 						<a class="card custom-card" asp-controller="Cocktails" area=" " asp-action="Details" asp-route-id="@item.Id">
