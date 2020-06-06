@@ -36,17 +36,24 @@ namespace CM.Web.Providers
 
             var absolutePath = Path.Combine(_webHostEnvironment.ContentRootPath, filePath);
 
-            await file.CopyToAsync(new FileStream(absolutePath, FileMode.Create));
+            await file?.CopyToAsync(new FileStream(absolutePath, FileMode.Create));
         }
 
         public void DeleteImage(string relativePath)
         {
+            if (relativePath == null ||
+                relativePath.EndsWith("DefaultCocktail.png") ||
+                relativePath.EndsWith("DefaultIngredients.jpg"))
+                return;
+
             relativePath = "wwwroot" + relativePath;
 
             var absolutePath = Path.Combine(_webHostEnvironment.ContentRootPath, relativePath);
 
             if (File.Exists(absolutePath))
             {
+                System.GC.Collect();
+                System.GC.WaitForPendingFinalizers();
                 File.Delete(absolutePath);
             }
         }
