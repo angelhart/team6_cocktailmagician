@@ -27,19 +27,21 @@ namespace CM.Web.Controllers
             var barModels = await this._barServices.GetTopBarsAsync(5);
             var topRatedBarsModels = barModels.Select(barDTO => new TopRatedBarsViewModel
             {
+                Id = barDTO.Id,
                 Name = barDTO.Name,
                 Country = barDTO.Address.CountryName,
                 City = barDTO.Address.CityName,
                 ImagePath = barDTO.ImagePath,
-                AverageRating = Math.Round((double)barDTO.AverageRating, 2),
+                AverageRating = barDTO.AverageRating,
             }).ToList();
 
             var cocktailModels = await this._cocktailServices.GetTopCocktailsAsync(5);
-            var topRatedCocktailsModels = cocktailModels.Select(barDTO => new TopRatedCocktailsViewModel
+            var topRatedCocktailsModels = cocktailModels.Select(cocktailDTO => new TopRatedCocktailsViewModel
             {
-                Name = barDTO.Name,
-                ImagePath = barDTO.ImagePath,
-                //AverageRating = Math.Round((double)barDTO.AverageRating, 2),
+                Id = cocktailDTO.Id,
+                Name = cocktailDTO.Name,
+                ImagePath = cocktailDTO.ImagePath,
+                AverageRating = cocktailDTO.AverageRating,
             }).ToList();
 
             var topModels = new TopRated();

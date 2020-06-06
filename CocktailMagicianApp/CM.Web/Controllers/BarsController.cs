@@ -168,7 +168,7 @@ namespace CM.Web.Controllers
 						Id = barViewModel.Id,
 						Name = barViewModel.Name,
 						Phone = barViewModel.Phone,
-						Details = barViewModel.Details,
+						Details = barViewModel.Details, 
 
 						Address = addressDTO,
 

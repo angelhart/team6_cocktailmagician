@@ -65,9 +65,9 @@ namespace CM.Services
             // update average in the cocktail entity
             var cocktail = await _context.Cocktails.FindAsync(cocktailId) 
                 ?? throw new NullReferenceException("No cocktail for which to update the rating found");
-            cocktail.AverageRating = await _context.CocktailRatings
+            cocktail.AverageRating = Math.Round(await _context.CocktailRatings
                                                 .Where(cr => cr.CocktailId == cocktailId)
-                                                .AverageAsync(cr => cr.Score);
+                                                .AverageAsync(cr => cr.Score), 2);
             _context.Update(cocktail);
             await _context.SaveChangesAsync();
         }
@@ -158,9 +158,9 @@ namespace CM.Services
 
         private async Task UpdateBarAverageRatingAsync(Bar bar)
         {
-            bar.AverageRating = await _context.BarRatings
+            bar.AverageRating = Math.Round(await _context.BarRatings
                                                 .Where(barRating => barRating.BarId == bar.Id)
-                                                .AverageAsync(barRating => barRating.Score);
+                                                .AverageAsync(barRating => barRating.Score), 2);
             _context.Update(bar);
             await _context.SaveChangesAsync();
         }
