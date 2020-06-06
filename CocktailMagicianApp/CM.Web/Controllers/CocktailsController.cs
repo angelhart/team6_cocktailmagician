@@ -16,10 +16,11 @@ using CM.Web.Models;
 using CM.DTOs;
 using CM.Web.Providers;
 using CM.Web.Areas.Magician.Models;
+using Microsoft.AspNetCore.Authorization;
 
-namespace CM.Web.Areas.Magician.Controllers
+namespace CM.Web.Controllers
 {
-    [Area("Magician")]
+    [AllowAnonymous]
     public class CocktailsController : Controller
     {
         private const string ROOTSTORAGE = "\\images\\Cocktails";
@@ -85,7 +86,7 @@ namespace CM.Web.Areas.Magician.Controllers
                 var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault();
 
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
-                int pageNumber = start != null ? (1 + ((int)Math.Ceiling(Convert.ToDouble(start) / pageSize))) : 0;
+                int pageNumber = start != null ? 1 + (int)Math.Ceiling(Convert.ToDouble(start) / pageSize) : 0;
                 int recordsTotal = await _cocktailServices.CountAllCocktailsAsync();
 
                 var dtos = await _cocktailServices.PageCocktailsAsync(searchString, sortBy, sortOrder, pageNumber, pageSize);

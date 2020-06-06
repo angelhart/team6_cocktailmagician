@@ -17,6 +17,9 @@
             color: inherit;
         }
     </style>
+    <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="~/css/DataTable.css" rel="stylesheet" type="text/css" />
 }
 
 <h1>Index</h1>
@@ -24,75 +27,34 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
+
+
+<table id="cocktailsTable" class="display">
     <thead>
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Recipe)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IsUnlisted)
-            </th>
-            <th></th>
+            <th>Image</th>
+            <th>Rating</th>
+            <th>Name</th>
+            <th>Ingredients</th>
         </tr>
     </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    <img src="@item.ImagePath" alt="@item.Name" width="100" height="100" />
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Recipe)
-                </td>
-                <td>
-                    <input type="checkbox" class="check-box" asp-for="@item.IsUnlisted" id="@item.Id" />
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
+</table>
+
+<table id="cocktailsMagicianTable" class="display">
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Rating</th>
+            <th>Name</th>
+            <th>Ingredients</th>
+            <th>Unlist</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
 </table>
 
 @section Scripts{
-    <script>
-        $('input[type="checkbox"]').on('click', function () {
+    <script src="~/js/Checkbox.js"></script>
 
-            console.log(this);
-            console.log($(this));
-            var data = {}; // container for post data
-            data.id = $(this).attr('id');
-            data.state = $(this).is(':checked') ? 1 : 0;
-
-            var form = $('#__AjaxAntiForgeryForm');
-            data.__RequestVerificationToken = $('input[name="__RequestVerificationToken"]', form).val();
-
-            //console.log(token);
-            //console.log(data);
-
-            $.ajax({
-                type: "POST",
-                url: "/magician/cocktails/updatelisting",
-                data: data
-            }).done(function (data) {
-                //console.log(data);
-                //console.log('success');
-            });
-        });
-
-    </script>
+    <script src="~/js/CocktailScripts/CocktailsDataTable.js"></script>
 }

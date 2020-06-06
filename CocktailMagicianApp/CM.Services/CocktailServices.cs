@@ -254,5 +254,10 @@ namespace CM.Services
 
             return dto;
         }
+
+        public async Task<int> CountAllCocktailsAsync()
+        {
+            return await _context.Cocktails.CountAsync();
+        }
     }
 }

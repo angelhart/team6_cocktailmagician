@@ -9,7 +9,12 @@ $(document).ready(function () {
         ajax: {
             url: '/magician/ingredients/index',
             type: 'POST',
-            dataSrc: 'data'
+            dataSrc: 'data',
+            data: function (d) {
+                d.myKey = 'role';
+                // d.custom = $('#myInput').val();
+                // etc
+            }
         },
         drawCallback: function (settings) { 
             // Here the response
