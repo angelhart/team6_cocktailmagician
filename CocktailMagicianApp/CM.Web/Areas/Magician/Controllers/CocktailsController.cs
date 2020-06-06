@@ -59,7 +59,8 @@ namespace CM.Web.Areas.Magician.Controllers
         // GET: Magician/Cocktails
         public async Task<IActionResult> Index()
         {
-            var dtos = await _cocktailServices.PageCocktailsAsync();
+            var permission = User.IsInRole("Magician");
+            var dtos = await _cocktailServices.PageCocktailsAsync(allowUnlisted: true);
             var vms = dtos.Select(c => _cocktailViewMapper.CreateCocktailViewModel(c));
 
             return View(vms);
@@ -173,14 +174,20 @@ namespace CM.Web.Areas.Magician.Controllers
             {
                 try
                 {
+                    var oldImagePath = model.ImagePath;
                     if (model.Image != null)
-                        model.ImagePath = _storageProvider.GenerateRelativePath("images\\Cocktails", model.Image.FileName, model.Name);
+                    {
+                        model.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, model.Image.FileName, model.Name);
+                    }
 
                     var dto = _cocktailViewMapper.CreateCocktailDTO(model);
                     dto = await _cocktailServices.UpdateCocktailAsync(dto);
 
                     if (model.Image != null)
+                    {
+                        _storageProvider.DeleteImage(oldImagePath);
                         await _storageProvider.StoreImageAsync(model.ImagePath, model.Image);
+                    }
 
                     var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
                     return RedirectToAction(nameof(Index));
@@ -231,6 +238,24 @@ namespace CM.Web.Areas.Magician.Controllers
                 _storageProvider.DeleteImage(dto.ImagePath);
 
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _toastNotification.AddAlertToastMessage(ex.Message);
+                return RedirectToAction(nameof(Index));
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateListing(Guid id, int state)
+        {
+            try
+            {
+                var dto = await _cocktailServices.ChangeListingAsync(id, state == 1);
+                var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
+
+                return Ok(vm);
             }
             catch (Exception ex)
             {

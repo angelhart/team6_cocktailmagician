@@ -1,4 +1,5 @@
-﻿using CM.Web.Areas.Magician.Models;
+﻿using CM.Web.Areas.BarCrawler.Models;
+using CM.Web.Areas.Magician.Models;
 using CM.Web.Providers.CustomAttributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -35,7 +36,8 @@ namespace CM.Web.Models
         
         [DisplayName("Unlist")]
         public bool IsUnlisted { get; set; }
-        public ICollection<IngredientViewModel> Ingredients { get; set; }
-        public ICollection<BarViewModel> Bars { get; set; }
+        public ICollection<IngredientViewModel> Ingredients { get; set; } = new List<IngredientViewModel>();
+        public ICollection<BarViewModel> Bars { get; set; } = new List<BarViewModel>();
+        public ICollection<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
     }
 }

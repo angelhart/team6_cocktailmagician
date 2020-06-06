@@ -7,14 +7,14 @@ $(document).ready(function () {
         order: [1, "asc"], // override default sort column and direction
         responsive: false, // supposed to adds responsive, but needs further investigation
         ajax: {
-            url: '/magician/ingredients/indextable',
+            url: '/magician/ingredients/index',
             type: 'POST',
             dataSrc: 'data'
         },
         drawCallback: function (settings) { 
             // Here the response
             var response = settings.json;
-            console.log(response);
+            //console.log(response);
             var role = response.role;
             //console.log(role);
             //return role;
@@ -44,7 +44,7 @@ $(document).ready(function () {
                 render: function (data, type, full, meta) {
                     return '<a class="btn btn-info" href="/magician/ingredients/edit/' + full.id + '">Edit</a>';
                 },
-                orderable: false, 
+                orderable: false,
                 visible: true // TODO: function that checks role
             },
             {

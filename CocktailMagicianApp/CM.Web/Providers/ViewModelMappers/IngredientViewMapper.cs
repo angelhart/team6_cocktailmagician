@@ -37,6 +37,7 @@ namespace CM.Web.Providers.ViewModelMappers
         {
             return new IngredientDTO
             {
+                Id = model.Id,
                 Name = model.Name,
                 ImagePath = model.ImagePath,
                 Cocktails = model.Cocktails

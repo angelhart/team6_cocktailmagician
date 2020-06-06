@@ -79,9 +79,53 @@
         </div>
     </form>
 </div>
-<script src="~/js/StarRating.js"></script>
+
+<!-- Comments -->
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Comments)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Comments)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Text)<br />
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<h4>Comment</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-area="BarCrawler"
+              asp-controller="Comments"
+              asp-action="Create">
+            @*method="post">*@
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group">
+                <label name="Text" class="control-label"></label>
+                <input name="EntityId" value="@Model.Id">
+                <textarea name="Text" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                <input type="submit" value="Add Comment" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
 @*}*@
 
 @section Scripts{
+    <script src="~/js/StarRating.js"></script>
 
 }

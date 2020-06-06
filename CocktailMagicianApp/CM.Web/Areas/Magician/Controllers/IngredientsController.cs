@@ -48,6 +48,8 @@ namespace CM.Web.Areas.Magician.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ActionName("Index")]
         public async Task<ActionResult> IndexTable()
         {
             try
@@ -80,7 +82,7 @@ namespace CM.Web.Areas.Magician.Controllers
             catch (Exception ex)
             {
                 _toastNotification.AddErrorToastMessage(ex.Message);
-                return BadRequest(ex.Message);
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -165,8 +167,11 @@ namespace CM.Web.Areas.Magician.Controllers
             {
                 try
                 {
+                    var oldImagePath = model.ImagePath;
                     if (model.Image != null)
+                    {
                         model.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, model.Image.FileName, model.Name);
+                    }
 
                     var dto = _ingredientViewMapper.CreateIngredientDTO(model);
                     dto = await _ingredientServices.UpdateIngredientAsync(dto);
@@ -174,9 +179,12 @@ namespace CM.Web.Areas.Magician.Controllers
                     var vm = _ingredientViewMapper.CreateIngredientViewModel(dto);
 
                     if (model.Image != null)
+                    {
+                        _storageProvider.DeleteImage(oldImagePath);
                         await _storageProvider.StoreImageAsync(model.ImagePath, model.Image);
+                    }
 
-                    return RedirectToAction(nameof(Details), new { id = vm.Id } ) ;
+                    return RedirectToAction(nameof(Details), new { id = vm.Id });
                 }
                 catch (Exception ex)
                 {

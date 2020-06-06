@@ -5,6 +5,11 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
 @section Styles {
     <style>
         a.custom-table-row,
@@ -31,7 +36,9 @@
             <th>
                 @Html.DisplayNameFor(model => model.Recipe)
             </th>
-            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.IsUnlisted)
+            </th>
             <th></th>
         </tr>
     </thead>
@@ -49,6 +56,9 @@
                     @Html.DisplayFor(modelItem => item.Recipe)
                 </td>
                 <td>
+                    <input type="checkbox" class="check-box" asp-for="@item.IsUnlisted" id="@item.Id" />
+                </td>
+                <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
@@ -57,3 +67,32 @@
         }
     </tbody>
 </table>
+
+@section Scripts{
+    <script>
+        $('input[type="checkbox"]').on('click', function () {
+
+            console.log(this);
+            console.log($(this));
+            var data = {}; // container for post data
+            data.id = $(this).attr('id');
+            data.state = $(this).is(':checked') ? 1 : 0;
+
+            var form = $('#__AjaxAntiForgeryForm');
+            data.__RequestVerificationToken = $('input[name="__RequestVerificationToken"]', form).val();
+
+            //console.log(token);
+            //console.log(data);
+
+            $.ajax({
+                type: "POST",
+                url: "/magician/cocktails/updatelisting",
+                data: data
+            }).done(function (data) {
+                //console.log(data);
+                //console.log('success');
+            });
+        });
+
+    </script>
+}

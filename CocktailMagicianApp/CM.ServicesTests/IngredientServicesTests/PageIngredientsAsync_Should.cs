@@ -108,7 +108,7 @@ namespace CM.ServicesTests.IngredientServicesTests
 
             var sut = new IngredientServices(assertContext, mockMapper.Object);
 
-            var result = await sut.PageIngredientsAsync("", pageNumber, pageSize);
+            var result = await sut.PageIngredientsAsync(searchString: "", pageNumber: pageNumber, pageSize: pageSize);
             var expected = await assertContext.Ingredients.ToListAsync();
 
             Assert.AreEqual(pageSize, result.Count);

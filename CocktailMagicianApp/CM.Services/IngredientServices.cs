@@ -154,10 +154,11 @@ namespace CM.Services
                 entities = entities.OrderBy(i => i.Name);
             }
 
-            var ingredients = await entities.ToListAsync();
+            var ingredients = await PaginatedList<Ingredient>.CreateAsync(entities, pageNumber, pageSize);
             var dtos = ingredients.Select(i => _ingredientMapper.CreateIngredientDTO(i)).ToList();
 
             var outputDtos = await PaginatedList<IngredientDTO>.CreateAsync(dtos, pageNumber, pageSize);
+            outputDtos.SourceItems = ingredients.SourceItems;
 
             return outputDtos;
         }

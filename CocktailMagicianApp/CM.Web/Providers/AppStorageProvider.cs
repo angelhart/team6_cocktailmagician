@@ -32,7 +32,7 @@ namespace CM.Web.Providers
 
         public async Task StoreImageAsync(string filePath, IFormFile file)
         {
-            filePath = filePath.Insert(0, "wwwroot");
+            filePath = "wwwroot" + filePath;
 
             var absolutePath = Path.Combine(_webHostEnvironment.ContentRootPath, filePath);
 
@@ -41,7 +41,7 @@ namespace CM.Web.Providers
 
         public void DeleteImage(string relativePath)
         {
-            relativePath = relativePath.Insert(0, "wwwroot");
+            relativePath = "wwwroot" + relativePath;
 
             var absolutePath = Path.Combine(_webHostEnvironment.ContentRootPath, relativePath);
 

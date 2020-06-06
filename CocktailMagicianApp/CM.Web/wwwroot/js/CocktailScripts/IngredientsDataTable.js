@@ -1,13 +1,23 @@
 $(document).ready(function () {
-    $('#cocktailsTable').DataTable({
+    $('#ingredientsTable').DataTable({
         processing: true, //progress bar
         serverSide: true, //server side processing
         filter: true, //disable search box
         orderMulti: false, //multiple column sort
+        order: [1, "asc"], // override default sort column and direction
+        responsive: false, // supposed to adds responsive, but needs further investigation
         ajax: {
-            url: '/magician/ingredients/CocktailsTable',
+            url: '/magician/ingredients/index',
             type: 'POST',
             dataSrc: 'data'
+        },
+        drawCallback: function (settings) { 
+            // Here the response
+            var response = settings.json;
+            //console.log(response);
+            var role = response.role;
+            //console.log(role);
+            //return role;
         },
         oLanguage: {
             sProcessing: '<div class="spinner-border text-danger" role="status"></div>'
@@ -15,9 +25,9 @@ $(document).ready(function () {
         columns: [
             {
                 // Thumbnail
-                data: "imagePath",
+                // data: "imagePath",
                 render: function (url, type, full) {
-                    return '<img class="img-thumbnail" height="75%" width="75%" src="' + full.imagePath + '"/>';
+                    return '<img class="img-thumbnail" height="75px" width="75px" src="' + full.imagePath + '"/>';
                 },
                 orderable: false
             },
@@ -25,15 +35,17 @@ $(document).ready(function () {
                 // Name collumn
                 name: 'name',
                 render: function (data, type, full, meta) {
-                    return '<a class="btn btn-success" href="/cocktails/details/' + full.id + '">' + full.name + '</a>';
+                    return '<a class="btn btn-success" href="/magician/ingredients/details/' + full.id + '">' + full.name + '</a>';
                 },
+                orderable: true
             },
             {
                 // Edit button
                 render: function (data, type, full, meta) {
-                    return '<a class="btn btn-info" href="/magician/cocktails/edit/' + full.id + '">Edit</a>';
+                    return '<a class="btn btn-info" href="/magician/ingredients/edit/' + full.id + '">Edit</a>';
                 },
-                orderable: false
+                orderable: false, 
+                visible: true // TODO: function that checks role
             },
             {
                 // Delete button
@@ -48,7 +60,7 @@ $(document).ready(function () {
 });
 
 function DeleteData(id, name) {
-    if (confirm("Are you sure you want to remove this ingredient from cocktail " + name + "?")) {
+    if (confirm("Are you sure you want to delete ingredient " + name + "?")) {
         Delete(id);
     } else {
         return false;
@@ -57,13 +69,13 @@ function DeleteData(id, name) {
 
 
 function Delete(Id) {
-    var url = "ingredients/RemoveFromCocktail/";
+    var url = "ingredients/delete/";
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
 
     $.post(url,
         {
-            CocktailId: Id,
+            Id: Id,
             __RequestVerificationToken: token
         },
         function (data) {
