@@ -13,7 +13,7 @@ namespace CM.Web.Models
 		public string Street { get; set; }
 		public string FullAddress { get; set; }
 		public double? AverageRating { get; set; }
-		public string? ImagePath { get; set; }
+		public string ImagePath { get; set; }
 		public bool IsUnlisted { get; set; }
 
 
