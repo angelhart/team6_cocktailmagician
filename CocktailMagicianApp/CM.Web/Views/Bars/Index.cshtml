@@ -25,6 +25,9 @@
 	<a asp-action="Create">Create New Bar</a>
 </p>
 
+
+@*@if (User.IsInRole("Magician"))
+	{*@
 <table id="barsTable" class="display">
 	<!--hover order-column stripe-->
 	<thead>
@@ -40,6 +43,24 @@
 		</tr>
 	</thead>
 </table>
+@*}
+	else
+	{
+		<table id="crawlersTable" class="display">
+			<!--hover order-column stripe-->
+			<thead>
+				<tr>
+					<th>Image</th>
+					<th>Name</th>
+					<th>Country</th>
+					<th>City</th>
+					<th>Address</th>
+					<th>Avg. Rating</th>
+				</tr>
+			</thead>
+		</table>
+	}
+*@
 
 
 <div>
@@ -50,68 +71,15 @@
 	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
 	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-
-	@*<script src=https://code.jquery.com/jquery-3.5.1.js></script>*@
-
-	<script src="~/js/BarsDataTable.js"></script>
-
+	@*@if (User.IsInRole("Magician"))
+		{*@
+	<script src="~/js/BarScripts/BarsMagicianTable.js"></script>
+	@*}
+		else
+			{
+				<script src="~/js/BarScripts/BarsCrawlerTable.js"></script>
+			}
+	*@
 	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
 }
-@*<table class="table">
-		<thead>
-			<tr>
-				<th>
-					Image
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.Name)
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.Country)
-				</th>
-				<th>
-					Address
-				</th>
-				<th>
-					@Html.DisplayNameFor(model => model.AverageRating)
-				</th>
-				<th></th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Model)
-			{
-				<tr>
-					<td>
-						<a asp-action="Details" asp-route-id="@item.Id">
-							<img src="@item.ImagePath" height="50" width="auto" />
-						</a>
-					</td>
-					<td>
-						<a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.Country)
-					</td>
-					<td>
-						@Html.DisplayFor(modelItem => item.City), @Html.DisplayFor(modelItem => item.Street)
-					</td>
-					<th>
-						@Html.DisplayFor(modelItem => item.AverageRating)
-					</th>
-
-					@if (User.IsInRole("Magician"))
-					{
-						<td>
-							<a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-						</td>
-						<td>
-							<a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-						</td>
-					}
-				</tr>
-			}
-		</tbody>
-	</table>*@
-
