@@ -10,7 +10,7 @@ namespace CM.DTOs.Mappers
     {
         public CocktailDTO CreateCocktailDTO(Cocktail cocktail)
         {
-            return new CocktailDTO
+            var cocktailDTO = new CocktailDTO
             {
                 Id = cocktail.Id,
                 Name = cocktail.Name,
@@ -28,6 +28,11 @@ namespace CM.DTOs.Mappers
                         .Select(i => CreateIngredientDTO(i))
                         .ToList()
             };
+
+            if (string.IsNullOrEmpty(cocktailDTO.ImagePath))
+                cocktailDTO.ImagePath = "/images/DefaultCocktail.png";
+
+            return cocktailDTO;
         }
 
         private BarDTO CreateBarDTO(BarCocktail bar)
