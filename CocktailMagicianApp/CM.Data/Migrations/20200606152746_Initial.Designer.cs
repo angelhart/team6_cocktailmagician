@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CM.Data.Migrations
 {
     [DbContext(typeof(CMContext))]
-    [Migration("20200604071421_seedBar1")]
-    partial class seedBar1
+    [Migration("20200606152746_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -93,14 +93,14 @@ namespace CM.Data.Migrations
                         new
                         {
                             Id = new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"),
-                            ConcurrencyStamp = "8b4e2324-8fbb-47a1-8fd5-7c7f7d4837c9",
+                            ConcurrencyStamp = "fd52d82b-ef8e-49e0-8245-9e3b68525b01",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = new Guid("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"),
-                            ConcurrencyStamp = "60c09075-5e34-4df8-a77e-939fa36fbd04",
+                            ConcurrencyStamp = "46bdd707-11ef-40bd-9a17-45d75520b0c3",
                             Name = "Member",
                             NormalizedName = "MEMBER"
                         });
@@ -185,7 +185,7 @@ namespace CM.Data.Migrations
                         {
                             Id = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "82968e7d-b745-4f79-bd7a-a52b1ea16384",
+                            ConcurrencyStamp = "220e6a07-b96e-4d54-b4dd-118d21773df8",
                             EmailConfirmed = false,
                             IsDeleted = false,
                             LockoutEnabled = false,
@@ -197,7 +197,7 @@ namespace CM.Data.Migrations
                         {
                             Id = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "2c10a8f4-eed8-441f-ab83-6f3f6f489b41",
+                            ConcurrencyStamp = "e74bcf15-a932-491e-9c30-7e0dff375b63",
                             EmailConfirmed = false,
                             IsDeleted = false,
                             LockoutEnabled = false,
@@ -246,7 +246,7 @@ namespace CM.Data.Migrations
                             Id = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
                             AddressID = new Guid("73f2c4c2-78ae-45ab-b82c-b06a48271a6d"),
                             Details = "Weaving tradition with modernity, there’s something heart-warming about the story of Dante. When Linden Pride, Nathalie Hudson and Naren Young took over this Greenwich Village site 100 years after it first opened they could see the things that made this fading Italian café once great could be relevant again. At the heart of their mission was to renew the bar, while being authentic to its roots and appealing to the Greenwich Village community. So the classical décor was given a lift, and in came refined but wholesome Italian food, aperitivos and cocktails. There is a whole list of Negronis to make your way through, but that’s OK because Dante is an all-day restaurant-bar. The Garibaldi too is a must-order. Made with Campari and ‘fluffy’ orange juice, it has brought this once-dusty drink back to life. The measure of a bar is the experience of its customers – in hospitality, drinks and food Dante has the fundamentals down to a fine art, earning the deserved title of The World's Best Bar 2019, sponsored by Perrier.",
-                            ImagePath = "~/wwwroot/images/9BDBF5E7-AD83-415C-B359-9FF5E2F0DEDD.jpg",
+                            ImagePath = "/images/9BDBF5E7-AD83-415C-B359-9FF5E2F0DEDD.jpg",
                             IsUnlisted = false,
                             Name = "Dante",
                             Phone = "(212) 982-5275"
@@ -256,7 +256,7 @@ namespace CM.Data.Migrations
                             Id = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"),
                             AddressID = new Guid("4ecac9dc-31df-4b89-93b5-5550d2608ede"),
                             Details = "No matter the workings of the cocktail world around it, the Connaught Bar stays true to its principles – artful drinks and graceful service in a stylish setting. Under the watchful gaze of Ago Perrone, the hotel’s director of mixology, the bar moves forward with an effortless glide. Last year marked 10 years since designer David Collins unveiled the bar’s elegant Cubist interior and in celebration it launched its own gin, crafted in the building by none other than Perrone himself. It’s already the most called-for spirit on the showpiece trolley that clinks between the bar’s discerning guests, serving personalised Martinis. The latest cocktail menu, Vanguard, has upped the invention – Number 11 is an embellished Vesper served in Martini glasses hand-painted every day in house, while the Gate No.1 is a luscious blend of spirits, wines and jam. But of course, the Connaught Masterpieces isn’t a chapter easily overlooked. Along with the Dry Martini, the Bloody Mary is liquid perfection and the Mulatta Daisy is Perrone’s own classic, in and out of the bar. In 2019, Connaught Bar earns the title of The Best Bar in Europe, sponsored by Michter's.",
-                            ImagePath = "~/wwwroot/images/0899E918-977C-44D5-A5CB-DE9559AD822C-logo.png",
+                            ImagePath = "/images/0899E918-977C-44D5-A5CB-DE9559AD822C-logo.png",
                             IsUnlisted = false,
                             Name = "Connaught Bar",
                             Phone = "+44 (0)20 7499 7070"

@@ -143,10 +143,10 @@ namespace CM.Data.Seeder
 					CocktailId = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"),
 				});
 
-			modelBuilder.Entity<AppRole>().HasData(
-				new AppRole { Id = new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"), Name = "Admin", NormalizedName = "ADMIN" },
-				new AppRole { Id = new Guid ("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"), Name = "Member", NormalizedName = "MEMBER" }
-			);
+			//modelBuilder.Entity<AppRole>().HasData(
+			//	new AppRole { Id = new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"), Name = "Admin", NormalizedName = "ADMIN" },
+			//	new AppRole { Id = new Guid ("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"), Name = "Member", NormalizedName = "MEMBER" }
+			//);
 		}
 	}
 }
