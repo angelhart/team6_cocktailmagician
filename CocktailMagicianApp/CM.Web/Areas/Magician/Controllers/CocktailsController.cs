@@ -150,8 +150,11 @@ namespace CM.Web.Areas.Magician.Controllers
             {
                 try
                 {
+                    model.ImagePath = ROOTSTORAGE + "\\DefaultCocktail.png";
                     if (model.Image != null)
+                    {
                         model.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, model.Image.FileName, model.Name);
+                    }
 
                     var dto = _cocktailViewMapper.CreateCocktailDTO(model);
                     dto = await _cocktailServices.CreateCocktailAsync(dto);
@@ -159,7 +162,9 @@ namespace CM.Web.Areas.Magician.Controllers
                     var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
 
                     if (model.Image != null)
+                    {
                         await _storageProvider.StoreImageAsync(model.ImagePath, model.Image);
+                    }
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -288,11 +293,11 @@ namespace CM.Web.Areas.Magician.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateListing(Guid id, int state)
+        public async Task<IActionResult> UpdateListing(Guid id, bool state)
         {
             try
             {
-                var dto = await _cocktailServices.ChangeListingAsync(id, state == 1);
+                var dto = await _cocktailServices.ChangeListingAsync(id, state);
                 var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
 
                 return Ok(vm);

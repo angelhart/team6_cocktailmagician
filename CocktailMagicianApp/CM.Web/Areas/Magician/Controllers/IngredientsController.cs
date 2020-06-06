@@ -111,9 +111,11 @@ namespace CM.Web.Areas.Magician.Controllers
             {
                 try
                 {
-                    // create path
+                    model.ImagePath = ROOTSTORAGE + "\\DefaultIngredients.jpg";
                     if (model.Image != null)
+                    {
                         model.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, model.Image.FileName, model.Name);
+                    }
 
                     // create ingredient
                     var dto = _ingredientViewMapper.CreateIngredientDTO(model);
