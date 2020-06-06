@@ -47,12 +47,22 @@ namespace CM.Services
 			var filteredbars = sorteBars;
 
 			if (!String.IsNullOrEmpty(searchString))
-				filteredbars = bars.Where(bar => bar.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
-											|| bar.Address.City.Country.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
-											|| bar.Address.City.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
-											|| bar.Address.Street.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
+			{
+				double number;
+				if (Double.TryParse(searchString, out number))
+				{
+					filteredbars = bars.Where(bar => bar.AverageRating.Equals(number));
+				}
+				else
+				{
+					filteredbars = bars.Where(bar => bar.Name.Contains(searchString)
+													|| bar.FullAddress.Contains(searchString));
+				}
+			}
 
-			var dtos = await filteredbars.Select(bar => _barMapper.CreateBarDTO(bar)).ToListAsync();
+			var filteredbarsList = await filteredbars.ToListAsync();
+
+			var dtos = filteredbarsList.Select(bar => _barMapper.CreateBarDTO(bar)).ToList();
 
 			var pagedDtos = await PaginatedList<BarDTO>.CreateAsync(dtos, pageNumber, pageSize);
 
@@ -164,8 +174,9 @@ namespace CM.Services
 				await _context.Bars.AddAsync(bar);
 				await _context.SaveChangesAsync();
 
-				var address = await _addressServices.CreateAddressAsync(barDTO.Address);
-				bar.AddressID = address.Id;
+				var addressDTO = await _addressServices.CreateAddressAsync(barDTO.Address);
+				bar.AddressID = addressDTO.Id;
+				bar.FullAddress = $"{addressDTO.CountryName}, {addressDTO.CityName}, {addressDTO.Street}";
 
 				var cocktails = barDTO.Cocktails.Select(sc =>
 				new BarCocktail

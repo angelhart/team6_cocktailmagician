@@ -12,6 +12,7 @@ namespace CM.DTOs
         public Guid Id { get; set; }
         public string Name { get; set; }
         public AddressDTO Address { get; set; }
+        public string FullAddress { get; set; }
         public string Phone { get; set; }
         public string Details { get; set; }
         public double? AverageRating { get; set; }

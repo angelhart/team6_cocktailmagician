@@ -22,6 +22,7 @@ namespace CM.Models
         public Guid AddressID { get; set; }
         public Address Address { get; set; }
 
+        public string FullAddress { get; set; }
         public string Phone { get; set; }
         public string ImagePath { get; set; }
         public string Details { get; set; }

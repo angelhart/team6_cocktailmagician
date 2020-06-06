@@ -1,5 +1,4 @@
 ﻿using System;
-using CM.Models;
 
 namespace CM.DTOs
 {
