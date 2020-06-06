@@ -1,7 +1,7 @@
 ﻿$('input[type="checkbox"]').on('click', function () {
 
-    console.log(this);
-    console.log($(this));
+    //console.log(this);
+    //console.log($(this));
     var data = {}; // container for post data
     data.id = $(this).attr('id');
     data.state = $(this).is(':checked') ? 1 : 0;

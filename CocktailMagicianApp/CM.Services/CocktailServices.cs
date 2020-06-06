@@ -232,10 +232,15 @@ namespace CM.Services
 
             cocktails = SortCocktails(cocktails, sortBy, sortOrder);
 
-            var dtos = cocktails.Select(c => _cocktailMapper.CreateCocktailDTO(c));
+            //var dtos = cocktails.Select(c => _cocktailMapper.CreateCocktailDTO(c));
+
+            var pagedCocktails = await PaginatedList<Cocktail>.CreateAsync(cocktails, pageNumber, pageSize);
+
+            var dtos = pagedCocktails.Select(c => _cocktailMapper.CreateCocktailDTO(c)).ToList();
 
             var pagedDtos = await PaginatedList<CocktailDTO>.CreateAsync(dtos, pageNumber, pageSize);
-            
+            pagedDtos.SourceItems = pagedCocktails.SourceItems;
+
             return pagedDtos;
         }
 

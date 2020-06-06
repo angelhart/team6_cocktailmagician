@@ -83,7 +83,7 @@ namespace CM.Web.Controllers
                 var sortBy = Request.Form
                                 ["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"]
                                 .FirstOrDefault();
-                var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault();
+                var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault(x => x.Contains("desc"));
 
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int pageNumber = start != null ? 1 + (int)Math.Ceiling(Convert.ToDouble(start) / pageSize) : 0;

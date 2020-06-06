@@ -60,8 +60,8 @@ namespace CM.DTOs.Mappers
                 Id = ingredient.IngredientId,
                 Name = ingredient.Ingredient?.Name,
                 ImagePath = ingredient.Ingredient?.ImagePath,
-                Ammount = ingredient.Ammount,
-                Unit = ingredient.Unit.ToString()
+                //Ammount = ingredient.Ammount,
+                //Unit = ingredient.Unit.ToString()
             };
         }
 
