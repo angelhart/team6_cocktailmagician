@@ -1,8 +1,8 @@
-﻿using CM.Web.Areas.BarCrawler.Models;
-using CM.Web.Areas.Magician.Models;
+﻿using CM.Web.Areas.Magician.Models;
 using CM.Web.Providers.CustomAttributes;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -12,8 +12,7 @@ using System.Threading.Tasks;
 
 namespace CM.Web.Models
 {
-    [BindProperties]
-    public class CocktailViewModel
+    public class CocktailModifyViewModel
     {
         public Guid Id { get; set; }
 
@@ -31,13 +30,10 @@ namespace CM.Web.Models
 
         public string ImagePath { get; set; }
 
-        [DisplayName("Rating")]
-        public double? AverageRating { get; set; }
-        
-        [DisplayName("Unlist")]
+        public ICollection<Guid> Ingredients { get; set; }
+
+        public SelectList AllIngredients { get; set; }
+
         public bool IsUnlisted { get; set; }
-        public ICollection<IngredientViewModel> Ingredients { get; set; } = new List<IngredientViewModel>();
-        public ICollection<BarViewModel> Bars { get; set; } = new List<BarViewModel>();
-        public ICollection<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
     }
 }

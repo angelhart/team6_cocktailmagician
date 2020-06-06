@@ -64,8 +64,8 @@ namespace CM.Services
             {
                 IngredientId = ci.Id,
                 CocktailId = cocktailId,
-                Ammount = ci.Ammount,
-                Unit = Enum.Parse<Unit>(ci.Unit, true),
+                //Ammount = ci.Ammount,
+                //Unit = Enum.Parse<Unit>(ci.Unit, true),
             });
 
             await _context.AddRangeAsync(ingredientsToAdd);
@@ -131,7 +131,7 @@ namespace CM.Services
             {
                 Name = dto.Name,
                 Recipe = dto.Recipe,
-                // TODO: picture
+                ImagePath = dto.ImagePath,
             };
             await _context.Cocktails.AddAsync(cocktail);
             await _context.SaveChangesAsync();
@@ -156,6 +156,7 @@ namespace CM.Services
 
             cocktail.Name = dto.Name;
             cocktail.Recipe = dto.Recipe;
+            cocktail.IsUnlisted = dto.IsUnlisted;
             if (dto.ImagePath != null)
             {
                 cocktail.ImagePath = dto.ImagePath;
@@ -242,12 +243,42 @@ namespace CM.Services
 
             cocktails = SortCocktails(cocktails, sortBy, sortOrder);
 
-            var dtos = cocktails.Select(c => _cocktailMapper.CreateCocktailDTO(c));
+            //var dtos = cocktails.Select(c => _cocktailMapper.CreateCocktailDTO(c));
+
+            var pagedCocktails = await PaginatedList<Cocktail>.CreateAsync(cocktails, pageNumber, pageSize);
+
+            var dtos = pagedCocktails.Select(c => _cocktailMapper.CreateCocktailDTO(c)).ToList();
 
             var pagedDtos = await PaginatedList<CocktailDTO>.CreateAsync(dtos, pageNumber, pageSize);
-            
+            pagedDtos.SourceItems = pagedCocktails.SourceItems;
+
             return pagedDtos;
         }
 
+        /// <summary>
+        /// Permanently removes a cocktail entity from the database.
+        /// </summary>
+        /// <param name="id">Id of entity to be removed.</param>
+        /// <returns><see cref="CocktailDTO"/></returns>
+        public async Task<CocktailDTO> DeleteAsync(Guid id)
+        {
+            var entity = await _context.Cocktails.FindAsync(id);
+            var dto = _cocktailMapper.CreateCocktailDTO(entity);
+            
+            _context.Remove(entity);
+            await _context.SaveChangesAsync();
+
+            return dto;
+        }
+
+        /// <summary>
+        /// Counts the cocktail records in the database.
+        /// </summary>
+        /// <param name="countUnlisted">Set to true to include unlisted cocktails</param>
+        /// <returns>Number of cocktails in database.</returns>
+        public async Task<int> CountAllCocktailsAsync(bool countUnlisted = false)
+        {
+            return await _context.Cocktails.CountAsync();
+        }
     }
 }

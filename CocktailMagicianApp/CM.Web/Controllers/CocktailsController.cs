@@ -16,10 +16,11 @@ using CM.Web.Models;
 using CM.DTOs;
 using CM.Web.Providers;
 using CM.Web.Areas.Magician.Models;
+using Microsoft.AspNetCore.Authorization;
 
-namespace CM.Web.Areas.Magician.Controllers
+namespace CM.Web.Controllers
 {
-    [Area("Magician")]
+    [AllowAnonymous]
     public class CocktailsController : Controller
     {
         private const string ROOTSTORAGE = "\\images\\Cocktails";
@@ -82,10 +83,10 @@ namespace CM.Web.Areas.Magician.Controllers
                 var sortBy = Request.Form
                                 ["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"]
                                 .FirstOrDefault();
-                var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault();
+                var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault(x => x.Contains("desc"));
 
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
-                int pageNumber = start != null ? (1 + ((int)Math.Ceiling(Convert.ToDouble(start) / pageSize))) : 0;
+                int pageNumber = start != null ? 1 + (int)Math.Ceiling(Convert.ToDouble(start) / pageSize) : 0;
                 int recordsTotal = await _cocktailServices.CountAllCocktailsAsync();
 
                 var dtos = await _cocktailServices.PageCocktailsAsync(searchString, sortBy, sortOrder, pageNumber, pageSize);
@@ -150,11 +151,8 @@ namespace CM.Web.Areas.Magician.Controllers
             {
                 try
                 {
-                    model.ImagePath = ROOTSTORAGE + "\\DefaultCocktail.png";
                     if (model.Image != null)
-                    {
                         model.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, model.Image.FileName, model.Name);
-                    }
 
                     var dto = _cocktailViewMapper.CreateCocktailDTO(model);
                     dto = await _cocktailServices.CreateCocktailAsync(dto);
@@ -162,9 +160,7 @@ namespace CM.Web.Areas.Magician.Controllers
                     var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
 
                     if (model.Image != null)
-                    {
                         await _storageProvider.StoreImageAsync(model.ImagePath, model.Image);
-                    }
 
                     return RedirectToAction(nameof(Index));
                 }
@@ -293,11 +289,11 @@ namespace CM.Web.Areas.Magician.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> UpdateListing(Guid id, bool state)
+        public async Task<IActionResult> UpdateListing(Guid id, int state)
         {
             try
             {
-                var dto = await _cocktailServices.ChangeListingAsync(id, state);
+                var dto = await _cocktailServices.ChangeListingAsync(id, state == 1);
                 var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
 
                 return Ok(vm);

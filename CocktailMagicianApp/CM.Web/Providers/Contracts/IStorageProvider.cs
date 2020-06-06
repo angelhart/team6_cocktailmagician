@@ -9,6 +9,7 @@ namespace CM.Web.Providers.Contracts
     public interface IStorageProvider
     {
         void DeleteImage(string path);
+        string GenerateRelativePath(string path, string fileName, string newName);
         Task StoreImageAsync(string path, IFormFile file);
     }
 }
