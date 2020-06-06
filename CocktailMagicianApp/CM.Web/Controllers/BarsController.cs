@@ -181,16 +181,18 @@ namespace CM.Web.Controllers
 						Id = barViewModel.Id,
 						Name = barViewModel.Name,
 						Phone = barViewModel.Phone,
-						Details = barViewModel.Details, 
-
+						Details = barViewModel.Details,
+						ImagePath = barViewModel.ImagePath,
 						Address = addressDTO,
 
 						Cocktails = barViewModel.SelectedCocktails.Select(sc => new CocktailDTO { Id = sc }).ToList()
 					};
-					if (!string.IsNullOrEmpty(barViewModel.ImagePath))
-						barDTO.ImagePath = barViewModel.ImagePath;
 
 					await this._barServices.CreateBarAsync(barDTO);
+
+					if (barViewModel.Image != null)
+						await _storageProvider.StoreImageAsync(barViewModel.ImagePath, barViewModel.Image);
+
 					_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully created!");
 					return RedirectToAction(nameof(Index));
 				}
@@ -264,10 +266,10 @@ namespace CM.Web.Controllers
 					if (barViewModel.Image != null)
 					{
 						_storageProvider.DeleteImage(oldImagePath);
-						_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully updated!");
 						await _storageProvider.StoreImageAsync(barViewModel.ImagePath, barViewModel.Image);
 					}
 
+					_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully updated!");
 					return RedirectToAction(nameof(Index));
 				}
 				catch (DbUpdateConcurrencyException)
