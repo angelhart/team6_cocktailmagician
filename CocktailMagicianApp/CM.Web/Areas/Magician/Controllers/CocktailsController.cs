@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using CM.Data;
-using CM.Models;
 using CM.Services.Contracts;
 using CM.DTOs.Mappers.Contracts;
 using Microsoft.AspNetCore.Hosting;
@@ -15,7 +11,6 @@ using NToastNotify;
 using CM.Web.Models;
 using CM.DTOs;
 using CM.Web.Providers;
-using CM.Web.Areas.Magician.Models;
 
 namespace CM.Web.Areas.Magician.Controllers
 {
@@ -95,7 +90,7 @@ namespace CM.Web.Areas.Magician.Controllers
 
                 var role = User.IsInRole("Magician") ? "Magician" : "";
 
-                var output = DataTablesProvider<CocktailViewModel>.CreateResponse(draw, recordsTotal, recordsFiltered, role, vms);
+                var output = DataTablesProvider<CocktailViewModel>.CreateResponse(draw, recordsTotal, recordsFiltered, vms);
 
                 return Ok(output);
             }
