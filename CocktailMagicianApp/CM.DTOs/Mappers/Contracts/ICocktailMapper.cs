@@ -7,10 +7,7 @@ namespace CM.DTOs.Mappers.Contracts
     {
         CocktailDTO CreateCocktailDTO(Cocktail cocktail);
         CocktailCommentDTO CreateCocktailCommentDTO(CocktailComment comment);
-        CocktailIngredientDTO CreateCocktailIngredientDTO(CocktailIngredient ingredient);
+        IngredientDTO CreateIngredientDTO(CocktailIngredient ingredient);
         CocktailRatingDTO CreateCocktailRatingDTO(CocktailRating rating);
-        Cocktail CreateCocktail(CocktailDTO dto);
-        CocktailSearchDTO CreateCocktailSearchDTO(Cocktail cocktail);
-        CocktailIngredient CreateCocktailIngredient(Guid cocktailId, CocktailIngredientDTO dto);
     }
 }

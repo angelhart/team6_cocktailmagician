@@ -18,6 +18,51 @@ namespace CM.ServicesTests.CocktailServicesTests
     public class PageCocktailsAsync_Should
     {
         [TestMethod]
+        public async Task Throw_When_NullSearchString()
+        {
+            var options = Utility.GetOptions(nameof(Throw_When_NullSearchString));
+            await Utility.ArrangeContextAsync(options);
+
+            var mockMapper = new Mock<ICocktailMapper>();
+            
+            using var assertContext = new CMContext(options);
+            {
+                var sut = new CocktailServices(assertContext, mockMapper.Object);
+                await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.PageCocktailsAsync(searchString: null));
+            }
+        }
+
+        [TestMethod]
+        public async Task Throw_When_PageNumberInvalid()
+        {
+            var options = Utility.GetOptions(nameof(Throw_When_PageNumberInvalid));
+            await Utility.ArrangeContextAsync(options);
+
+            var mockMapper = new Mock<ICocktailMapper>();
+
+            using var assertContext = new CMContext(options);
+            {
+                var sut = new CocktailServices(assertContext, mockMapper.Object);
+                await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => sut.PageCocktailsAsync(pageNumber: 0));
+            }
+        }
+
+        [TestMethod]
+        public async Task Throw_When_PageSizeInvalid()
+        {
+            var options = Utility.GetOptions(nameof(Throw_When_PageSizeInvalid));
+            await Utility.ArrangeContextAsync(options);
+
+            var mockMapper = new Mock<ICocktailMapper>();
+
+            using var assertContext = new CMContext(options);
+            {
+                var sut = new CocktailServices(assertContext, mockMapper.Object);
+                await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>(() => sut.PageCocktailsAsync(pageSize: 0));
+            }
+        }
+
+        [TestMethod]
         public async Task ReturnCorrect_When_UnlistedNotAllowed_And_PaginationNotDefault()
         {
             var options = Utility.GetOptions(nameof(ReturnCorrect_When_UnlistedNotAllowed_And_PaginationNotDefault));
@@ -34,10 +79,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });
@@ -71,10 +116,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });
@@ -108,10 +153,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });
@@ -147,10 +192,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });
@@ -185,10 +230,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });
@@ -224,10 +269,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });
@@ -262,10 +307,10 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
-                                             IngredientName = i.Ingredient?.Name
+                                             Id = i.IngredientId,
+                                             Name = i.Ingredient?.Name
                                          })
                                          .ToList(),
                       });

@@ -29,35 +29,33 @@ namespace CM.Services
 
         private async Task<Cocktail> GetCocktailAsync(Guid id, bool allowUnlisted = false)
         {
-            //if (id == null)
-            //    throw new ArgumentNullException("Cocktail ID can't be null.");
-
             var cocktail = await _context.Cocktails
-                                         .Include(c => c.Bars)
-                                         .Include(c => c.Ratings)
-                                         .Include(c => c.Comments)
-                                             .ThenInclude(com => com.AppUser)
-                                         .Include(c => c.Ingredients)
-                                             .ThenInclude(i => i.Ingredient)
                                          .FirstOrDefaultAsync(c => c.Id == id);
 
             if (cocktail == null)
                 throw new KeyNotFoundException("No cocktail found with the specified ID.");
 
             if (cocktail.IsUnlisted && !allowUnlisted)
-                throw new UnauthorizedAccessException("Only administrators can access details of unlisted cocktails.");
+                throw new UnauthorizedAccessException("Only administrators can access unlisted cocktails.");
+
 
             return cocktail;
         }
         
-        private async Task UpdateIngredientsAsync(Guid id, ICollection<CocktailIngredientDTO> newIngredients)
+        private async Task UpdateIngredientsAsync(Guid cocktailId, ICollection<IngredientDTO> newIngredients)
         {
             var currentIngredients = _context.CocktailIngredients
-                                             .Where(ci => ci.CocktailId == id);
+                                             .Where(ci => ci.CocktailId == cocktailId);
 
             _context.RemoveRange(currentIngredients);
 
-            var ingredientsToAdd = newIngredients.Select(ci => _cocktailMapper.CreateCocktailIngredient(id, ci));
+            var ingredientsToAdd = newIngredients.Select(ci => new CocktailIngredient 
+            {
+                IngredientId = ci.Id,
+                CocktailId = cocktailId,
+                Ammount = ci.Ammount,
+                Unit = Enum.Parse<Unit>(ci.Unit, true),
+            });
 
             await _context.AddRangeAsync(ingredientsToAdd);
             await _context.SaveChangesAsync();
@@ -86,6 +84,21 @@ namespace CM.Services
         public async Task<CocktailDTO> GetCocktailDetailsAsync(Guid cocktailId, bool allowUnlisted = false)
         {
             var cocktail = await GetCocktailAsync(cocktailId, allowUnlisted);
+            
+            cocktail.Bars = await _context.BarCocktails
+                                    .Include(bc => bc.Bar)
+                                    .Where(bc => !bc.Bar.IsUnlisted || allowUnlisted)
+                                    .ToListAsync();
+
+            cocktail.Comments = await _context.CocktailComments
+                                             .Include(cc => cc.AppUser)
+                                             .Where(cc => cc.CocktailId == cocktailId)
+                                             .ToListAsync();
+
+            cocktail.Ingredients = await _context.CocktailIngredients
+                                                 .Include(ci => ci.Ingredient)
+                                                 .Where(ci => ci.CocktailId == cocktailId)
+                                                 .ToListAsync();
 
             var outputDto = _cocktailMapper.CreateCocktailDTO(cocktail);
 
@@ -103,7 +116,12 @@ namespace CM.Services
             if (nameExists)
                 throw new DbUpdateException("Cocktail with this name already exists in the records.");
 
-            var cocktail = _cocktailMapper.CreateCocktail(dto);
+            var cocktail = new Cocktail
+            {
+                Name = dto.Name,
+                Recipe = dto.Recipe,
+                // TODO: picture
+            };
             await _context.Cocktails.AddAsync(cocktail);
             await _context.SaveChangesAsync();
 
@@ -127,7 +145,10 @@ namespace CM.Services
 
             cocktail.Name = dto.Name;
             cocktail.Recipe = dto.Recipe;
-            // TODO: cocktail.Picture
+            if (dto.ImagePath != null)
+            {
+                cocktail.ImagePath = dto.ImagePath;
+            }
             await UpdateIngredientsAsync(cocktail.Id, dto.Ingredients);
 
             _context.Cocktails.Update(cocktail);
@@ -149,6 +170,7 @@ namespace CM.Services
             var cocktail = await GetCocktailAsync(cocktailId, allowUnlisted: true);
 
             cocktail.IsUnlisted = newState;
+            _context.Update(cocktail);
             await _context.SaveChangesAsync();
 
             var outputDto = _cocktailMapper.CreateCocktailDTO(cocktail);
@@ -162,12 +184,16 @@ namespace CM.Services
         /// <returns><see cref="ICollection<<see cref="CocktailHomePageDTO"/>>"/></returns>
         public async Task<ICollection<CocktailDTO>> GetTopCocktailsAsync(int ammount = 3)
         {
+            if (ammount < 1)
+                throw new ArgumentOutOfRangeException("Ammount must be a positive integer.");
+
             var topCocktails = await _context.Cocktails
                                      .Where(c => !c.IsUnlisted)
                                      .OrderByDescending(c => c.AverageRating)
                                      .Take(ammount)
                                      .Select(c => _cocktailMapper.CreateCocktailDTO(c))
                                      .ToListAsync();
+
 
             return topCocktails;
         }
@@ -189,6 +215,12 @@ namespace CM.Services
                                                                          int pageSize = 10,
                                                                          bool allowUnlisted = false)
         {
+            if (searchString == null)
+                throw new ArgumentNullException("Search string cannot be null.");
+
+            if (pageNumber < 1 || pageSize < 1)
+                throw new ArgumentOutOfRangeException("Page number and page size must be positive integers.");
+
             var cocktails = _context.Cocktails
                                     .Include(c => c.Ingredients)
                                         .ThenInclude(i => i.Ingredient)

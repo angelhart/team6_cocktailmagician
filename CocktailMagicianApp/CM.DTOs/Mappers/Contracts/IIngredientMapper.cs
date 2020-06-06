@@ -4,8 +4,7 @@ namespace CM.DTOs.Mappers.Contracts
 {
     public interface IIngredientMapper
     {
-        CocktailIngredientDTO CreateCocktailIngredientDTO(CocktailIngredient ingredient);
+        CocktailDTO CreateCocktailDTO(CocktailIngredient ingredient);
         IngredientDTO CreateIngredientDTO(Ingredient ingredient);
-        Ingredient CreateIngredient(IngredientDTO dto);
     }
 }

@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -71,7 +72,11 @@ namespace CM.Services
             if (nameExists)
                 throw new DbUpdateException("Ingredient with this name already exists in the records.");
 
-            Ingredient newIngredient = _ingredientMapper.CreateIngredient(dto);
+            Ingredient newIngredient = new Ingredient
+            {
+                Name = dto.Name,
+                ImagePath = dto.ImagePath
+            };
 
             await _context.Ingredients.AddAsync(newIngredient);
             await _context.SaveChangesAsync();
@@ -90,7 +95,11 @@ namespace CM.Services
             var ingredient = await GetIngredientAsync(dto.Id);
 
             ingredient.Name = dto.Name;
-            // TODO: ingredient.Picture = dto.Picture
+
+            if (dto.ImagePath != null)
+            {
+                ingredient.ImagePath = dto.ImagePath;
+            }
 
             _context.Ingredients.Update(ingredient);
             await _context.SaveChangesAsync();
@@ -125,16 +134,32 @@ namespace CM.Services
         /// <param name="pageNumber">The required page of the paginated list.</param>
         /// <param name="pageSize">Number of ingredients per page.</param>
         /// <returns><see cref="PaginatedList<<see cref="IngredientDTO"/>>"/></returns>
-        public async Task<PaginatedList<IngredientDTO>> PageIngredientsAsync(string searchString, int pageNumber = 1, int pageSize = 10)
+        public async Task<PaginatedList<IngredientDTO>> PageIngredientsAsync(string searchString = "", int pageNumber = 1, int pageSize = 10)
         {
+            if (searchString == null)
+                throw new ArgumentNullException("Search string cannot be null.");
+
+            if (pageNumber < 1 || pageSize < 1)
+                throw new ArgumentOutOfRangeException("Page number and page size must be positive integers.");
+
             var ingredients = _context.Ingredients
-                                      .Where(i => i.Name.Contains(searchString ?? ""))
+                                      .Where(i => i.Name.Contains(searchString))
                                       .Include(i => i.Cocktails)
+                                      .OrderBy(i => i.Name)
                                       .Select(i => _ingredientMapper.CreateIngredientDTO(i));
 
             var outputDtos = await PaginatedList<IngredientDTO>.CreateAsync(ingredients, pageNumber, pageSize);
 
             return outputDtos;
+        }
+
+        /// <summary>
+        /// Count all records in database.
+        /// </summary>
+        /// <returns>Integer of all entities in data base.</returns>
+        public async Task<int> CountAllIngredientsAsync()
+        {
+            return await _context.Ingredients.CountAsync();
         }
     }
 }

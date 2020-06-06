@@ -9,10 +9,12 @@ namespace CM.DTOs.Mappers
     public class BarMapper : IBarMapper
     {
         private readonly IAddressMapper _addressMapper;
+        private readonly ICocktailMapper _cocktailMapper;
 
-        public BarMapper(IAddressMapper addressMapper)
+        public BarMapper(IAddressMapper addressMapper, ICocktailMapper cocktailMapper)
         {
-            _addressMapper = addressMapper ?? throw new ArgumentNullException(nameof(_addressMapper));
+            _addressMapper = addressMapper ?? throw new ArgumentNullException(nameof(addressMapper));
+            _cocktailMapper = cocktailMapper ?? throw new ArgumentNullException(nameof(cocktailMapper));
         }
 
 
@@ -23,14 +25,14 @@ namespace CM.DTOs.Mappers
                 Id = bar.Id,
                 Name = bar.Name,
                 AverageRating = bar.AverageRating,
-                //Address = String.Concat(bar.Address.Country.Name, ',', bar.Address.City, ',', bar.Address.Street),
 
                 Address = this._addressMapper.CreateAddressDTO(bar.Address),
                 Phone = bar.Phone,
                 Details = bar.Details,
+                IsUnlisted = bar.IsUnlisted,
 
                 Cocktails = bar.Cocktails
-                        .Select(cocktail => CreateBarCocktailDTO(cocktail))
+                        .Select(bc => _cocktailMapper.CreateCocktailDTO(bc.Cocktail))
                         .ToList(),
                 Comments = bar.Comments
                         .Select(barComment => CreateBarCommentDTO(barComment))
@@ -63,12 +65,25 @@ namespace CM.DTOs.Mappers
             };
         }
 
-        private BarCocktailDTO CreateBarCocktailDTO(BarCocktail cocktail)
+        private BarCocktailDTO CreateBarCocktailDTO(BarCocktail bc)
         {
             return new BarCocktailDTO
             {
-                Id = cocktail.BarId,
-                Name = cocktail.Bar?.Name
+                BarId = bc.BarId,
+                Bar = bc.Bar?.Name,
+                CocktailId = bc.CocktailId,
+                Cocktail = bc.Cocktail?.Name
+            };
+        }
+
+        public BarComment CreateBarComment(BarCommentDTO newCommentDto)
+        {
+            return new BarComment
+            {
+                BarId = newCommentDto.BarId,
+                AppUserId = newCommentDto.UserId,
+                CommentedOn = newCommentDto.CommentedOn,
+                Text = newCommentDto.Text
             };
         }
     }

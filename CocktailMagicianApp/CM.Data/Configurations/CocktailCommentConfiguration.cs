@@ -11,7 +11,7 @@ namespace CM.Data.Configurations
     {
         public void Configure(EntityTypeBuilder<CocktailComment> builder)
         {
-            builder.HasKey(cc => new { cc.CocktailId, cc.AppUserId });
+            builder.HasKey(cc => cc.Id);
             builder.Property(cc => cc.Text)
                 .IsRequired();
             builder.HasOne(cc => cc.Cocktail)

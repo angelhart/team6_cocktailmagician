@@ -33,14 +33,14 @@ namespace CM.ServicesTests.CocktailServicesTests
                           Recipe = c.Recipe,
                           IsUnlisted = c.IsUnlisted,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
+                                             Id = i.IngredientId,
                                          })
                                          .ToList(),
                       });
 
-            var cocktailId = Guid.Parse("9344e67f-f9a9-45c3-b583-7378387bf862"); // unlisted in InMemory
+            var cocktailId = Guid.Parse("9344e67f-f9a9-45c3-b583-7378387bf862"); // Cocktail C unlisted in InMemory
             var newState = false;
 
             using var assertContext = new CMContext(options);

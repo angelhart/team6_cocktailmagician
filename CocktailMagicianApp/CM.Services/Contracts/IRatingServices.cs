@@ -8,6 +8,10 @@ namespace CM.Services.Contracts
 {
     public interface IRatingServices
     {
-        public Task<BarRatingDTO> RateBar(int id, BarRatingDTO barRatingDTO);
+        Task<CocktailRatingDTO> DeleteCocktailRatingAsync(Guid userId, Guid cocktailId);
+        Task<CocktailRatingDTO> EditCocktailRatingAsync(CocktailRatingDTO input);
+        Task<CocktailRatingDTO> GetCocktailRatingAsync(Guid userId, Guid cocktailId);
+        Task<BarRatingDTO> RateBarAsync(BarRatingDTO barRatingDTO);
+        Task<CocktailRatingDTO> RateCocktailAsync(CocktailRatingDTO input);
     }
 }

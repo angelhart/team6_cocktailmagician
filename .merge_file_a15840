@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CM.Data.Migrations
 {
     [DbContext(typeof(CMContext))]
-    [Migration("20200517133351_update")]
-    partial class update
+    [Migration("20200602125701_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -88,6 +88,22 @@ namespace CM.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"),
+                            ConcurrencyStamp = "af9b64d7-5e38-4065-9189-1e7bc48a55a0",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = new Guid("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"),
+                            ConcurrencyStamp = "e112db0a-5051-4430-8eda-fce5c716568a",
+                            Name = "Member",
+                            NormalizedName = "MEMBER"
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.AppUser", b =>
@@ -163,6 +179,32 @@ namespace CM.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "70a93072-42d0-4bee-8101-d4fc5ecffe35",
+                            EmailConfirmed = false,
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "testUser@test.com"
+                        },
+                        new
+                        {
+                            Id = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "80cd8e6d-5de7-40ea-953d-19d131d7b626",
+                            EmailConfirmed = false,
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "testUser1@test.com"
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.Bar", b =>
@@ -173,6 +215,9 @@ namespace CM.Data.Migrations
 
                     b.Property<Guid>("AddressID")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double?>("AverageRating")
+                        .HasColumnType("float");
 
                     b.Property<string>("Details")
                         .HasColumnType("nvarchar(max)");
@@ -218,42 +263,46 @@ namespace CM.Data.Migrations
 
             modelBuilder.Entity("CM.Models.BarCocktail", b =>
                 {
-                    b.Property<Guid>("BarId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("CocktailId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.HasKey("BarId", "CocktailId");
+                    b.Property<Guid>("BarId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasIndex("CocktailId");
+                    b.HasKey("CocktailId", "BarId");
+
+                    b.HasIndex("BarId");
 
                     b.ToTable("BarCocktails");
 
                     b.HasData(
                         new
                         {
-                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
-                            CocktailId = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015")
+                            CocktailId = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"),
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd")
                         },
                         new
                         {
-                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
-                            CocktailId = new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9")
+                            CocktailId = new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"),
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd")
                         },
                         new
                         {
-                            BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"),
-                            CocktailId = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea")
+                            CocktailId = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"),
+                            BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c")
                         });
                 });
 
             modelBuilder.Entity("CM.Models.BarComment", b =>
                 {
-                    b.Property<Guid>("BarId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AppUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BarId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("CommentedOn")
@@ -264,9 +313,11 @@ namespace CM.Data.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasMaxLength(500);
 
-                    b.HasKey("BarId", "AppUserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("BarId");
 
                     b.ToTable("BarComments");
                 });
@@ -287,6 +338,20 @@ namespace CM.Data.Migrations
                     b.HasIndex("AppUserId");
 
                     b.ToTable("BarRatings");
+
+                    b.HasData(
+                        new
+                        {
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            AppUserId = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
+                            Score = 5
+                        },
+                        new
+                        {
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            AppUserId = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
+                            Score = 1
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.City", b =>
@@ -328,6 +393,9 @@ namespace CM.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double?>("AverageRating")
+                        .HasColumnType("float");
+
                     b.Property<string>("ImagePath")
                         .HasColumnType("nvarchar(max)");
 
@@ -338,6 +406,9 @@ namespace CM.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
+
+                    b.Property<string>("Recipe")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -366,10 +437,14 @@ namespace CM.Data.Migrations
 
             modelBuilder.Entity("CM.Models.CocktailComment", b =>
                 {
-                    b.Property<Guid>("CocktailId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AppUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CocktailId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("CommentedOn")
@@ -380,9 +455,11 @@ namespace CM.Data.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasMaxLength(500);
 
-                    b.HasKey("CocktailId", "AppUserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("CocktailId");
 
                     b.ToTable("CocktailComments");
                 });
@@ -588,13 +665,13 @@ namespace CM.Data.Migrations
                     b.HasOne("CM.Models.Bar", "Bar")
                         .WithMany("Cocktails")
                         .HasForeignKey("BarId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("CM.Models.Cocktail", "Cocktail")
                         .WithMany("Bars")
                         .HasForeignKey("CocktailId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 

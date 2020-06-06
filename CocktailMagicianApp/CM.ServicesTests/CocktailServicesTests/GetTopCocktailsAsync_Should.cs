@@ -34,9 +34,9 @@ namespace CM.ServicesTests.CocktailServicesTests
                           IsUnlisted = c.IsUnlisted,
                           AverageRating = c.AverageRating,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
+                                             Id = i.IngredientId,
                                          })
                                          .ToList(),
                       });
@@ -49,6 +49,24 @@ namespace CM.ServicesTests.CocktailServicesTests
                 var listedCocktailsCount = assertContext.Cocktails.Count(c => !c.IsUnlisted);
                 Assert.AreEqual(listedCocktailsCount, result.Count);
                 Assert.IsTrue(result[0].AverageRating >= result[1].AverageRating);
+            }
+        }
+
+        [TestMethod]
+        public async Task Throw_When_AmmountInvalid()
+        {
+            var options = Utility.GetOptions(nameof(Throw_When_AmmountInvalid));
+            await Utility.ArrangeContextAsync(options);
+
+            var mockMapper = new Mock<ICocktailMapper>();
+
+            var ammount = 0;
+
+            using var assertContext = new CMContext(options);
+            {
+                var sut = new CocktailServices(assertContext, mockMapper.Object);
+                await Assert.ThrowsExceptionAsync<ArgumentOutOfRangeException>
+                                (() => sut.GetTopCocktailsAsync(ammount));
             }
         }
     }

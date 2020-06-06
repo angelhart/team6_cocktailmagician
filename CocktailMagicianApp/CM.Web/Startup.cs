@@ -1,12 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +11,13 @@ using CM.DTOs.Mappers;
 using CM.Models;
 using CM.Services;
 using CM.Services.Contracts;
+using NToastNotify;
+using CM.Web.Middlewares;
+using CM.Services.Providers.Contracts;
+using CM.Services.Providers;
+using CM.Web.Providers.Contracts;
+using CM.Web.Providers.ViewModelMappers;
+using CM.Web.Providers;
 
 namespace CM.Web
 {
@@ -43,19 +44,41 @@ namespace CM.Web
                 .AddDefaultUI() // Consider commenting out this as it was missing in master
                 .AddDefaultTokenProviders();
 
+            //services.AddControllers().AddNewtonsoftJson(options =>
+            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            //);
+
             services.AddControllersWithViews();
             services.AddRazorPages();
 
 
-            services.AddScoped<ICocktailMapper, CocktailMapper>();
+            services.AddScoped<IAddressMapper, AddressMapper>();
             services.AddScoped<IBarMapper, BarMapper>();
+            services.AddScoped<ICocktailMapper, CocktailMapper>();
             services.AddScoped<IIngredientMapper, IngredientMapper>();
             services.AddScoped<IUserMapper, UserMapper>();
-            services.AddScoped<IAddressMapper, AddressMapper>();
 
-            services.AddScoped<IBarServices, BarServices>();
             services.AddScoped<IAddressServices, AddressServices>();
+            services.AddScoped<IAppUserServices, AppUserServices>();
+            services.AddScoped<IRatingServices, RatingServices>();
+            services.AddScoped<ICommentServices, CommentServices>();
+            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
 
+            //services.AddMvc().AddFeatureFolders().AddNToastNotifyNoty(new NotyOptions
+            //{
+            //    ProgressBar = true,
+            //    Timeout = 5000,
+            //    Theme = "mint"
+            //});
+
+            services.AddMvc().AddNToastNotifyNoty();
+            services.AddScoped<IBarServices, BarServices>();
+            services.AddScoped<ICocktailServices, CocktailServices>();
+            services.AddScoped<IIngredientServices, IngredientServices>();
+
+            services.AddScoped<IIngredientViewMapper, IngredientViewMapper>();
+
+            services.AddScoped<IStorageProvider, AppStorageProvider>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -80,11 +103,20 @@ namespace CM.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
+            //app.UseMiddleware<MissingMiddleware>();
+
+            app.UseNToastNotify();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "areas",
+                    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+
                 endpoints.MapRazorPages();
             });
         }

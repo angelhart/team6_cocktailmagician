@@ -1,0 +1,37 @@
+﻿@model CM.Web.Areas.Magician.Models.IngredientViewModel
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+<form id="ingrForm" asp-action="Create" method="post" enctype="multipart/form-data">
+    <dl>
+        <dt>
+            <label asp-for="Name"></label>
+        </dt>
+        <dd>
+            <input asp-for="Name" type="text">
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </dd>
+    </dl>
+    <div class="row">
+        <div class="ml-2 col-sm-6">
+            <label asp-for="Image"></label>
+            <input id="fileUploadInput" asp-for="Image" type="file" class="file" accept="image/*" hidden>
+            <div class="input-group my-3">
+                <input type="text" class="form-control col-sm-12" disabled placeholder="Upload Image" id="file">
+                <div class="input-group-append">
+                    <button type="button" class="browse btn btn-primary">Browse</button>
+                </div>
+                <span asp-validation-for="Image" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="ml-2 col-sm-6">
+            <img src="https://placehold.it/80x80" id="preview" class="img-thumbnail">
+        </div>
+        <div class="form-group">
+            <button id="submitBtn" type="submit" form="ingrForm" class="btn btn-primary">Add Ingredient</button>
+        </div>
+    </div>
+</form>

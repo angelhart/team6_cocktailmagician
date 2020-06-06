@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using CM.Models;
+using CM.Models.BaseClasses;
 
 namespace CM.DTOs
 {
@@ -15,8 +16,9 @@ namespace CM.DTOs
         public string Details { get; set; }
         public double? AverageRating { get; set; }
         public string ImagePath { get; set; }
+        public bool IsUnlisted { get; set; }
 
         public ICollection<BarCommentDTO> Comments { get; set; }
-        public ICollection<BarCocktailDTO> Cocktails { get; set; }
+        public ICollection<CocktailDTO> Cocktails { get; set; }
     }
 }

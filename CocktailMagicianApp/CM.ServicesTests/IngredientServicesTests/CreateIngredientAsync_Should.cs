@@ -23,11 +23,6 @@ namespace CM.ServicesTests.IngredientServicesTests
             await Utility.ArrangeContextAsync(options);
 
             var mockMapper = new Mock<IIngredientMapper>();
-            mockMapper.Setup(x => x.CreateIngredient(It.IsAny<IngredientDTO>()))
-                      .Returns<IngredientDTO>(i => new Ingredient
-                      {
-                          Name = i.Name
-                      });
             mockMapper.Setup(x => x.CreateIngredientDTO(It.IsAny<Ingredient>()))
                       .Returns<Ingredient>(i => new IngredientDTO
                       {
@@ -57,11 +52,6 @@ namespace CM.ServicesTests.IngredientServicesTests
             await Utility.ArrangeContextAsync(options);
 
             var mockMapper = new Mock<IIngredientMapper>();
-            mockMapper.Setup(x => x.CreateIngredient(It.IsAny<IngredientDTO>()))
-                      .Returns<IngredientDTO>(i => new Ingredient
-                      {
-                          Name = i.Name
-                      });
             mockMapper.Setup(x => x.CreateIngredientDTO(It.IsAny<Ingredient>()))
                       .Returns<Ingredient>(i => new IngredientDTO
                       {

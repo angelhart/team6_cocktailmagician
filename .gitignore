@@ -335,5 +335,5 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
-# Ignore All Images
-CocktailMagicianApp/CM.Web/wwwroot/images/
+# Ignore Ingredient Images
+CocktailMagicianApp/CM.Web/wwwroot/images/Ingredients/

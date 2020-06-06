@@ -4,6 +4,7 @@ using CM.DTOs.Mappers.Contracts;
 using CM.Models;
 using CM.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic.FileIO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using System;
@@ -25,40 +26,30 @@ namespace CM.ServicesTests.CocktailServicesTests
 
             var mockMapper = new Mock<ICocktailMapper>();
 
-            mockMapper.Setup(x => x.CreateCocktail(It.IsAny<CocktailDTO>()))
-                      .Returns<CocktailDTO>(c => new Cocktail
-                      {
-                          Name = c.Name,
-                      });
-
             mockMapper.Setup(x => x.CreateCocktailDTO(It.IsAny<Cocktail>()))
                       .Returns<Cocktail>(c => new CocktailDTO
                       {
                           Id = c.Id,
                           Name = c.Name,
                           Ingredients = c.Ingredients
-                                         .Select(i => new CocktailIngredientDTO
+                                         .Select(i => new IngredientDTO
                                          {
-                                             IngredientId = i.IngredientId,
+                                             Id = i.IngredientId,
                                          })
                                          .ToList(),
-                      });
-
-            mockMapper.Setup(x => x.CreateCocktailIngredient(It.IsAny<Guid>(), It.IsAny<CocktailIngredientDTO>()))
-                      .Returns<Guid, CocktailIngredientDTO>((guid, dto) => new CocktailIngredient
-                      {
-                          CocktailId = guid,
-                          IngredientId = dto.IngredientId
                       });
 
             var input = new CocktailDTO
             {
                 Name = "New Name",
-                Ingredients = new List<CocktailIngredientDTO>
+                Recipe = "Recipe text",
+                Ingredients = new List<IngredientDTO>
                 {
-                    new CocktailIngredientDTO
+                    new IngredientDTO
                     {
-                        IngredientId = Guid.Parse("eb5d7135-f194-4443-a5ff-cc955396648e") // Ingredient A
+                        Id = Guid.Parse("eb5d7135-f194-4443-a5ff-cc955396648e"), // Ingredient A
+                        Ammount = 2,
+                        Unit = Unit.ml.ToString(),
                     }
                 }
             };
@@ -80,12 +71,6 @@ namespace CM.ServicesTests.CocktailServicesTests
             await Utility.ArrangeContextAsync(options);
 
             var mockMapper = new Mock<ICocktailMapper>();
-
-            mockMapper.Setup(x => x.CreateCocktail(It.IsAny<CocktailDTO>()))
-                      .Returns<CocktailDTO>(c => new Cocktail
-                      {
-                          Name = c.Name,
-                      });
 
             mockMapper.Setup(x => x.CreateCocktailDTO(It.IsAny<Cocktail>()))
                       .Returns<Cocktail>(c => new CocktailDTO

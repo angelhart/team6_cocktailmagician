@@ -1,0 +1,43 @@
+﻿@model CM.Web.Areas.Magician.Models.IngredientViewModel
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Create Ingredient</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <!-- Partial view here-->
+        @{await Html.RenderPartialAsync("_CreatePartial", Model);}
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>
+
+@section Scripts {
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
+    <script src="~/js/UploadImage.js"></script>
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    @*<script>
+            $.validator.unobtrusive.adapters.add('maxsize', ['maxfilesize'], function (options) {
+                        console.log(options);
+
+                var element = $(options.form).find('input#fileUploadInput');
+
+                options.rules['maxsize'] = [element, parseInt(options.params['file'])];
+                options.messages['maxsize'] = options.message;
+            });
+        </script>*@
+}
