@@ -8,6 +8,7 @@ namespace CM.Web.Models
         public string Phone { get; set; }
         public string Details { get; set; }
         public int? Score { get; set; }
+        public Guid AddressId { get; set; }
         public ICollection<BarCommentViewModel> Comments { get; set; }
         public ICollection<CocktailViewModel> Cocktails { get; set; }
         public Guid [] SelectedCocktails { get; set; }

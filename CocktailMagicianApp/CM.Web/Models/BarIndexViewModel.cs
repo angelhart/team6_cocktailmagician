@@ -11,6 +11,7 @@ namespace CM.Web.Models
 		public Guid CityID { get; set; }
 		public string City { get; set; }
 		public string Street { get; set; }
+		public string FullAddress { get; set; }
 		public double? AverageRating { get; set; }
 		public string? ImagePath { get; set; }
 		public bool IsUnlisted { get; set; }
