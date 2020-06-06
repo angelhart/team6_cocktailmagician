@@ -2,7 +2,7 @@ $(document).ready(function () {
     // -------------------------------------------
     // Identical script, but for Admin style table
     // \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
-    $('#cocktailsTable').DataTable({
+    $('#cocktailsMagicianTable').DataTable({
         processing: true, //progress bar
         serverSide: true, //server side processing
         filter: true, //disable search box
@@ -63,8 +63,58 @@ $(document).ready(function () {
                     return buttons;
                 },
                 orderable: false,
+            },
+            {
+                // Unlist checkbox
+                render: function (data, type, full, meta) {
+                    var checked = '';
+                    if (full.isUnlisted) {
+                        checked = 'checked';
+                    }
+                    return '<input type="checkbox" class="check-box" onMouseDown=Unlist("' + full.id + '","' + encodeURIComponent(full.name) + '","' + !full.isUnlisted + '");' + checked + '></input>';
+                },
+                orderable: false,
+                visible: true
+            },
+            {
+                // Edit button
+                render: function (data, type, full, meta) {
+                    return '<a class="btn btn-info" href="/magician/cocktails/edit/' + full.id + '">Edit</a>';
+                },
+                orderable: false,
+                visible: true
             }
         ]
     });
 
 });
+
+function Unlist(id, name, state) {
+    if (confirm("Change listing for " + decodeURIComponent(name) + "?")) {
+        UnlistConfirmed(id, state);
+    } else {
+        return false;
+    }
+}
+
+
+function UnlistConfirmed(id, state) {
+    var url = "cocktails/UpdateListing/";
+    var form = $('#__AjaxAntiForgeryForm');
+    var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+    $.post(url,
+        {
+            id: id,
+            state: state,
+            __RequestVerificationToken: token
+        },
+        function (data) {
+        if (data) {
+            oTable = $('#cocktailsMagicianTable').DataTable();
+            oTable.draw();
+        } else {
+            alert("Something Went Wrong!");
+        }
+    });
+}  

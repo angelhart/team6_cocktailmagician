@@ -56,7 +56,7 @@ $(document).ready(function () {
                 // Delete button
                 render: function (data, type, row) {
                     //return '<a class="btn btn-danger" href="/magician/ingredients/delete/' + row.id + '">Delete</a>';
-                    return '<a href="#" class="btn btn-danger" onclick=DeleteData("' + row.id + '","' + row.name + '"); >Delete</a>';
+                    return '<a href="#" class="btn btn-danger" onclick=DeleteData("' + row.id + '","' + encodeURIComponent(row.name) + '"); >Delete</a>';
                 },
                 orderable: false
             }

@@ -33,7 +33,6 @@
     <Folder Include="Areas\Magician\Data\" />
     <Folder Include="Areas\BarCrawler\Data\" />
     <Folder Include="Areas\BarCrawler\Views\" />
-    <Folder Include="wwwroot\images\Cocktails\" />
   </ItemGroup>
 
 </Project>
