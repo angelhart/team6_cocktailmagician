@@ -16,6 +16,6 @@ namespace CM.Services.Contracts
         Task<PaginatedList<CocktailDTO>> PageCocktailsAsync(string searchString = "", string sortBy = "", string sortOrder = "", int pageNumber = 1, int pageSize = 10, bool allowUnlisted = false);
         Task<CocktailDTO> UpdateCocktailAsync(CocktailDTO dto);
         Task<CocktailDTO> DeleteAsync(Guid id);
-        Task<int> CountAllCocktailsAsync();
+        Task<int> CountAllCocktailsAsync(bool countUnlisted = false);
     }
 }

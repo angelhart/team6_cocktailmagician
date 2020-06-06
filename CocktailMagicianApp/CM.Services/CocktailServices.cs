@@ -260,7 +260,12 @@ namespace CM.Services
             return dto;
         }
 
-        public async Task<int> CountAllCocktailsAsync()
+        /// <summary>
+        /// Counts the cocktail records in the database.
+        /// </summary>
+        /// <param name="countUnlisted">Set to true to include unlisted cocktails</param>
+        /// <returns>Number of cocktails in database.</returns>
+        public async Task<int> CountAllCocktailsAsync(bool countUnlisted = false)
         {
             return await _context.Cocktails.CountAsync();
         }
