@@ -137,7 +137,12 @@ namespace CM.Services
 			bar.Name = barDTO.Name;
 			bar.Phone = barDTO.Phone;
 			bar.Details = barDTO.Details;
-			bar.ImagePath = barDTO.ImagePath;
+			if (barDTO.ImagePath != null)
+			{
+				bar.ImagePath = barDTO.ImagePath;
+			}
+
+			await UpdateCocktailsInBarAsync(bar.Id, barDTO.Cocktails);
 
 			_context.Update(bar);
 			await _context.SaveChangesAsync();
@@ -176,7 +181,7 @@ namespace CM.Services
 
 				var addressDTO = await _addressServices.CreateAddressAsync(barDTO.Address);
 				bar.AddressID = addressDTO.Id;
-				bar.FullAddress = $"{addressDTO.CountryName}, {addressDTO.CityName}, {addressDTO.Street}";
+				bar.FullAddress = $"{addressDTO.CityName}, {addressDTO.Street}";
 
 				var cocktails = barDTO.Cocktails.Select(sc =>
 				new BarCocktail
@@ -324,6 +329,22 @@ namespace CM.Services
 				_ => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(c => c.Name) :
 													   bars.OrderByDescending(c => c.Name),
 			};
+		}
+		private async Task UpdateCocktailsInBarAsync(Guid barId, ICollection<CocktailDTO> newCocktails)
+		{
+			var currentCocktails = _context.BarCocktails
+											 .Where(bc => bc.BarId == barId);
+
+			_context.RemoveRange(currentCocktails);
+
+			var cocktailsToAdd = newCocktails.Select(cocktailDTO => new BarCocktail
+			{
+				BarId = barId,
+				CocktailId = cocktailDTO.Id,
+			});
+
+			await _context.AddRangeAsync(cocktailsToAdd);
+			await _context.SaveChangesAsync();
 		}
 	}
 }

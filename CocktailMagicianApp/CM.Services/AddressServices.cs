@@ -167,7 +167,6 @@ namespace CM.Services
 
             addressDTO.Id = address.Id;
             addressDTO.CityName = address.City.Name;
-            addressDTO.CountryName = address.City.Country.Name;
 
             return addressDTO;
         }
