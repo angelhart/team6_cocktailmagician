@@ -97,7 +97,7 @@
 					@foreach (var cocktail in Model.Cocktails)
 					{
 						<div class="col-sm-2">
-							<a class="card custom-card" asp-controller="Cocktails" area=" " asp-action="Details" asp-route-id="@cocktail.Id">
+							<a class="card custom-card" asp-area="Magician" asp-controller="Cocktails" asp-action="Details" asp-route-id="@cocktail.Id">
 								<img src="/images/DefaultCocktail.png" class="card-img-top" alt="...">
 								<div class="card-body">
 									<p class="card-text">@cocktail.Name</p>
