@@ -2,17 +2,14 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CM.Services.Contracts;
 using CM.Web.Models;
 using CM.DTOs;
 using CM.DTOs.Mappers.Contracts;
-using Microsoft.AspNetCore.Authorization;
 using NToastNotify;
-using CM.Models;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using CM.Services.Providers.Contracts;
+using CM.Web.Providers;
 
 namespace CM.Web.Controllers
 {
@@ -29,8 +26,8 @@ namespace CM.Web.Controllers
 		private readonly ICocktailServices _cocktailServices;
 
 
-		public BarsController(IAppUserServices appUserServices,IBarServices barServices, IAddressServices addressServices, IAddressMapper addressMapper, IRatingServices ratingServices,
-			IToastNotification toastNotification, ICommentServices commentServices, IDateTimeProvider dateTimeProvider,ICocktailServices cocktailServices)
+		public BarsController(IAppUserServices appUserServices, IBarServices barServices, IAddressServices addressServices, IAddressMapper addressMapper, IRatingServices ratingServices,
+			IToastNotification toastNotification, ICommentServices commentServices, IDateTimeProvider dateTimeProvider, ICocktailServices cocktailServices)
 		{
 			_barServices = barServices ?? throw new ArgumentNullException(nameof(barServices));
 			_addressServices = addressServices ?? throw new ArgumentNullException(nameof(addressServices));
@@ -43,38 +40,54 @@ namespace CM.Web.Controllers
 			_cocktailServices = cocktailServices ?? throw new ArgumentNullException(nameof(cocktailServices));
 		}
 
-		//public async Task<ActionResult> IndexTable()
-		//{
-		//	try
-		//	{
-		//		var drawString = HttpContext.Request.Form["draw"].FirstOrDefault();
-		//		int draw = drawString != null ? Convert.ToInt32(drawString) : 0;
-		//		var start = Request.Form["start"].FirstOrDefault();
-		//		var length = Request.Form["length"].FirstOrDefault();
-		//		var searchString = Request.Form["search[value]"].FirstOrDefault();
-		//		var sortBy = Request.Form
-		//						["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"]
-		//						.FirstOrDefault();
-		//		var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault(x => x.Equals("desc"));
+		public async Task<ActionResult> IndexTable()
+		{
+			try
+			{
+				var drawString = HttpContext.Request.Form["draw"].FirstOrDefault();
+				int draw = drawString != null ? Convert.ToInt32(drawString) : 0;
+				var start = Request.Form["start"].FirstOrDefault();
+				var length = Request.Form["length"].FirstOrDefault();
+				var searchString = Request.Form["search[value]"].FirstOrDefault();
+				var sortBy = Request.Form
+								["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"]
+								.FirstOrDefault();
+				var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault(x => x.Equals("desc"));
 
-		//		int pageSize = length != null ? Convert.ToInt32(length) : 0;
-		//		int pageNumber = start != null ? (1 + ((int)Math.Ceiling(Convert.ToDouble(start) / pageSize))) : 0;
-		//		int recordsTotal = await _ingredientServices.CountAllIngredientsAsync();
 
-		//		var dtos = await _ingredientServices.PageIngredientsAsync(searchString, pageNumber, pageSize);
-		//		var vms = dtos.Select(d => _ingredientViewMapper.CreateIngredientViewModel(d)).ToList();
+				int pageSize = length != null ? Convert.ToInt32(length) : 0;
+				int pageNumber = start != null ? (1 + ((int)Math.Ceiling(Convert.ToDouble(start) / pageSize))) : 0;
+				int recordsTotal = await _barServices.CountAllBarsAsync();
+				bool allowUnlisted = true;
 
-		//		var recordsFiltered = dtos.SourceItems;
+				//if (HttpContext.User.IsInRole("Magician"))
+				//	allowUnlisted = true;
 
-		//		var output = DataTablesProvider<IngredientViewModel>.CreateResponse(draw, recordsTotal, recordsFiltered, vms);
+				var dtos = await _barServices.GetAllBarsAsync(searchString, pageNumber, pageSize, sortBy, sortOrder, allowUnlisted);
+				var vms = dtos.Select(x => new BarIndexViewModel
+				{
+					Id = x.Id,
+					Name = x.Name,
+					Country = x.Address.CountryName,
+					City = x.Address.CityName,
+					Street = x.Address.Street,
+					AverageRating = Math.Round((double)x.AverageRating, 2),
+					ImagePath = x.ImagePath,
+					IsUnlisted = x.IsUnlisted
+					
+				}).ToList();
 
-		//		return Ok(output);
-		//	}
-		//	catch (Exception e)
-		//	{
-		//		return BadRequest(e.Message);
-		//	}
-		//}
+				var recordsFiltered = dtos.SourceItems;
+
+				var output = DataTablesProvider<BarIndexViewModel>.CreateResponse(draw, recordsTotal, recordsFiltered, vms);
+
+				return Ok(output);
+			}
+			catch (Exception e)
+			{
+				return BadRequest(e.Message);
+			}
+		}
 		public async Task<IActionResult> Index()
 		{
 			var bars = await this._barServices.GetAllBarsAsync();
@@ -93,12 +106,6 @@ namespace CM.Web.Controllers
 
 		public async Task<IActionResult> Details(Guid id)
 		{
-
-			if (id == null)
-			{
-				return NotFound();
-			}
-
 			var barDTO = await this._barServices.GetBarAsync(id);
 
 			var barViewModel = new BarViewModel
@@ -131,7 +138,7 @@ namespace CM.Web.Controllers
 
 		public async Task<IActionResult> Create()
 		{
-			var collectionOfCountries = await  this._addressServices.GetAllCountriesAsync();
+			var collectionOfCountries = await this._addressServices.GetAllCountriesAsync();
 			var listOfCountries = collectionOfCountries.ToList();
 			ViewBag.listOfCountries = listOfCountries;
 
@@ -162,11 +169,13 @@ namespace CM.Web.Controllers
 						Name = barViewModel.Name,
 						Phone = barViewModel.Phone,
 						Details = barViewModel.Details,
-						ImagePath = barViewModel.ImagePath,
+
 						Address = addressDTO,
 
-						Cocktails =barViewModel.SelectedCocktails.Select(sc => new CocktailDTO { Id = sc }).ToList()
+						Cocktails = barViewModel.SelectedCocktails.Select(sc => new CocktailDTO { Id = sc }).ToList()
 					};
+					if (!string.IsNullOrEmpty(barViewModel.ImagePath))
+						barDTO.ImagePath = barViewModel.ImagePath;
 
 					await this._barServices.CreateBarAsync(barDTO);
 					_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully created!");
@@ -184,10 +193,6 @@ namespace CM.Web.Controllers
 
 		public async Task<IActionResult> Edit(Guid id)
 		{
-			if (id == null)
-			{
-				return NotFound();
-			}
 			try
 			{
 				var barDTO = await this._barServices.GetBarAsync(id);
@@ -272,7 +277,7 @@ namespace CM.Web.Controllers
 					});
 
 					_toastNotification.AddSuccessToastMessage($"You rated this Bar with {rateBarViewModel.Score} stars!");
-					return RedirectToAction(nameof(Details), new {id = rateBarViewModel.BarId });
+					return RedirectToAction(nameof(Details), new { id = rateBarViewModel.BarId });
 				}
 				catch (InvalidOperationException)
 				{
@@ -296,7 +301,7 @@ namespace CM.Web.Controllers
 				try
 				{
 					var appUserId = await this._appUserServices.GetUserIdAsync(HttpContext.User.Identity.Name);
-					
+
 					barCommentViewModel.UserId = appUserId.Id;
 					barCommentViewModel.UserName = HttpContext.User.Identity.Name;
 					barCommentViewModel.CommentedOn = this._dateTimeProvider.GetDateTimeDateTimeOffset();
@@ -318,27 +323,6 @@ namespace CM.Web.Controllers
 				}
 			}
 			return View(barCommentViewModel);
-		}
-
-		public async Task<IActionResult> Delete(Guid id)
-		{
-			var barDTO = await this._barServices.GetBarAsync(id);
-
-			if (barDTO == null)
-			{
-				return NotFound();
-			}
-
-			var barViewModel = new BarViewModel
-			{
-				Id = barDTO.Id,
-				Name = barDTO.Name,
-				Phone = barDTO.Phone,
-				Details = barDTO.Details,
-				ImagePath = barDTO.ImagePath,
-			};
-
-			return View(barViewModel);
 		}
 
 		[HttpPost, ActionName("Delete")]
@@ -364,3 +348,26 @@ namespace CM.Web.Controllers
 		}
 	}
 }
+
+
+
+//public async Task<IActionResult> Delete(Guid id)
+//{
+//	var barDTO = await this._barServices.GetBarAsync(id);
+
+//	if (barDTO == null)
+//	{
+//		return NotFound();
+//	}
+
+//	var barViewModel = new BarViewModel
+//	{
+//		Id = barDTO.Id,
+//		Name = barDTO.Name,
+//		Phone = barDTO.Phone,
+//		Details = barDTO.Details,
+//		ImagePath = barDTO.ImagePath,
+//	};
+
+//	return View(barViewModel);
+//}

@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CM.Models;
 
 namespace CM.Web.Models
 {
@@ -16,7 +12,8 @@ namespace CM.Web.Models
 		public string City { get; set; }
 		public string Street { get; set; }
 		public double? AverageRating { get; set; }
-		public string ImagePath { get; set; }
+		public string? ImagePath { get; set; }
+		public bool IsUnlisted { get; set; }
 
 
 	}
