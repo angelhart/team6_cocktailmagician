@@ -26,41 +26,41 @@
 </p>
 
 
-@*@if (User.IsInRole("Magician"))
-	{*@
-<table id="barsTable" class="display">
-	<!--hover order-column stripe-->
-	<thead>
-		<tr>
-			<th>Image</th>
-			<th>Name</th>
-			<th>Country</th>
-			<th>City</th>
-			<th>Address</th>
-			<th>Avg. Rating</th>
-			<th>Edit</th>
-			<th>Delete</th>
-		</tr>
-	</thead>
-</table>
-@*}
-	else
-	{
-		<table id="crawlersTable" class="display">
-			<!--hover order-column stripe-->
-			<thead>
-				<tr>
-					<th>Image</th>
-					<th>Name</th>
-					<th>Country</th>
-					<th>City</th>
-					<th>Address</th>
-					<th>Avg. Rating</th>
-				</tr>
-			</thead>
-		</table>
-	}
-*@
+@if (User.IsInRole("Magician"))
+{
+	<table id="barsTable" class="display">
+		<!--hover order-column stripe-->
+		<thead>
+			<tr>
+				<th>Image</th>
+				<th>Name</th>
+				<th>Country</th>
+				<th>City</th>
+				<th>Address</th>
+				<th>Avg. Rating</th>
+				<th>Edit</th>
+				<th>Delete</th>
+			</tr>
+		</thead>
+	</table>
+}
+else
+{
+	<table id="crawlersTable" class="display">
+		<!--hover order-column stripe-->
+		<thead>
+			<tr>
+				<th>Image</th>
+				<th>Name</th>
+				<th>Country</th>
+				<th>City</th>
+				<th>Address</th>
+				<th>Avg. Rating</th>
+			</tr>
+		</thead>
+	</table>
+}
+
 
 
 <div>
@@ -71,15 +71,15 @@
 	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
 	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
-	@*@if (User.IsInRole("Magician"))
-		{*@
-	<script src="~/js/BarScripts/BarsMagicianTable.js"></script>
-	@*}
-		else
-			{
-				<script src="~/js/BarScripts/BarsCrawlerTable.js"></script>
-			}
-	*@
+	@if (User.IsInRole("Magician"))
+	{
+		<script src="~/js/BarScripts/BarsMagicianTable.js"></script>
+	}
+	else
+	{
+		<script src="~/js/BarScripts/BarsCrawlerTable.js"></script>
+	}
+
 	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
 }
