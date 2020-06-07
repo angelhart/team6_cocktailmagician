@@ -226,7 +226,9 @@ namespace CM.Services
                                                                          string sortOrder = "",
                                                                          int pageNumber = 1,
                                                                          int pageSize = 10,
-                                                                         bool allowUnlisted = false)
+                                                                         bool allowUnlisted = false,
+                                                                         double? minRating = null,
+                                                                         double? maxRating = null)
         {
             if (searchString == null)
                 throw new ArgumentNullException("Search string cannot be null.");
@@ -240,7 +242,9 @@ namespace CM.Services
                                     .Include(c => c.Ratings)
                                     .Where(c => (!c.IsUnlisted || allowUnlisted)
                                                 && (c.Name.Contains(searchString)
-                                                || c.Ingredients.Any(ci => ci.Ingredient.Name.Contains(searchString))));
+                                                || c.Ingredients.Any(ci => ci.Ingredient.Name.Contains(searchString))))
+                                    .Where(c => minRating == null || c.AverageRating > minRating)
+                                    .Where(c => maxRating == null || c.AverageRating > maxRating);
 
             cocktails = SortCocktails(cocktails, sortBy, sortOrder);
 
