@@ -109,18 +109,21 @@ namespace CM.Data.Seeder
 				{
 					Id = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"),
 					Name = "Loch Lomond",
+					ImagePath = "\\images\\Cocktails\\DefaultCocktail.png"
 				},
 
 				new Cocktail
 				{
 					Id = new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"),
 					Name = "Strawberry Lemonade",
+					ImagePath = "\\images\\Cocktails\\DefaultCocktail.png"
 				},
 
 				new Cocktail
 				{
 					Id = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"),
 					Name = "Rum Milk Punch",
+					ImagePath = "\\images\\Cocktails\\DefaultCocktail.png"
 				});
 
 
