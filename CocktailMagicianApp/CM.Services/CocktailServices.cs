@@ -98,7 +98,8 @@ namespace CM.Services
             
             cocktail.Bars = await _context.BarCocktails
                                     .Include(bc => bc.Bar)
-                                    .Where(bc => !bc.Bar.IsUnlisted || allowUnlisted)
+                                    .Where(bc => (!bc.Bar.IsUnlisted || allowUnlisted)
+                                                  && bc.CocktailId == cocktailId)
                                     .ToListAsync();
 
             cocktail.Comments = await _context.CocktailComments
