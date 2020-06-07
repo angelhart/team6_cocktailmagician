@@ -59,12 +59,8 @@ namespace CM.Web.Controllers
         }
 
         // GET: Magician/Cocktails
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            //var permission = User.IsInRole("Magician");
-            //var dtos = await _cocktailServices.PageCocktailsAsync(allowUnlisted: permission);
-            //var vms = dtos.Select(c => _cocktailViewMapper.CreateCocktailViewModel(c));
-
             return View();
         }
 
@@ -83,8 +79,12 @@ namespace CM.Web.Controllers
                                 ["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"]
                                 .FirstOrDefault();
                 var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault(x => x.Contains("desc"));
-                Request.Form["minRating"].FirstOrDefault(x => int.TryParse(x, out int minRating));
-                Request.Form["maxRating"].FirstOrDefault(x => int.TryParse(x, out int maxRating));
+                
+                // TODO: finalise implementation of rating search
+                var minRatingString = Request.Form["minRating"].FirstOrDefault();
+                double.TryParse(minRatingString, out double minRating);
+                var maxRatingString = Request.Form["maxRating"].FirstOrDefault();
+                double.TryParse(maxRatingString, out double maxRating);
 
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int pageNumber = start != null ? 1 + (int)Math.Ceiling(Convert.ToDouble(start) / pageSize) : 0;
@@ -92,7 +92,8 @@ namespace CM.Web.Controllers
 
                 var permission = User.IsInRole("Magician");
 
-                var dtos = await _cocktailServices.PageCocktailsAsync(searchString, sortBy, sortOrder, pageNumber, pageSize, permission);
+                var dtos = await _cocktailServices.PageCocktailsAsync(searchString, sortBy, sortOrder, pageNumber,
+                                                                      pageSize, permission);//, minRating, maxRating);
                 var vms = dtos.Select(d => _cocktailViewMapper.CreateCocktailViewModel(d)).ToList();
 
                 var recordsFiltered = dtos.SourceItems;

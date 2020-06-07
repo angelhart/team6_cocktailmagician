@@ -80,7 +80,7 @@
 <body>
     <div>
         <dl class="row">
-            
+
             <dt class="col-sm-2">
                 @Html.DisplayNameFor(model => model.Ingredients)
             </dt>
@@ -160,7 +160,15 @@
     }
 
     <div class="card-body text-center">
-        <h3 class="comments-title">@Html.DisplayNameFor(model => model.Comments) (@Html.DisplayFor(model => model.Comments.Count))</h3>
+        @if (User.IsInRole("Magician") || User.IsInRole("Crawler"))
+        {
+
+            <h3 class="comments-title">@Html.DisplayNameFor(model => model.Comments) (@Html.DisplayFor(model => model.Comments.Count))</h3>
+        }
+        else
+        {
+            <h3 class="comments-title">@Html.DisplayNameFor(model => model.Comments) <a asp-area="Identity" asp-controller="Account" asp-action="Login">Log in</a></h3>
+        }
     </div>
     @foreach (var item in Model.Comments)
     {

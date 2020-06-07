@@ -42,7 +42,7 @@ $(document).ready(function () {
             },
             {
                 // Rating collumn
-                name: 'averageRating',
+                name: 'rating',
                 data: 'averageRating',
                 render: function (data, type, full, meta) {
                     return full.averageRating;

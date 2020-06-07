@@ -94,7 +94,7 @@ namespace CM.Web.Areas.Magician.Controllers
 
                 var role = User.IsInRole("Magician") ? "Magician" : "";
 
-                var output = DataTablesProvider<CocktailViewModel>.CreateResponse(draw, recordsTotal, recordsFiltered, vms, role);
+                var output = DataTablesProvider<CocktailViewModel>.CreateResponse(draw, recordsTotal, recordsFiltered, vms);
 
                 return Ok(output);
             }
