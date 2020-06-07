@@ -32,7 +32,7 @@ $(document).ready(function () {
                 // Thumbnail
                 // data: "imagePath",
                 render: function (url, type, full) {
-                    return '<img class="img-thumbnail" height="75px" width="75px" src="' + full.imagePath + '"/>';
+                    return '<img class="img-thumbnail" height="100" width="auto" src="' + full.imagePath + '"/>';
                 },
                 orderable: false
             },

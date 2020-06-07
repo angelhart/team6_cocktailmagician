@@ -36,8 +36,14 @@ namespace CM.Web.Models
         
         [DisplayName("Unlist")]
         public bool IsUnlisted { get; set; }
+        
+        [DisplayName("What you can find inside:")]
         public ICollection<IngredientViewModel> Ingredients { get; set; } = new List<IngredientViewModel>();
+        
+        [DisplayName("Where can you have it:")]
         public ICollection<BarViewModel> Bars { get; set; } = new List<BarViewModel>();
+
+        [DisplayName("See what people are saying about it:")]
         public ICollection<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
     }
 }

@@ -58,6 +58,7 @@ namespace CM.Web
             services.AddScoped<IIngredientMapper, IngredientMapper>();
             services.AddScoped<IUserMapper, UserMapper>();
             services.AddScoped<ICommentViewMapper, CommentViewMapper>();
+            services.AddScoped<IRatingViewMapper, RatingViewMapper>();
 
             services.AddScoped<IAddressServices, AddressServices>();
             services.AddScoped<IAppUserServices, AppUserServices>();
@@ -85,6 +86,7 @@ namespace CM.Web
             services.AddScoped<IIngredientServices, IngredientServices>();
 
             services.AddScoped<IIngredientViewMapper, IngredientViewMapper>();
+            services.AddScoped<ICocktailViewMapper, CocktailViewMapper>();
 
             services.AddScoped<IStorageProvider, AppStorageProvider>();
         }

@@ -1,7 +1,9 @@
 ﻿using CM.DTOs;
+using CM.Web.Areas.BarCrawler.Models;
 using CM.Web.Areas.Magician.Models;
 using CM.Web.Models;
 using CM.Web.Providers.Contracts;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System;
 using System.Linq;
 
@@ -62,6 +64,35 @@ namespace CM.Web.Providers.ViewModelMappers
                 Ingredients = dto.Ingredients
                                  .Select(i => CreateIngredientViewModel(i))
                                  .ToList(),
+                Bars = dto.Bars
+                          .Select(b => CreateBarViewModel(b))
+                          .ToList(),
+                Comments = dto.Comments
+                              .Select(c => CreateCommentViewModel(c))
+                              .ToList()
+            };
+        }
+
+        private BarViewModel CreateBarViewModel(BarDTO dto)
+        {
+            return new BarViewModel
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                ImagePath = dto.ImagePath,
+            };
+
+        }
+        private CommentViewModel CreateCommentViewModel(CocktailCommentDTO dto)
+        {
+            return new CommentViewModel
+            {
+                Id = dto.Id,
+                EntityId = dto.CocktailId,
+                UserId = dto.UserId,
+                UserName = dto.UserName,
+                Text = dto.Text,
+                CommentedOn = dto.CommentedOn
             };
         }
 

@@ -1,0 +1,200 @@
+﻿@model CocktailViewModel
+
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles {
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="~/css/StarRating.css" />
+    <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        a.custom-card,
+        a.custom-card:hover {
+            color: inherit;
+        }
+    </style>
+}
+
+<div class="row">
+    <div class="col-sm-4 justify-content-center">
+        <h1>@Html.DisplayFor(model => model.Name)</h1>
+        <dl class="row">
+            <dt class="col-sm-6">
+                @Html.DisplayNameFor(model => model.AverageRating)
+            </dt>
+            <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.AverageRating)
+            </dd>
+            <dt class="col-sm-6">
+                @Html.DisplayNameFor(model => model.Recipe)
+            </dt>
+            <dd class="col-sm-6">
+                @Html.DisplayFor(model => model.Recipe)
+            </dd>
+        </dl>
+
+        @*------------------------------
+            Rating
+            --------------------------------*@
+
+        @if (User.IsInRole("Crawler") || User.IsInRole("Magician"))
+        {
+            <div class="rating-box">
+                <br />
+                <form asp-area="BarCrawler"
+                      asp-controller="Ratings"
+                      asp-action="RateCocktail"
+                      method="post">
+
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+                    <div class="rating">
+                        <span class="fa fa-star-o"></span>
+                        <span class="fa fa-star-o"></span>
+                        <span class="fa fa-star-o"></span>
+                        <span class="fa fa-star-o"></span>
+                        <span class="fa fa-star-o"></span>
+                    </div>
+                    <br />
+                    <div class="form-group">
+                        <input name="Score" type="number" hidden id="rating-value" value="rating-value" />
+                        <input name="EntityId" asp-for="@Model.Id" hidden />
+                        <button type="submit" value="Submit Rating" class="btn btn-outline-dark">Submit</button>
+                    </div>
+                </form>
+            </div>
+        }
+
+        @*------------------------------
+            endOfRating
+            --------------------------------*@
+    </div>
+    <div class="col-sm-8">
+        <img class="d-block float-right" width="auto" height="300" src="@Model.ImagePath">
+    </div>
+</div>
+
+<body>
+    <div>
+        <dl class="row">
+            
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Ingredients)
+            </dt>
+            <dd class="col-sm-10">
+                <div class=" row">
+                    @foreach (var ingredient in Model.Ingredients)
+                    {
+                        <div class="col-sm-2">
+                            @if (User.IsInRole("Magician"))
+                            {
+                                <a class="card custom-card" asp-controller="Ingredients" asp-area="Magician" asp-action="Details" asp-route-id="@ingredient.Id">
+                                    <img src="@ingredient.ImagePath" class="card-img-top" alt="@ingredient.Name">
+                                    <div class="card-body">
+                                        <p class="card-text">@ingredient.Name</p>
+                                    </div>
+                                </a>
+                            }
+                            else
+                            {
+                                <div class="card custom-card">
+                                    <img src="@ingredient.ImagePath" class="card-img-top" alt="@ingredient.Name">
+                                    <div class="card-body">
+                                        <p class="card-text">@ingredient.Name</p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Bars)
+            </dt>
+            <dd class="col-sm-10">
+                <div class=" row">
+                    @foreach (var bar in Model.Bars)
+                    {
+                        <div class="col-sm-2">
+                            <a class="card custom-card" asp-controller="Bars" asp-action="Details" asp-route-id="@bar.Id">
+                                <img src="@bar.ImagePath" class="card-img-top" alt="@bar.Name">
+                                <div class="card-body">
+                                    <p class="card-text">@bar.Name</p>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </dd>
+        </dl>
+    </div>
+
+    <!-- Comments -->
+    @if (User.IsInRole("Crawler") || User.IsInRole("Magician"))
+    {
+        <form asp-area="BarCrawler"
+              asp-controller="Comments"
+              asp-action="CommentCocktail">
+            <div class="card-body text-center">
+                <h3 class="comments-title">New Comment</h3>
+            </div>
+            <fieldset>
+                <div class="row">
+                    <div class="col-sm-3 col-lg-2 hidden-xs">
+                        <img width="150" class="rounded-circle g-mt-3 g-mr-15" src="~/images/DefaultUser.png" alt="User avatar">
+                    </div>
+                    <div class="form-group col-xs-12 col-sm-9 col-lg-10">
+                        <input name="EntityId" value="@Model.Id" hidden>
+                        <textarea name="Text" class="form-control" placeholder="Your message" required="" rows="5"></textarea>
+                    </div>
+                </div>
+                <div class="float-right">
+                    <button type="submit" value="Add Comment" class="btn btn-outline-secondary" .pull-right>Submit</button>
+                </div>
+            </fieldset>
+
+        </form>
+    }
+
+    <div class="card-body text-center">
+        <h3 class="comments-title">@Html.DisplayNameFor(model => model.Comments) (@Html.DisplayFor(model => model.Comments.Count))</h3>
+    </div>
+    @foreach (var item in Model.Comments)
+    {
+        <div class="col-md-12">
+            <div class="media g-mb-30 media-comment">
+                <img width="100" class="rounded-circle g-mt-3 g-mr-15" src="~/images/DefaultUser.png" alt="User avatar">
+                <div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
+                    <div class="g-mb-15">
+                        <h5 class="h5 g-color-gray-dark-v1 mb-0">@item.UserName</h5>
+                        <span class="g-color-gray-dark-v4 g-font-size-12">@item.CommentedOn</span>
+                    </div>
+
+                    <p>
+                        @item.Text
+                    </p>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div>
+        @if (User.IsInRole("Magician"))
+        {
+            <a asp-action="Edit" asp-controller="Cocktails" asp-area="Magician" asp-route-id="@Model.Id">Edit | </a>
+        }
+        <a asp-action="Index">Back to List</a>
+    </div>
+</body>
+
+@section Scripts{
+
+    @if (User.IsInRole("Magician") || User.IsInRole("Crawler"))
+    {
+        <script src="~/js/StarRating.js"></script>
+    }
+
+}

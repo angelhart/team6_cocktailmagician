@@ -31,7 +31,7 @@ namespace CM.Web.Controllers
                 Country = barDTO.Address.CountryName,
                 City = barDTO.Address.CityName,
                 ImagePath = barDTO.ImagePath,
-                AverageRating = Math.Round((double)barDTO.AverageRating, 2),
+                AverageRating = barDTO.AverageRating,
             }).ToList();
 
             var cocktailModels = await this._cocktailServices.GetTopCocktailsAsync(5);
@@ -39,7 +39,7 @@ namespace CM.Web.Controllers
             {
                 Name = barDTO.Name,
                 ImagePath = barDTO.ImagePath,
-                //AverageRating = Math.Round((double)barDTO.AverageRating, 2),
+                AverageRating = barDTO.AverageRating,
             }).ToList();
 
             var topModels = new TopRated();

@@ -8,16 +8,15 @@ using System.Threading.Tasks;
 
 namespace CM.Web.Providers.ViewModelMappers
 {
-    public class CommentViewMapper : ICommentViewMapper
+    public class RatingViewMapper : IRatingViewMapper
     {
-        public CocktailCommentDTO CreateCocktailCommentDTO(CommentViewModel model)
+        public CocktailRatingDTO CreateCocktailRatingDTO(RatingViewModel model)
         {
-            return new CocktailCommentDTO
+            return new CocktailRatingDTO
             {
                 CocktailId = model.EntityId,
-                UserId = model.UserId,
-                Text = model.Text,
-                CommentedOn = model.CommentedOn
+                AppUserId = model.UserId,
+                Score = model.Score,
             };
         }
     }

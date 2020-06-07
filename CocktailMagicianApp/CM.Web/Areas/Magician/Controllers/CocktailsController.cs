@@ -16,10 +16,13 @@ using CM.Web.Models;
 using CM.DTOs;
 using CM.Web.Providers;
 using CM.Web.Areas.Magician.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Formatters;
 
 namespace CM.Web.Areas.Magician.Controllers
 {
     [Area("Magician")]
+    [Authorize(Roles = "Magician")]
     public class CocktailsController : Controller
     {
         private const string ROOTSTORAGE = "\\images\\Cocktails";
@@ -95,7 +98,7 @@ namespace CM.Web.Areas.Magician.Controllers
 
                 var role = User.IsInRole("Magician") ? "Magician" : "";
 
-                var output = DataTablesProvider<CocktailViewModel>.CreateResponse(draw, recordsTotal, recordsFiltered, role, vms);
+                var output = DataTablesProvider<CocktailViewModel>.CreateResponse(draw, recordsTotal, recordsFiltered, vms, role);
 
                 return Ok(output);
             }
@@ -166,7 +169,7 @@ namespace CM.Web.Areas.Magician.Controllers
                         await _storageProvider.StoreImageAsync(model.ImagePath, model.Image);
                     }
 
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index", "Cocktails", new { area = "" });
                 }
                 catch (Exception ex)
                 {
@@ -186,12 +189,12 @@ namespace CM.Web.Areas.Magician.Controllers
         }
 
         // GET: Magician/Cocktails/Edit/5
-        public async Task<IActionResult> Edit(CocktailModifyViewModel model)
+        public async Task<IActionResult> Edit(Guid id)
         {
             try
             {
-                var dto = await _cocktailServices.GetCocktailDetailsAsync(model.Id);
-                model = _cocktailViewMapper.CreateCocktailModifyViewModel(dto);
+                var dto = await _cocktailServices.GetCocktailDetailsAsync(id, isAdmin: true);
+                var model = _cocktailViewMapper.CreateCocktailModifyViewModel(dto);
 
                 var ingredients = await _ingredientServices.GetAllIngredientsAsync();
                 var selectListItems = new SelectList(ingredients, nameof(IngredientDTO.Id), nameof(IngredientDTO.Name), dto.Ingredients.ToList());

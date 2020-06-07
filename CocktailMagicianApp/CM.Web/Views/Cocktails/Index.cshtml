@@ -1,0 +1,94 @@
+﻿@model IEnumerable<CocktailViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+@section Styles {
+    <style>
+        a.custom-table-row,
+        a.custom-table-row:hover {
+            color: inherit;
+        }
+    </style>
+    <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="~/css/DataTable.css" rel="stylesheet" type="text/css" />
+}
+
+<h1>Index</h1>
+
+@if (User.IsInRole("Magician"))
+{
+    <p>
+        <a asp-action="Create" asp-controller="Cocktails" asp-area="Magician">Create New</a>
+    </p>
+}
+
+@{ if (User.IsInRole("Magician"))
+    {
+        <div class="col-sm-3 align-self-sm-end">
+            <label class="control-label">Minimum rating:</label>
+            <input type="text" id="min" name="min" class="form-control form-control-sm" />
+            <label class="control-label">Maximum rating:</label>
+            <input type="text" id="max" name="max" class="form-control form-control-sm" />
+        </div>
+        <table id="cocktailsMagicianTable" class="display">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Rating</th>
+                    <th>Name</th>
+                    <th>Ingredients</th>
+                    <th>Unlist</th>
+                    <th>Edit</th>
+                </tr>
+            </thead>
+        </table>
+
+    }
+    else
+    {
+        <div class="col-sm-3 align-self-sm-end">
+            <label class="control-label">Minimum rating:</label>
+            <input type="text" id="min" name="min" class="form-control form-control-sm" />
+            <label class="control-label">Maximum rating:</label>
+            <input type="text" id="max" name="max" class="form-control form-control-sm" />
+        </div>
+        <table id="cocktailsTable" class="display">
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Rating</th>
+                    <th>Name</th>
+                    <th>Ingredients</th>
+                </tr>
+            </thead>
+        </table>
+    }
+}
+
+@section Scripts{
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
+    @if (User.IsInRole("Magician"))
+    {
+        <script src="~/js/CocktailScripts/CocktailsMagicianTable.js"></script>
+        <script src="~/js/Checkbox.js"></script>
+    }
+    else
+    {
+        <script src="~/js/CocktailScripts/CocktailsDataTable.js"></script>
+    }
+
+    <script src="~/js/CocktailScripts/RatingSearch.js"></script>
+}
