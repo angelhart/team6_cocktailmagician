@@ -30,7 +30,7 @@ namespace CM.Services
 		/// Retrieves a collection of all bars in the database.
 		/// </summary>
 		/// <returns>ICollection</returns>
-		public async Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", string sortBy = "", string sortOrder = "", int pageNumber = 1, int pageSize = 2, bool allowUnlisted = false)
+		public async Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", int pageNumber = 1, int pageSize = 10, string sortBy = "", string sortOrder = "", bool allowUnlisted = false)
 		{
 			var bars = _context.Bars
 							.Where(bar => !bar.IsUnlisted || allowUnlisted)
@@ -47,12 +47,22 @@ namespace CM.Services
 			var filteredbars = sorteBars;
 
 			if (!String.IsNullOrEmpty(searchString))
-				filteredbars = bars.Where(bar => bar.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
-											|| bar.Address.City.Country.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
-											|| bar.Address.City.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
-											|| bar.Address.Street.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
+			{
+				double number;
+				if (Double.TryParse(searchString, out number))
+				{
+					filteredbars = bars.Where(bar => bar.AverageRating.Equals(number));
+				}
+				else
+				{
+					filteredbars = bars.Where(bar => bar.Name.Contains(searchString)
+													|| bar.FullAddress.Contains(searchString));
+				}
+			}
 
-			var dtos = await filteredbars.Select(bar => _barMapper.CreateBarDTO(bar)).ToListAsync();
+			var filteredbarsList = await filteredbars.ToListAsync();
+
+			var dtos = filteredbarsList.Select(bar => _barMapper.CreateBarDTO(bar)).ToList();
 
 			var pagedDtos = await PaginatedList<BarDTO>.CreateAsync(dtos, pageNumber, pageSize);
 
@@ -70,7 +80,10 @@ namespace CM.Services
 			var topBars = await _context.Bars
 									 .Where(bar => bar.IsUnlisted == false)
 									 .Include(bar => bar.Ratings)
-									 .OrderByDescending(bar => bar.AverageRating)
+									 .Include(bar => bar.Address)
+										.ThenInclude(a => a.City)
+											.ThenInclude(c => c.Country)
+												 .OrderByDescending(bar => bar.AverageRating)
 									 .Take(ammount)
 									 .ToListAsync();
 
@@ -124,7 +137,12 @@ namespace CM.Services
 			bar.Name = barDTO.Name;
 			bar.Phone = barDTO.Phone;
 			bar.Details = barDTO.Details;
-			bar.ImagePath = barDTO.ImagePath;
+			if (barDTO.ImagePath != null)
+			{
+				bar.ImagePath = barDTO.ImagePath;
+			}
+
+			await UpdateCocktailsInBarAsync(bar.Id, barDTO.Cocktails);
 
 			_context.Update(bar);
 			await _context.SaveChangesAsync();
@@ -147,18 +165,36 @@ namespace CM.Services
 
 			try
 			{
-				var address = await _addressServices.CreateAddressAsync(barDTO.Address);
 
 				var bar = new Bar
 				{
+					Id = Guid.NewGuid(),
 					Name = barDTO.Name,
 					Phone = barDTO.Phone,
 					ImagePath = barDTO.ImagePath,
 					Details = barDTO.Details,
-					AddressID = address.Id
 				};
 
+				barDTO.Address.BarId = bar.Id;
 				await _context.Bars.AddAsync(bar);
+				await _context.SaveChangesAsync();
+
+				var addressDTO = await _addressServices.CreateAddressAsync(barDTO.Address);
+				bar.AddressID = addressDTO.Id;
+				bar.FullAddress = $"{addressDTO.CityName}, {addressDTO.Street}";
+
+				var cocktails = barDTO.Cocktails.Select(sc =>
+				new BarCocktail
+				{
+					BarId = bar.Id,
+					CocktailId = sc.Id
+				});
+
+				foreach (var item in cocktails)
+				{
+					await _context.BarCocktails.AddAsync(item);
+				}
+
 				await _context.SaveChangesAsync();
 
 				return barDTO;
@@ -174,7 +210,7 @@ namespace CM.Services
 		/// </summary>
 		/// <param name="id">The Id of the bar that should be marked as deleted.</param>
 		/// <returns>BarDTO</returns>
-		public async Task<BarDTO> DeleteBar(Guid id)
+		public async Task DeleteBar(Guid id)
 		{
 			var bar = await _context.Bars
 				.FirstOrDefaultAsync(bar => bar.Id == id && bar.IsUnlisted == false) ?? throw new ArgumentNullException();
@@ -183,10 +219,6 @@ namespace CM.Services
 
 			_context.Bars.Update(bar);
 			await _context.SaveChangesAsync();
-
-			var barDTO = this._barMapper.CreateBarDTO(bar);
-
-			return barDTO;
 		}
 
 		/// <summary>
@@ -253,6 +285,14 @@ namespace CM.Services
 			return await _context.Bars.AnyAsync(e => e.Id == id);
 		}
 
+		/// <summary>
+		/// Retrieves the Count of all Bar records in the database.
+		/// </summary>
+		/// <returns>Integer of all bars in the database.</returns>
+		public async Task<int> CountAllBarsAsync()
+		{
+			return await _context.Bars.CountAsync();
+		}
 
 
 		private async Task<Bar> GetBarEntityWithCocktails(Guid barId)
@@ -273,14 +313,38 @@ namespace CM.Services
 		{
 			return sortBy switch
 			{
-				"rating" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(c => c.AverageRating)
-																	   .ThenBy(c => c.Name) :
+				"rating" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.AverageRating)
+																	   .ThenBy(bar => bar.Name) :
 															  bars.OrderByDescending(c => c.AverageRating)
-																	   .ThenBy(c => c.Name),
+																	   .ThenBy(bar => bar.Name),
+				"country" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.Address.City.Country)
+																		.ThenBy(bar => bar.Name) :
+															bars.OrderByDescending(c => c.AverageRating)
+																		.ThenBy(c => c.Name),
+				"city" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.Address.City)
+																		.ThenBy(bar => bar.Name) :
+															bars.OrderByDescending(c => c.AverageRating)
+																		.ThenBy(c => c.Name),
 
 				_ => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(c => c.Name) :
 													   bars.OrderByDescending(c => c.Name),
 			};
+		}
+		private async Task UpdateCocktailsInBarAsync(Guid barId, ICollection<CocktailDTO> newCocktails)
+		{
+			var currentCocktails = _context.BarCocktails
+											 .Where(bc => bc.BarId == barId);
+
+			_context.RemoveRange(currentCocktails);
+
+			var cocktailsToAdd = newCocktails.Select(cocktailDTO => new BarCocktail
+			{
+				BarId = barId,
+				CocktailId = cocktailDTO.Id,
+			});
+
+			await _context.AddRangeAsync(cocktailsToAdd);
+			await _context.SaveChangesAsync();
 		}
 	}
 }

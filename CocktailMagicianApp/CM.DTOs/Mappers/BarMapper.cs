@@ -20,13 +20,15 @@ namespace CM.DTOs.Mappers
 
         public BarDTO CreateBarDTO(Bar bar)
         {
-            return new BarDTO
+            var barDTO = new BarDTO
             {
                 Id = bar.Id,
                 Name = bar.Name,
                 AverageRating = bar.AverageRating,
+                ImagePath = bar.ImagePath,
 
                 Address = this._addressMapper.CreateAddressDTO(bar.Address),
+                FullAddress = bar.FullAddress,
                 Phone = bar.Phone,
                 Details = bar.Details,
                 IsUnlisted = bar.IsUnlisted,
@@ -38,6 +40,11 @@ namespace CM.DTOs.Mappers
                         .Select(barComment => CreateBarCommentDTO(barComment))
                         .ToList(),
             };
+
+            if (string.IsNullOrEmpty(barDTO.ImagePath))
+                barDTO.ImagePath = "/images/DefaultBar.png";
+
+            return barDTO;
         }
 
         public BarCommentDTO CreateBarCommentDTO(BarComment barComment)

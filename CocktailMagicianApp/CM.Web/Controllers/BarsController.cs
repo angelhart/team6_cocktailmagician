@@ -2,22 +2,23 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using CM.Services.Contracts;
 using CM.Web.Models;
 using CM.DTOs;
 using CM.DTOs.Mappers.Contracts;
-using Microsoft.AspNetCore.Authorization;
 using NToastNotify;
-using CM.Models;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using CM.Services.Providers.Contracts;
+using CM.Web.Providers;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using CM.Web.Providers.Contracts;
 
 namespace CM.Web.Controllers
 {
 	public class BarsController : Controller
 	{
+		private const string ROOTSTORAGE = "\\images\\Bars";
+
 		private readonly IBarServices _barServices;
 		private readonly IAddressServices _addressServices;
 		private readonly IAddressMapper _addressMapper;
@@ -26,10 +27,13 @@ namespace CM.Web.Controllers
 		private readonly IAppUserServices _appUserServices;
 		private readonly IToastNotification _toastNotification;
 		private readonly IDateTimeProvider _dateTimeProvider;
+		private readonly ICocktailServices _cocktailServices;
+		private readonly IStorageProvider _storageProvider;
 
 
-		public BarsController(IAppUserServices appUserServices,IBarServices barServices, IAddressServices addressServices, IAddressMapper addressMapper, IRatingServices ratingServices,
-			IToastNotification toastNotification, ICommentServices commentServices, IDateTimeProvider dateTimeProvider)
+
+		public BarsController(IAppUserServices appUserServices, IBarServices barServices, IAddressServices addressServices, IAddressMapper addressMapper, IRatingServices ratingServices,
+			IToastNotification toastNotification, ICommentServices commentServices, IDateTimeProvider dateTimeProvider, ICocktailServices cocktailServices, IStorageProvider storageProvider)
 		{
 			_barServices = barServices ?? throw new ArgumentNullException(nameof(barServices));
 			_addressServices = addressServices ?? throw new ArgumentNullException(nameof(addressServices));
@@ -39,8 +43,58 @@ namespace CM.Web.Controllers
 			_appUserServices = appUserServices ?? throw new ArgumentNullException(nameof(appUserServices));
 			_toastNotification = toastNotification ?? throw new ArgumentNullException(nameof(toastNotification));
 			_dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
+			_cocktailServices = cocktailServices ?? throw new ArgumentNullException(nameof(cocktailServices));
+			_storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
 		}
 
+		public async Task<ActionResult> IndexTable()
+		{
+			try
+			{
+				var drawString = HttpContext.Request.Form["draw"].FirstOrDefault();
+				int draw = drawString != null ? Convert.ToInt32(drawString) : 0;
+				var start = Request.Form["start"].FirstOrDefault();
+				var length = Request.Form["length"].FirstOrDefault();
+				var searchString = Request.Form["search[value]"].FirstOrDefault();
+				var sortBy = Request.Form
+								["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"]
+								.FirstOrDefault();
+				var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault(x => x.Equals("desc"));
+
+
+				int pageSize = length != null ? Convert.ToInt32(length) : 0;
+				int pageNumber = start != null ? (1 + ((int)Math.Ceiling(Convert.ToDouble(start) / pageSize))) : 0;
+				int recordsTotal = await _barServices.CountAllBarsAsync();
+				bool allowUnlisted = true;
+
+				//if (HttpContext.User.IsInRole("Magician"))
+				//	allowUnlisted = true;
+
+				var dtos = await _barServices.GetAllBarsAsync(searchString, pageNumber, pageSize, sortBy, sortOrder, allowUnlisted);
+				var vms = dtos.Select(x => new BarIndexViewModel
+				{
+					Id = x.Id,
+					Name = x.Name,
+					Country = x.Address.CountryName,
+					City = x.Address.CityName,
+					Street = x.Address.Street,
+					AverageRating =x.AverageRating,
+					ImagePath = x.ImagePath,
+					IsUnlisted = x.IsUnlisted
+					
+				}).ToList();
+
+				var recordsFiltered = dtos.SourceItems;
+
+				var output = DataTablesProvider<BarIndexViewModel>.CreateResponse(draw, recordsTotal, recordsFiltered, vms);
+
+				return Ok(output);
+			}
+			catch (Exception e)
+			{
+				return BadRequest(e.Message);
+			}
+		}
 		public async Task<IActionResult> Index()
 		{
 			var bars = await this._barServices.GetAllBarsAsync();
@@ -50,7 +104,8 @@ namespace CM.Web.Controllers
 				Name = x.Name,
 				Country = x.Address.CountryName,
 				City = x.Address.CityName,
-				AverageRating = x.AverageRating,
+				Street = x.Address.Street,
+				AverageRating = Math.Round((double)x.AverageRating, 2),
 				ImagePath = x.ImagePath,
 			});
 			return View(barsViewModel);
@@ -58,12 +113,6 @@ namespace CM.Web.Controllers
 
 		public async Task<IActionResult> Details(Guid id)
 		{
-
-			if (id == null)
-			{
-				return NotFound();
-			}
-
 			var barDTO = await this._barServices.GetBarAsync(id);
 
 			var barViewModel = new BarViewModel
@@ -96,34 +145,31 @@ namespace CM.Web.Controllers
 
 		public async Task<IActionResult> Create()
 		{
-			var collectionOfCountries = await  this._addressServices.GetAllCountriesAsync();
-
+			var collectionOfCountries = await this._addressServices.GetAllCountriesAsync();
 			var listOfCountries = collectionOfCountries.ToList();
-
 			ViewBag.listOfCountries = listOfCountries;
+
+			var collectionOfCocktails = await this._cocktailServices.GetAllCocktailsDDLAsync();
+			var listOfCocktails = collectionOfCocktails.ToList();
+			ViewBag.listOfCocktails = listOfCocktails;
 
 			return View();
 		}
 
-		[HttpGet]
-		[Route("Create")]
-		public async Task<IActionResult> GetCountryCitiesAsync(Guid Id)
-		{
-			var collectionOfCities = await this._addressServices.GetCountryCitiesAsync(Id);
-
-			var listOfCities = collectionOfCities.ToList();
-
-			return Json(listOfCities);
-		}
-
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Create([Bind("Id,Name, CityID, Street,Phone,ImagePath,Details")] BarViewModel barViewModel)
+		public async Task<IActionResult> Create(BarViewModel barViewModel)
 		{
 			if (ModelState.IsValid)
 			{
 				try
 				{
+
+					if (barViewModel.Image != null)
+					{
+						barViewModel.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, barViewModel.Image.FileName, barViewModel.Name);
+					}
+
 					var addressDTO = new AddressDTO
 					{
 						CityId = barViewModel.CityID,
@@ -138,10 +184,16 @@ namespace CM.Web.Controllers
 						Details = barViewModel.Details,
 						ImagePath = barViewModel.ImagePath,
 						Address = addressDTO,
+
+						Cocktails = barViewModel.SelectedCocktails.Select(sc => new CocktailDTO { Id = sc }).ToList()
 					};
 
-					_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully created!");
 					await this._barServices.CreateBarAsync(barDTO);
+
+					if (barViewModel.Image != null)
+						await _storageProvider.StoreImageAsync(barViewModel.ImagePath, barViewModel.Image);
+
+					_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully created!");
 					return RedirectToAction(nameof(Index));
 				}
 				catch (Exception)
@@ -156,10 +208,6 @@ namespace CM.Web.Controllers
 
 		public async Task<IActionResult> Edit(Guid id)
 		{
-			if (id == null)
-			{
-				return NotFound();
-			}
 			try
 			{
 				var barDTO = await this._barServices.GetBarAsync(id);
@@ -173,38 +221,56 @@ namespace CM.Web.Controllers
 					ImagePath = barDTO.ImagePath,
 				};
 
+				var collectionOfCocktails = await this._cocktailServices.GetAllCocktailsDDLAsync();
+				var listOfCocktails = collectionOfCocktails.ToList();
+				ViewBag.listOfCocktails = listOfCocktails;
+
 				return View(barViewModel);
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
-				return NotFound();
-			};
+				_toastNotification.AddWarningToastMessage(ex.Message);
+				return RedirectToAction(nameof(Index));
+			}
 		}
 
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> Edit(Guid id, [Bind("Id,Name,Phone,ImagePath,Details")] BarViewModel barViewModel)
+		public async Task<IActionResult> Edit(BarViewModel barViewModel)
 		{
-			if (id != barViewModel.Id)
-			{
-				return NotFound();
-			}
-
-			var barDTO = new BarDTO
-			{
-				Id = barViewModel.Id,
-				Name = barViewModel.Name,
-				Phone = barViewModel.Phone,
-				Details = barViewModel.Details,
-				ImagePath = barViewModel.ImagePath,
-			};
-
 			if (ModelState.IsValid)
 			{
 				try
 				{
-					await _barServices.UpdateBarAsync(id, barDTO);
+					var oldImagePath = barViewModel.ImagePath;
+
+					if (barViewModel.Image != null)
+					{
+						barViewModel.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, barViewModel.Image.FileName, barViewModel.Name);
+					}
+
+					var barDTO = new BarDTO
+					{
+						Id = barViewModel.Id,
+						Name = barViewModel.Name,
+						Phone = barViewModel.Phone,
+						Details = barViewModel.Details,
+						ImagePath = barViewModel.ImagePath,
+
+						Cocktails = barViewModel.SelectedCocktails.Select(sc => new CocktailDTO { Id = sc }).ToList()
+					};
+
+					await _barServices.UpdateBarAsync(barViewModel.Id, barDTO);
+
+					if (barViewModel.Image != null)
+					{
+						_storageProvider.DeleteImage(oldImagePath);
+						await _storageProvider.StoreImageAsync(barViewModel.ImagePath, barViewModel.Image);
+					}
+
+					_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully updated!");
+					return RedirectToAction(nameof(Index));
 				}
 				catch (DbUpdateConcurrencyException)
 				{
@@ -218,74 +284,14 @@ namespace CM.Web.Controllers
 						throw;
 					}
 				}
-				_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully updated!");
-				return RedirectToAction(nameof(Index));
 			}
-			_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
-			return View(barViewModel);
-		}
-		public async Task<IActionResult> ChangeAddress(Guid barId)
-		{
-
-			try
+			foreach (var item in ModelState.Values)
 			{
-				var barDTO = await this._barServices.GetBarAsync(barId);
-
-				ViewData["Country"] = new SelectList(await this._addressServices.GetAllCountriesAsync(), "Id", "Name");
-				//ViewData["City"] = new SelectList(await this._addressServices.GetCountryCities(ViewBag.Country), "Id", "Name");
-
-				var barViewModel = new BarViewModel
+				foreach (var error in item.Errors)
 				{
-					Country = barDTO.Address.CountryName,
-					City = barDTO.Address.CityName,
-					Street = barDTO.Address.Street
-				};
-
-				return View(barViewModel);
-			}
-			catch (Exception)
-			{
-				return NotFound();
-			};
-		}
-
-		[HttpPost]
-		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> ChangeAddress(Guid id, [Bind("Id,Name,AddressID, CountryID,Phone,ImagePath,Details")] BarViewModel barViewModel)
-		{
-			if (id != barViewModel.Id)
-			{
-				return NotFound();
-			}
-
-			var barDTO = new BarDTO
-			{
-				Id = barViewModel.Id,
-				Name = barViewModel.Name,
-			};
-
-			if (ModelState.IsValid)
-			{
-				try
-				{
-					await _barServices.UpdateBarAsync(id, barDTO);
+					_toastNotification.AddWarningToastMessage(error.ErrorMessage);
 				}
-				catch (DbUpdateConcurrencyException)
-				{
-					if (await BarExists(barViewModel.Id) == false)
-					{
-						return NotFound();
-					}
-					else
-					{
-						_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
-						throw;
-					}
-				}
-				_toastNotification.AddSuccessToastMessage($"The address of Bar {barDTO.Name} was successfully updated!");
-				return RedirectToAction(nameof(Index));
 			}
-			_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
 			return View(barViewModel);
 		}
 
@@ -308,7 +314,7 @@ namespace CM.Web.Controllers
 					});
 
 					_toastNotification.AddSuccessToastMessage($"You rated this Bar with {rateBarViewModel.Score} stars!");
-					return RedirectToAction(nameof(Details), new {id = rateBarViewModel.BarId });
+					return RedirectToAction(nameof(Details), new { id = rateBarViewModel.BarId });
 				}
 				catch (InvalidOperationException)
 				{
@@ -332,7 +338,7 @@ namespace CM.Web.Controllers
 				try
 				{
 					var appUserId = await this._appUserServices.GetUserIdAsync(HttpContext.User.Identity.Name);
-					
+
 					barCommentViewModel.UserId = appUserId.Id;
 					barCommentViewModel.UserName = HttpContext.User.Identity.Name;
 					barCommentViewModel.CommentedOn = this._dateTimeProvider.GetDateTimeDateTimeOffset();
@@ -354,27 +360,6 @@ namespace CM.Web.Controllers
 				}
 			}
 			return View(barCommentViewModel);
-		}
-
-		public async Task<IActionResult> Delete(Guid id)
-		{
-			var barDTO = await this._barServices.GetBarAsync(id);
-
-			if (barDTO == null)
-			{
-				return NotFound();
-			}
-
-			var barViewModel = new BarViewModel
-			{
-				Id = barDTO.Id,
-				Name = barDTO.Name,
-				Phone = barDTO.Phone,
-				Details = barDTO.Details,
-				ImagePath = barDTO.ImagePath,
-			};
-
-			return View(barViewModel);
 		}
 
 		[HttpPost, ActionName("Delete")]
@@ -400,3 +385,26 @@ namespace CM.Web.Controllers
 		}
 	}
 }
+
+
+
+//public async Task<IActionResult> Delete(Guid id)
+//{
+//	var barDTO = await this._barServices.GetBarAsync(id);
+
+//	if (barDTO == null)
+//	{
+//		return NotFound();
+//	}
+
+//	var barViewModel = new BarViewModel
+//	{
+//		Id = barDTO.Id,
+//		Name = barDTO.Name,
+//		Phone = barDTO.Phone,
+//		Details = barDTO.Details,
+//		ImagePath = barDTO.ImagePath,
+//	};
+
+//	return View(barViewModel);
+//}

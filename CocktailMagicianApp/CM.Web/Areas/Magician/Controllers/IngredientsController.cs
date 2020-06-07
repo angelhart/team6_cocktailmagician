@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using AspNetCore;
 using CM.DTOs;
 using CM.Services.Contracts;
 using CM.Web.Areas.Magician.Models;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using NToastNotify;
 
 namespace CM.Web.Areas.Magician.Controllers
 {
@@ -20,20 +22,25 @@ namespace CM.Web.Areas.Magician.Controllers
     //[Authorize(Roles = (""))] // TODO: add roles
     public class IngredientsController : Controller
     {
+        private const string ROOTSTORAGE = "\\images\\Ingredients";
+
         private readonly IIngredientServices _ingredientServices;
         private readonly IIngredientViewMapper _ingredientViewMapper;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IStorageProvider _storageProvider;
+        private readonly IToastNotification _toastNotification;
 
         public IngredientsController(IIngredientServices ingredientServices,
                                      IIngredientViewMapper ingredientViewMapper,
                                      IWebHostEnvironment webHostEnvironment,
-                                     IStorageProvider storageProvider)
+                                     IStorageProvider storageProvider,
+                                     IToastNotification toastNotification)
         {
             this._ingredientServices = ingredientServices;
             this._ingredientViewMapper = ingredientViewMapper;
             this._webHostEnvironment = webHostEnvironment;
             this._storageProvider = storageProvider;
+            this._toastNotification = toastNotification;
         }
         // GET: IngredientsController
         public ActionResult Index()
@@ -41,6 +48,8 @@ namespace CM.Web.Areas.Magician.Controllers
             return View();
         }
 
+        [HttpPost]
+        [ActionName("Index")]
         public async Task<ActionResult> IndexTable()
         {
             try
@@ -53,24 +62,27 @@ namespace CM.Web.Areas.Magician.Controllers
                 var sortBy = Request.Form
                                 ["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"]
                                 .FirstOrDefault();
-                var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault(x => x.Equals("desc"));
+                var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault();
 
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int pageNumber = start != null ? (1 + ((int)Math.Ceiling(Convert.ToDouble(start) / pageSize))) : 0;
                 int recordsTotal = await _ingredientServices.CountAllIngredientsAsync();
 
-                var dtos = await _ingredientServices.PageIngredientsAsync(searchString, pageNumber, pageSize);
+                var dtos = await _ingredientServices.PageIngredientsAsync(searchString, sortOrder, pageNumber, pageSize);
                 var vms = dtos.Select(d => _ingredientViewMapper.CreateIngredientViewModel(d)).ToList();
 
                 var recordsFiltered = dtos.SourceItems;
+
+                var role = User.IsInRole("Magician") ? "Magician" : "";
 
                 var output = DataTablesProvider<IngredientViewModel>.CreateResponse(draw, recordsTotal, recordsFiltered, vms);
 
                 return Ok(output);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                return BadRequest(e.Message);
+                _toastNotification.AddErrorToastMessage(ex.Message);
+                return RedirectToAction(nameof(Index));
             }
         }
 
@@ -99,15 +111,11 @@ namespace CM.Web.Areas.Magician.Controllers
             {
                 try
                 {
-                    // create path
-                    var targetFolder = Path.Combine(_webHostEnvironment.WebRootPath, "images\\Ingredients");
-                    var fileExtension = Path.GetExtension(model.Image.FileName);
-                    var newFileName = DateTime.UtcNow.ToString("yyyyMMddHHmmssfff")
-                                         + "_"
-                                         + model.Name
-                                         + fileExtension;
-                    
-                    model.ImagePath = Path.Combine(targetFolder, newFileName);
+                    model.ImagePath = ROOTSTORAGE + "\\DefaultIngredients.jpg";
+                    if (model.Image != null)
+                    {
+                        model.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, model.Image.FileName, model.Name);
+                    }
 
                     // create ingredient
                     var dto = _ingredientViewMapper.CreateIngredientDTO(model);
@@ -115,14 +123,14 @@ namespace CM.Web.Areas.Magician.Controllers
                     var vm = _ingredientViewMapper.CreateIngredientViewModel(dto);
 
                     // upload image after ingredient added
-                    await _storageProvider.StoreImageAsync(model.ImagePath, model.Image);
+                    if (model.Image != null)
+                        await _storageProvider.StoreImageAsync(model.ImagePath, model.Image);
 
                     return RedirectToAction(nameof(Index));
-                    //return Created(nameof(Create), vm);
-                    //return RedirectToAction(nameof(Index));
                 }
-                catch
+                catch (Exception ex)
                 {
+                    _toastNotification.AddErrorToastMessage(ex.Message);
                     return RedirectToAction(nameof(Index));
                 }
             }
@@ -134,40 +142,55 @@ namespace CM.Web.Areas.Magician.Controllers
         }
 
         // GET: IngredientsController/Edit/5
-        public async Task<ActionResult> Edit(Guid id)
+        public async Task<ActionResult> Edit(IngredientViewModel model)
         {
             try
             {
-                var dto = await _ingredientServices.GetIngredientDetailsAsync(id);
+                var dto = await _ingredientServices.GetIngredientDetailsAsync(model.Id);
 
                 var vm = _ingredientViewMapper.CreateIngredientViewModel(dto);
 
                 return View(vm);
             }
-            catch
+            catch (Exception ex)
             {
+                _toastNotification.AddErrorToastMessage(ex.Message);
                 return RedirectToAction(nameof(Index));
             }
         }
 
         // POST: IngredientsController/Edit/5
         [HttpPost]
+        [ActionName("Edit")]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind]IngredientViewModel model)
+        public async Task<ActionResult> EditConfirmed(IngredientViewModel model)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
+                    var oldImagePath = model.ImagePath;
+                    if (model.Image != null)
+                    {
+                        model.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, model.Image.FileName, model.Name);
+                    }
+
                     var dto = _ingredientViewMapper.CreateIngredientDTO(model);
                     dto = await _ingredientServices.UpdateIngredientAsync(dto);
 
                     var vm = _ingredientViewMapper.CreateIngredientViewModel(dto);
 
-                    return RedirectToAction(nameof(Details), new { id = vm.Id } ) ;
+                    if (model.Image != null)
+                    {
+                        _storageProvider.DeleteImage(oldImagePath);
+                        await _storageProvider.StoreImageAsync(model.ImagePath, model.Image);
+                    }
+
+                    return RedirectToAction(nameof(Details), new { id = vm.Id });
                 }
-                catch
+                catch (Exception ex)
                 {
+                    _toastNotification.AddErrorToastMessage(ex.Message);
                     return View();
                 }
             }
@@ -204,8 +227,9 @@ namespace CM.Web.Areas.Magician.Controllers
                 return Ok(vm);
                 //return RedirectToAction(nameof(IndexTable));
             }
-            catch
+            catch (Exception ex)
             {
+                _toastNotification.AddErrorToastMessage(ex.Message);
                 return View();
             }
         }

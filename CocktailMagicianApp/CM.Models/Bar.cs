@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using CM.Models.BaseClasses;
 
 namespace CM.Models
 {
@@ -25,6 +22,7 @@ namespace CM.Models
         public Guid AddressID { get; set; }
         public Address Address { get; set; }
 
+        public string FullAddress { get; set; }
         public string Phone { get; set; }
         public string ImagePath { get; set; }
         public string Details { get; set; }

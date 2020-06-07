@@ -134,21 +134,31 @@ namespace CM.Services
         /// <param name="pageNumber">The required page of the paginated list.</param>
         /// <param name="pageSize">Number of ingredients per page.</param>
         /// <returns><see cref="PaginatedList<<see cref="IngredientDTO"/>>"/></returns>
-        public async Task<PaginatedList<IngredientDTO>> PageIngredientsAsync(string searchString = "", int pageNumber = 1, int pageSize = 10)
+        public async Task<PaginatedList<IngredientDTO>> PageIngredientsAsync(string searchString = "", string sortOrder = "", int pageNumber = 1, int pageSize = 10)
         {
-            if (searchString == null)
+            if (searchString == null || sortOrder == null)
                 throw new ArgumentNullException("Search string cannot be null.");
 
             if (pageNumber < 1 || pageSize < 1)
                 throw new ArgumentOutOfRangeException("Page number and page size must be positive integers.");
 
-            var ingredients = _context.Ingredients
-                                      .Where(i => i.Name.Contains(searchString))
-                                      .Include(i => i.Cocktails)
-                                      .OrderBy(i => i.Name)
-                                      .Select(i => _ingredientMapper.CreateIngredientDTO(i));
+            var entities = _context.Ingredients
+                                      .Where(i => i.Name.Contains(searchString));
 
-            var outputDtos = await PaginatedList<IngredientDTO>.CreateAsync(ingredients, pageNumber, pageSize);
+            if (sortOrder.Equals("desc"))
+            {
+                entities = entities.OrderByDescending(i => i.Name); 
+            }
+            else
+            {
+                entities = entities.OrderBy(i => i.Name);
+            }
+
+            var ingredients = await PaginatedList<Ingredient>.CreateAsync(entities, pageNumber, pageSize);
+            var dtos = ingredients.Select(i => _ingredientMapper.CreateIngredientDTO(i)).ToList();
+
+            var outputDtos = await PaginatedList<IngredientDTO>.CreateAsync(dtos, pageNumber, pageSize);
+            outputDtos.SourceItems = ingredients.SourceItems;
 
             return outputDtos;
         }
@@ -160,6 +170,19 @@ namespace CM.Services
         public async Task<int> CountAllIngredientsAsync()
         {
             return await _context.Ingredients.CountAsync();
+        }
+
+        /// <summary>
+        /// Provides a collection of all entries in the database.
+        /// </summary>
+        /// <returns>All ingredients as sorted in database.</returns>
+        public async Task<ICollection<IngredientDTO>> GetAllIngredientsAsync()
+        {
+            var dtos = await _context.Ingredients
+                                            .OrderBy(i => i.Name)
+                                            .Select(i => _ingredientMapper.CreateIngredientDTO(i))
+                                            .ToListAsync();
+            return dtos;
         }
     }
 }

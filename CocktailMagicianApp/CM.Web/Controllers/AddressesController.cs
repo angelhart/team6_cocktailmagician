@@ -1,167 +1,236 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using CM.Data;
-using CM.Models;
+using CM.Services.Contracts;
+using NToastNotify;
 
 namespace CM.Web.Controllers
 {
     public class AddressesController : Controller
     {
-        private readonly CMContext _context;
+        private readonly IAddressServices _addressServices;
+        private readonly IToastNotification _toastNotification;
 
-        public AddressesController(CMContext context)
+        public AddressesController(IToastNotification toastNotification, IBarServices barServices, IAddressServices addressServices)
         {
-            _context = context;
+            _addressServices = addressServices ?? throw new ArgumentNullException(nameof(addressServices));
+            _toastNotification = toastNotification ?? throw new ArgumentNullException(nameof(toastNotification));
         }
 
-        //// GET: Addresses
-        //public async Task<IActionResult> Index()
-        //{
-        //    var cMContext = _context.Addresses.Include(a => a.Bar).Include(a => a.City);
-        //    return View(await cMContext.ToListAsync());
-        //}
-
-        //// GET: Addresses/Details/5
-        //public async Task<IActionResult> Details(Guid? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var address = await _context.Addresses
-        //        .Include(a => a.Bar)
-        //        .Include(a => a.City)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (address == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(address);
-        //}
-
-        // GET: Addresses/Create
-        public IActionResult Create()
+        public async Task<IActionResult> CreateCountry()
         {
-            ViewData["BarId"] = new SelectList(_context.Bars, "Id", "Name");
-            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Id");
             return View();
         }
 
-        // POST: Addresses/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,CityId,Street,BarId")] Address address)
+        public async Task<IActionResult> CreateCountry(string countryName)
         {
-            if (ModelState.IsValid)
-            {
-                address.Id = Guid.NewGuid();
-                _context.Add(address);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+			try
+			{
+                await this._addressServices.CreateCountryAsync(countryName);
+                _toastNotification.AddSuccessToastMessage($"Country {countryName} was successfully created!");
+                return RedirectToAction(nameof(CreateCity));
             }
-            ViewData["BarId"] = new SelectList(_context.Bars, "Id", "Name", address.BarId);
-            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Id", address.CityId);
-            return View(address);
+            catch (DbUpdateException)
+			{
+                _toastNotification.AddErrorToastMessage("A country with the same name already exists!");
+                return View(nameof(CreateCountry));
+            }
+            catch (Exception)
+            {
+                _toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
+                return View(nameof(CreateCountry));
+            }
         }
 
-        // GET: Addresses/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> CreateCity()
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var collectionOfCountries = await this._addressServices.GetAllCountriesAsync();
 
-            var address = await _context.Addresses.FindAsync(id);
-            if (address == null)
-            {
-                return NotFound();
-            }
-            ViewData["BarId"] = new SelectList(_context.Bars, "Id", "Name", address.BarId);
-            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Id", address.CityId);
-            return View(address);
+            var listOfCountries = collectionOfCountries.ToList();
+
+            ViewBag.listOfCountries = listOfCountries;
+
+            return View();
         }
 
-        // POST: Addresses/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,CityId,Street,BarId")] Address address)
+        public async Task<IActionResult> CreateCity(Guid countryId, string cityName)
         {
-            if (id != address.Id)
+            try
             {
-                return NotFound();
+                await this._addressServices.CreateCityAsync(cityName, countryId);
+                _toastNotification.AddSuccessToastMessage($"City {cityName} was successfully created!");
+                return RedirectToAction("Create", "Bars", new { area = "" });
             }
-
-            if (ModelState.IsValid)
+            catch (DbUpdateException)
             {
-                try
-                {
-                    _context.Update(address);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!AddressExists(address.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _toastNotification.AddErrorToastMessage("A city with the same name already exists!");
+                return View(nameof(CreateCountry));
             }
-            ViewData["BarId"] = new SelectList(_context.Bars, "Id", "Name", address.BarId);
-            ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Id", address.CityId);
-            return View(address);
+            catch (Exception)
+            {
+                _toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
+                return View(nameof(CreateCountry));
+            }
         }
 
-        //// GET: Addresses/Delete/5
-        //public async Task<IActionResult> Delete(Guid? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
 
-        //    var address = await _context.Addresses
-        //        .Include(a => a.Bar)
-        //        .Include(a => a.City)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (address == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(address);
-        //}
-
-        //// POST: Addresses/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(Guid id)
-        //{
-        //    var address = await _context.Addresses.FindAsync(id);
-        //    _context.Addresses.Remove(address);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        private bool AddressExists(Guid id)
+        public async Task<IActionResult> GetCountryCities(Guid countryId)
         {
-            return _context.Addresses.Any(e => e.Id == id);
+            var collectionOfCities = await this._addressServices.GetCountryCitiesAsync(countryId);
+
+            var listOfCities = collectionOfCities.ToList();
+
+            return Json(listOfCities);
         }
-    }
+
+		//public async Task<IActionResult> Edit(Guid addressId)
+		//{
+		//	var addressDTO = await this._addressServices.GetCountryAsync(;
+
+		//	var listOfCities = await this._addressServices.GetCountryCitiesAsync(addressDTO.;
+
+		//	ViewBag.listOfCities = listOfCities;
+
+		//	return View();
+		//}
+
+
+		//// POST: Addresses/Edit/5
+		//[HttpPost]
+		//[ValidateAntiForgeryToken]
+		//public async Task<IActionResult> Edit(Guid id, Address address)
+		//{
+		//	if (id != address.Id)
+		//	{
+		//		return NotFound();
+		//	}
+
+		//	if (ModelState.IsValid)
+		//	{
+		//		try
+		//		{
+		//			_context.Update(address);
+		//			await _context.SaveChangesAsync();
+		//		}
+		//		catch (DbUpdateConcurrencyException)
+		//		{
+		//			if (!AddressExists(address.Id))
+		//			{
+		//				return NotFound();
+		//			}
+		//			else
+		//			{
+		//				throw;
+		//			}
+		//		}
+		//		return RedirectToAction(nameof(Index));
+		//	}
+		//	ViewData["BarId"] = new SelectList(_context.Bars, "Id", "Name", address.BarId);
+		//	ViewData["CityId"] = new SelectList(_context.Cities, "Id", "Id", address.CityId);
+		//	return View(address);
+		//}
+
+		////// GET: Addresses/Delete/5
+		//public async Task<IActionResult> Delete(Guid? id)
+		//{
+		//    if (id == null)
+		//    {
+		//        return NotFound();
+		//    }
+
+		//    var address = await _context.Addresses
+		//        .Include(a => a.Bar)
+		//        .Include(a => a.City)
+		//        .FirstOrDefaultAsync(m => m.Id == id);
+		//    if (address == null)
+		//    {
+		//        return NotFound();
+		//    }
+
+		//    return View(address);
+		//}
+
+		//// POST: Addresses/Delete/5
+		//[HttpPost, ActionName("Delete")]
+		//[ValidateAntiForgeryToken]
+		//public async Task<IActionResult> DeleteConfirmed(Guid id)
+		//{
+		//    var address = await _context.Addresses.FindAsync(id);
+		//    _context.Addresses.Remove(address);
+		//    await _context.SaveChangesAsync();
+		//    return RedirectToAction(nameof(Index));
+		//}
+
+		//private bool AddressExists(Guid id)
+		//{
+		//    return _context.Addresses.Any(e => e.Id == id);
+		//}
+		//public async Task<IActionResult> ChangeAddress(Guid barId)
+		//{
+
+		//}
+
+		//[HttpPost]
+		//[ValidateAntiForgeryToken]
+		//public async Task<IActionResult> ChangeAddress(BarViewModel barViewModel)
+		//{
+		//    if (id != barViewModel.Id)
+		//    {
+		//        return NotFound();
+		//    }
+
+		//    var barDTO = new BarDTO
+		//    {
+		//        Id = barViewModel.Id,
+		//        Name = barViewModel.Name,
+		//    };
+
+		//    if (ModelState.IsValid)
+		//    {
+		//        try
+		//        {
+		//            await _barServices.UpdateBarAsync(id, barDTO);
+		//        }
+		//        catch (DbUpdateConcurrencyException)
+		//        {
+		//                _toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
+		//                throw;
+		//        }
+		//        _toastNotification.AddSuccessToastMessage($"The address of Bar {barDTO.Name} was successfully updated!");
+		//        return RedirectToAction(nameof(Index));
+		//    }
+		//    _toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
+		//    return View(barViewModel);
+		//}
+		//public async Task<IActionResult> Edit(Guid id)
+		//{
+		//    try
+		//    {
+		//        var addressDTO = await this._addressServices.GetAddressAsync(id);
+
+		//        ViewData["Country"] = new SelectList(await this._addressServices.GetAllCountriesAsync(), "Id", "Name");
+		//        //ViewData["City"] = new SelectList(await this._addressServices.GetCountryCities(ViewBag.Country), "Id", "Name");
+
+		//        var barViewModel = new BarViewModel
+		//        {
+		//            Country = addressDTO.CountryName,
+		//            City = addressDTO.CityName,
+		//            Street = addressDTO.Street
+		//        };
+
+		//        return View(barViewModel);
+		//    }
+		//    catch (Exception)
+		//    {
+		//        return NotFound();
+		//    };
+		//}
+
+	}
 }

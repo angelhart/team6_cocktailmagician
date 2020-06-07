@@ -1,9 +1,19 @@
-﻿@model IEnumerable<BarIndexViewModel>
+﻿@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+	@Html.AntiForgeryToken()
+}
+
+@model IEnumerable<BarIndexViewModel>
 
 @{
 	ViewData["Title"] = "Index";
 	Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section Styles {
+}
+
+
+
 
 <head>
 	<link href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css" rel="stylesheet">
@@ -12,45 +22,64 @@
 <h1>World's Best Bars</h1>
 
 <p>
-	<a asp-action="Create">Create New</a>
+	<a asp-action="Create">Create New Bar</a>
 </p>
 
-@*<input type="search" id="search" class="search" placeholder="Search..." />*@
 
-<div class="text-left">
-	<table class="table" id="table1">
-		<thead>
-			<tr>
-				<th>BarName</th>
-				<th>Country</th>
-				<th>City</th>
-				<th>AverageRating</th>
-			</tr>
-		</thead>
-		<tbody>
-			@foreach (var item in Model)
-			{
-			<tr>
-				<td>
-					<a asp-action="Details" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Name)</a>
-				</td>
+@*@if (User.IsInRole("Magician"))
+	{*@
+<table id="barsTable" class="display">
+	<!--hover order-column stripe-->
+	<thead>
+		<tr>
+			<th>Image</th>
+			<th>Name</th>
+			<th>Country</th>
+			<th>City</th>
+			<th>Address</th>
+			<th>Avg. Rating</th>
+			<th>Edit</th>
+			<th>Delete</th>
+		</tr>
+	</thead>
+</table>
+@*}
+	else
+	{
+		<table id="crawlersTable" class="display">
+			<!--hover order-column stripe-->
+			<thead>
+				<tr>
+					<th>Image</th>
+					<th>Name</th>
+					<th>Country</th>
+					<th>City</th>
+					<th>Address</th>
+					<th>Avg. Rating</th>
+				</tr>
+			</thead>
+		</table>
+	}
+*@
 
-				<td>@item.Country</td>
-				<td>@item.City</td>
-				<td>@item.AverageRating</td>
-				@if (User.IsInRole("Member"))
-				{
-					<div>
-						<a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
-					</div>
-				}
 
-			</tr>
-			}
-		</tbody>
-	</table>
+<div>
+	<a asp-action="Index">Back to List</a>
 </div>
+@section Scripts {
 
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
 
+	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+	@*@if (User.IsInRole("Magician"))
+		{*@
+	<script src="~/js/BarScripts/BarsMagicianTable.js"></script>
+	@*}
+		else
+			{
+				<script src="~/js/BarScripts/BarsCrawlerTable.js"></script>
+			}
+	*@
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-
+}

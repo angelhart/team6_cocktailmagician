@@ -20,11 +20,8 @@ namespace CM.ServicesTests.AddressServicesTests
 			//Arrange
 			var options = Utility.GetOptions(nameof(ReturnCorrectCityAfterAdd_ValidParams));
 
-			var newCityDTO = new CityDTO
-			{
-				Name = "TestCity",
-			};
-
+			var cityName = "TestCity";
+			
 			var country = new Country
 			{
 				Id = new Guid("fb4effe9-32c1-45fd-8fce-9b45259c7ff6"),
@@ -50,7 +47,7 @@ namespace CM.ServicesTests.AddressServicesTests
 			{
 				var sut = new AddressServices(assertContext, mockMapper.Object);
 
-				var result = await sut.CreateCityAsync(newCityDTO, new Guid("fb4effe9-32c1-45fd-8fce-9b45259c7ff6"));
+				var result = await sut.CreateCityAsync(cityName, new Guid("fb4effe9-32c1-45fd-8fce-9b45259c7ff6"));
 				var expected = await assertContext.Cities.ToListAsync();
 
 				Assert.AreEqual(expected.Count, 1);
@@ -64,10 +61,7 @@ namespace CM.ServicesTests.AddressServicesTests
 			//Arrange
 			var options = Utility.GetOptions(nameof(ThrowsArgumentNullException_CityNameIsNull));
 
-			var newCityDTO = new CityDTO
-			{
-				Name = null,
-			};
+			string cityName = null;
 
 			var country = new Country
 			{
@@ -94,7 +88,7 @@ namespace CM.ServicesTests.AddressServicesTests
 			{
 				var sut = new AddressServices(assertContext, mockMapper.Object);
 
-				await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.CreateCityAsync(newCityDTO, new Guid("fb4effe9-32c1-45fd-8fce-9b45259c7ff6")));
+				await Assert.ThrowsExceptionAsync<ArgumentNullException>(() => sut.CreateCityAsync(cityName, new Guid("fb4effe9-32c1-45fd-8fce-9b45259c7ff6")));
 			}
 		}
 
@@ -104,10 +98,7 @@ namespace CM.ServicesTests.AddressServicesTests
 			//Arrange
 			var options = Utility.GetOptions(nameof(ThrowsDbUpdateException_WhenCityExists));
 
-			var newCityDTO = new CityDTO
-			{
-				Name = "TestCity",
-			};
+			var cityName = "TestCity";
 
 			var existingCity = new City
 			{
@@ -141,7 +132,7 @@ namespace CM.ServicesTests.AddressServicesTests
 			{
 				var sut = new AddressServices(assertContext, mockMapper.Object);
 
-				await Assert.ThrowsExceptionAsync<DbUpdateException>(() => sut.CreateCityAsync(newCityDTO, new Guid("fb4effe9-32c1-45fd-8fce-9b45259c7ff6")));
+				await Assert.ThrowsExceptionAsync<DbUpdateException>(() => sut.CreateCityAsync(cityName, new Guid("fb4effe9-32c1-45fd-8fce-9b45259c7ff6")));
 			}
 		}
 
@@ -151,11 +142,7 @@ namespace CM.ServicesTests.AddressServicesTests
 			//Arrange
 			var options = Utility.GetOptions(nameof(ThrowsDbUpdateException_WhenCityExists));
 
-			var newCityDTO = new CityDTO
-			{
-				Name = "TestCity",
-			};
-
+			var cityName = "TestCity";
 
 			var mockMapper = new Mock<IAddressMapper>();
 			mockMapper.Setup(x => x.CreateCityDTO(It.IsAny<City>()))
@@ -170,7 +157,7 @@ namespace CM.ServicesTests.AddressServicesTests
 			{
 				var sut = new AddressServices(assertContext, mockMapper.Object);
 
-				await Assert.ThrowsExceptionAsync<DbUpdateException>(() => sut.CreateCityAsync(newCityDTO, new Guid("fb4effe9-32c1-45fd-8fce-9b45259c7ff6")));
+				await Assert.ThrowsExceptionAsync<DbUpdateException>(() => sut.CreateCityAsync(cityName, new Guid("fb4effe9-32c1-45fd-8fce-9b45259c7ff6")));
 			}
 		}
 	}

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using CM.Data;
 using CM.DTOs;
@@ -37,6 +36,11 @@ namespace CM.ServicesTests.BarServicesTests
 				Name = "TestBar-updated",
 				Phone = "(000) 00-0002",
 				Details = "Test Details-updated",
+
+				Cocktails = new List<CocktailDTO> {new CocktailDTO
+				{
+					Id = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"),
+				}, }
 			};
 
 			var mockMapper = new Mock<IBarMapper>();

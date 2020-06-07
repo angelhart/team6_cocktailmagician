@@ -2,109 +2,116 @@
 
 @{
 	ViewData["Title"] = "Details";
-	//Layout = "~/Views/Shared/_Layout.cshtml";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section Styles {
 	<meta charset="utf-8" />
 	<link rel="stylesheet" href="~/css/site.css" />
 	<link rel="stylesheet" href="~/css/StarRating.css" />
-	@*<link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">*@
 	<link rel="stylesheet" href="~/css/CommentsSection.css" />
 	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-	}
-<div lass="w3-display-middle w3-large">
+	<style>
+		a.custom-card,
+		a.custom-card:hover {
+			color: inherit;
+		}
+	</style>
+}
 
-		<img class="d-block w-100 h-25" style="width:100%" src="@Model.ImagePath">
-	</div>
-	<h1>@Html.DisplayFor(model => model.Name)</h1>
 
 
+<div class="row">
+	<div class="col-sm-4 justify-content-center">
+		<h1>@Html.DisplayFor(model => model.Name)</h1>
+		<h4>@Html.DisplayFor(model => model.Country)</h4>
+		<h6>@Html.DisplayFor(model => model.City)</h6>
 
-	<body>
-		<div>
-			<h4>@Html.DisplayFor(model => model.Country)</h4>
-			<h6>@Html.DisplayFor(model => model.City)</h6>
+		@*------------------------------
+			Rating
+			--------------------------------*@
 
-			@*------------------------------
-				Rating
-				--------------------------------*@
+		@if (User.IsInRole("BarCrawler"))
+		{
+			<div class="rating-box">
+				<br />
+				<form asp-controller="Bars"
+					  asp-action="AddRating"
+					  method="post">
 
-			@if (User.IsInRole("Member"))
-			{
-				<div class="rating-box">
+					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+					<div class="rating">
+						<span class="fa fa-star-o"></span>
+						<span class="fa fa-star-o"></span>
+						<span class="fa fa-star-o"></span>
+						<span class="fa fa-star-o"></span>
+						<span class="fa fa-star-o"></span>
+					</div>
 					<br />
-					<form asp-controller="Bars"
-						  asp-action="AddRating"
-						  method="post">
+					<div class="form-group">
+						<input name="Score" type="number" hidden id="rating-value" value="rating-value" />
+						<input name="BarId" asp-for="@Model.Id" hidden />
+						<button type="submit" value="Submit Rating" class="btn btn-outline-dark">Submit</button>
+					</div>
+				</form>
+			</div>
+			<script src="~/js/StarRating.js"></script>
+		}
 
-						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-						<div class="rating">
-							<span class="fa fa-star-o"></span>
-							<span class="fa fa-star-o"></span>
-							<span class="fa fa-star-o"></span>
-							<span class="fa fa-star-o"></span>
-							<span class="fa fa-star-o"></span>
-						</div>
-						<br />
-						<div class="form-group">
-							<input name="Score" type="number" hidden id="rating-value" value="rating-value" />
-							<input name="BarId" asp-for="@Model.Id" hidden />
-							<button type="submit" value="Submit Rating" class="btn btn-outline-dark">Submit</button>
-						</div>
-					</form>
-				</div>
-				<script src="~/js/StarRating.js"></script>
-			}
-
-			@*------------------------------
-				endOfRating
-				--------------------------------*@
-
-			<hr />
-			<dl class="row">
-				<dt class="col-sm-2">
-					Address
-				</dt>
-				<dd class="col-sm-10">
-					@Html.DisplayFor(model => model.Street)
-				</dd>
-				<dt class="col-sm-2">
-					@Html.DisplayNameFor(model => model.Phone)
-				</dt>
-				<dd class="col-sm-10">
-					@Html.DisplayFor(model => model.Phone)
-				</dd>
-				<dt class="col-sm-2">
-					@Html.DisplayNameFor(model => model.ImagePath)
-				</dt>
-				<dd class="col-sm-10">
-					@Html.DisplayFor(model => model.ImagePath)
-				</dd>
-				<dt class="col-sm-2">
-					@Html.DisplayNameFor(model => model.Details)
-				</dt>
-				<dd class="col-sm-10">
-					@Html.DisplayFor(model => model.Details)
-				</dd>
-				<dt class="col-sm-2">
-					@Html.DisplayNameFor(model => model.Cocktails)
-				</dt>
-				<dd class="col-sm-10">
+		@*------------------------------
+			endOfRating
+			--------------------------------*@
+	</div>
+	<div class="col-sm-8 justify-content-end">
+		<img class="d-block" width="auto" height="300" src="@Model.ImagePath">
+	</div>
+</div>
+<body>
+	<div>
+		<hr />
+		<dl class="row">
+			<dt class="col-sm-2">
+				Address
+			</dt>
+			<dd class="col-sm-10">
+				@Html.DisplayFor(model => model.Street)
+			</dd>
+			<dt class="col-sm-2">
+				@Html.DisplayNameFor(model => model.Phone)
+			</dt>
+			<dd class="col-sm-10">
+				@Html.DisplayFor(model => model.Phone)
+			</dd>
+			<dt class="col-sm-2">
+				@Html.DisplayNameFor(model => model.Details)
+			</dt>
+			<dd class="col-sm-10">
+				@Html.DisplayFor(model => model.Details)
+			</dd>
+			<dt class="col-sm-2">
+				@Html.DisplayNameFor(model => model.Cocktails)
+			</dt>
+			<dd class="col-sm-10">
+				<div class=" row">
 					@foreach (var cocktail in Model.Cocktails)
 					{
-						<td>
-							<p>
-								<a asp-controller="Cocktails" asp-action="Details" asp-route-id="@cocktail.Id">@Html.DisplayFor(modelItem => cocktail.Name)</a>
-							</p>
-						</td>
+						<div class="col-sm-2">
+							<a class="card custom-card" asp-area="Magician" asp-controller="Cocktails" asp-action="Details" asp-route-id="@cocktail.Id">
+								<img src="/images/DefaultCocktail.png" class="card-img-top" alt="...">
+								<div class="card-body">
+									<p class="card-text">@cocktail.Name</p>
+								</div>
+							</a>
+						</div>
 					}
-				</dd>
-			</dl>
-		</div>
+				</div>
+			</dd>
+		</dl>
+	</div>
 
-
+	@if (User.IsInRole("BarCrawler"))
+	{
 		<form asp-controller="Bars"
 			  asp-action="AddComment">
 			<div class="card-body text-center">
@@ -126,29 +133,31 @@
 			</fieldset>
 
 		</form>
-		<div class="card-body text-center">
-			<h3 class="comments-title">@Html.DisplayNameFor(model => model.Comments) (@Html.DisplayFor(model => model.Comments.Count))</h3>
-		</div>
-		@foreach (var item in Model.Comments)
-		{
-			<div class="col-md-12">
-				<div class="media g-mb-30 media-comment">
-					<img width="100" class="rounded-circle g-mt-3 g-mr-15" src="~/images/DefaultUser.png" alt="Image Description">
-					<div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
-						<div class="g-mb-15">
-							<h5 class="h5 g-color-gray-dark-v1 mb-0">@item.UserName</h5>
-							<span class="g-color-gray-dark-v4 g-font-size-12">@item.CommentedOn</span>
-						</div>
+	}
+	<div class="card-body text-center">
+		<h3 class="comments-title">@Html.DisplayNameFor(model => model.Comments) (@Html.DisplayFor(model => model.Comments.Count))</h3>
+	</div>
 
-						<p>
-							@item.Text
-						</p>
+	@foreach (var item in Model.Comments)
+	{
+		<div class="col-md-12">
+			<div class="media g-mb-30 media-comment">
+				<img width="100" class="rounded-circle g-mt-3 g-mr-15" src="~/images/DefaultUser.png" alt="Image Description">
+				<div class="media-body u-shadow-v18 g-bg-secondary g-pa-30">
+					<div class="g-mb-15">
+						<h5 class="h5 g-color-gray-dark-v1 mb-0">@item.UserName</h5>
+						<span class="g-color-gray-dark-v4 g-font-size-12">@item.CommentedOn</span>
 					</div>
+
+					<p>
+						@item.Text
+					</p>
 				</div>
 			</div>
-		}
-		<div>
-			<a asp-action="Index">Back to List</a>
 		</div>
-	</body>
+	}
+	<div>
+		<a asp-action="Index">Back to List</a>
+	</div>
+</body>
 

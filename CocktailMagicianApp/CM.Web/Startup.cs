@@ -57,9 +57,17 @@ namespace CM.Web
             services.AddScoped<ICocktailMapper, CocktailMapper>();
             services.AddScoped<IIngredientMapper, IngredientMapper>();
             services.AddScoped<IUserMapper, UserMapper>();
+            services.AddScoped<ICommentViewMapper, CommentViewMapper>();
 
             services.AddScoped<IAddressServices, AddressServices>();
             services.AddScoped<IAppUserServices, AppUserServices>();
+            services.AddScoped<IBarServices, BarServices>();
+            services.AddScoped<ICocktailServices, CocktailServices>();
+            services.AddScoped<IIngredientServices, IngredientServices>();
+
+            services.AddScoped<IIngredientViewMapper, IngredientViewMapper>();
+            services.AddScoped<ICocktailViewMapper, CocktailViewMapper>();
+
             services.AddScoped<IRatingServices, RatingServices>();
             services.AddScoped<ICommentServices, CommentServices>();
             services.AddScoped<IDateTimeProvider, DateTimeProvider>();
@@ -72,12 +80,6 @@ namespace CM.Web
             //});
 
             services.AddMvc().AddNToastNotifyNoty();
-            services.AddScoped<IBarServices, BarServices>();
-            services.AddScoped<ICocktailServices, CocktailServices>();
-            services.AddScoped<IIngredientServices, IngredientServices>();
-
-            services.AddScoped<IIngredientViewMapper, IngredientViewMapper>();
-
             services.AddScoped<IStorageProvider, AppStorageProvider>();
         }
 
@@ -103,7 +105,7 @@ namespace CM.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
-            //app.UseMiddleware<MissingMiddleware>();
+            app.UseMiddleware<MissingMiddleware>();
 
             app.UseNToastNotify();
 

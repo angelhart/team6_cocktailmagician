@@ -1,14 +1,11 @@
 ﻿$(document).ready(function () {
-	$('#CountryID').change(function () {
-		var url = "../Controllers/BarsController/GetCountryCitiesAsync";
-		var source = "#CountryID";
-		$.getJSON(url, { CountryID: $(source).val() }, function (data) {
-			var items = ' ';
-			$('#CityID').empty();
-			$.each(data, function (i, city) {
-				item += "<option value='" + city.value + "'>" + city.text + "</option>";
+	$("#CountryID").change(function () {
+		$.get("/Addresses/GetCountryCities", { countryID: $("#CountryID").val() })
+			.done(function (data) {
+				$("#CityID").empty();
+				$.each(data, function (index, row) {
+					$("#CityID").append("<option value='" + row.id + "'>" + row.name + "</option>")
+				});
 			});
-			$('#CityID').html(items);
-		});
 	});
 });

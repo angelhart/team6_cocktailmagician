@@ -1,0 +1,86 @@
+@using CM.Web.Areas.Magician.Models
+@model CM.Web.Areas.Magician.Models.IngredientViewModel
+
+@section Styles {
+    <link href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+
+    <link href="~/css/Ingredients/IngredientsTable.css" rel="stylesheet" type="text/css" />
+}
+
+@{
+    ViewData["Title"] = "List Of Ingredients";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<div class="d-flex justify-content-center">
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createIngredientModal">
+        Add New Ingredient
+    </button>
+    <!-- Modal -->
+    <div class="modal fade" id="createIngredientModal" tabindex="-1" role="dialog" aria-labelledby="createIngredientModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="createIngredientModalLabel">Provide ingredient details:</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    @{await Html.RenderPartialAsync("_CreatePartial", new IngredientViewModel());}
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<table id="ingredientsTable" class="display">
+    <!--hover order-column stripe-->
+    <thead>
+        <tr>
+            <th>Image</th>
+            <th>Name</th>
+            <th>Edit</th>
+            <th>Delete</th>
+        </tr>
+    </thead>
+</table>
+
+@section Scripts {
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+
+    <script src="~/js/IngredientScripts/IngredientsDataTable.js"></script>
+
+    <script src="~/js/UploadImage.js"></script>
+
+    @*<script src="~/js/IngredientScripts/CreateIngredient.js"></script>*@
+
+
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    @*<script src="~/lib/jquery-validation/dist/additional-methods.min.js"></script>*@
+
+    @*<script>
+            $.validator.unobtrusive.adapters.add('maxsize', ['maxfilesize'], function (options) {
+                        console.log(options);
+
+                var element = $(options.form).find('input#fileUploadInput');
+
+                options.rules['maxsize'] = [element, parseInt(options.params['file'])];
+                options.messages['maxsize'] = options.message;
+            });
+        </script>*@
+}

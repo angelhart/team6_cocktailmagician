@@ -92,23 +92,23 @@ namespace CM.Services
         /// </summary>
         /// <param name="countryDTO">The params needed for the country to be created.</param>
         /// <returns>Returns CountryDTO with the params of the created country.</returns>
-        public async Task<CountryDTO> CreateCountryAsync(CountryDTO countryDTO)
+        public async Task<CountryDTO> CreateCountryAsync(string countryName)
         {
-            if (countryDTO.Name == null)
+            if (countryName == null)
                 throw new ArgumentNullException("Country name cannot be null!");
 
             var countryAlredyExists = _context.Countries
-                .Any(country => country.Name == countryDTO.Name);
+                .Any(country => country.Name == countryName);
             if (countryAlredyExists)
                 throw new DbUpdateException("A country with the same name already exists!");
 
 
-            var country = new Country { Name = countryDTO.Name };
+            var country = new Country { Id = Guid.NewGuid(), Name = countryName };
 
             await _context.Countries.AddAsync(country);
             await _context.SaveChangesAsync();
 
-            countryDTO.Id = countryDTO.Id;
+            var countryDTO = this._addressMapper.CreateCountryDTO(country);
 
             return countryDTO;
         }
@@ -118,23 +118,23 @@ namespace CM.Services
         /// </summary>
         /// <param name="cityDTO">The params needed for the city to be created.</param>
         /// <returns>Returns CityDTO with the params of the created city.</returns>
-        public async Task<CityDTO> CreateCityAsync(CityDTO cityDTO, Guid countryId)
+        public async Task<CityDTO> CreateCityAsync(string cityName, Guid countryId)
         {
-            if (cityDTO.Name == null)
+            if (cityName == null)
                 throw new ArgumentNullException("City name cannot be null!");
 
             if (await _context.Countries.FirstOrDefaultAsync(country => country.Id == countryId) == null)
                 throw new ArgumentNullException("Country was not found!");
 
-            if (await _context.Cities.FirstOrDefaultAsync(city => city.Name == cityDTO.Name) != null)
+            if (await _context.Cities.FirstOrDefaultAsync(city => city.Name == cityName) != null)
                 throw new DbUpdateException("A city with the same name already exists!");
 
-            var city = new City { Name = cityDTO.Name, CountryId = countryId };
+            var city = new City { Id = Guid.NewGuid(), Name = cityName, CountryId = countryId };
 
             await _context.Cities.AddAsync(city);
             await _context.SaveChangesAsync();
 
-            cityDTO.Id = cityDTO.Id;
+            var cityDTO = this._addressMapper.CreateCityDTO(city);
 
             return cityDTO;
         }
@@ -156,14 +156,61 @@ namespace CM.Services
 
             var address = new Address
             {
+                Id = Guid.NewGuid(),
                 CityId = addressDTO.CityId,
-                Street = addressDTO.Street
+                Street = addressDTO.Street,
+                BarId = addressDTO.BarId
             };
 
             await _context.Addresses.AddAsync(address);
             await _context.SaveChangesAsync();
 
             addressDTO.Id = address.Id;
+            addressDTO.CityName = address.City.Name;
+
+            return addressDTO;
+        }
+
+        /// <summary>
+        ///  Retrieves Address by given Id.
+        /// </summary>
+        /// <param name="addressId">The Id of the address to be searched.</param>
+        /// <returns>AddressDTO</returns>
+        public async Task<AddressDTO> GetAddressAsync(Guid addressId)
+        {
+            var address = await _context.Addresses.FirstOrDefaultAsync(address => address.Id == addressId);
+
+            if (address == null)
+                throw new ArgumentException();
+
+            var addressDTO = this._addressMapper.CreateAddressDTO(address);
+
+            return addressDTO;
+        }
+
+        /// <summary>
+        /// Edits the Address of a bar.
+        /// </summary>
+        /// <param name="cityId">The Id of the city where the ne address will be.</param>
+        /// <param name="street">The street of the address.</param>
+        /// <returns></returns>
+        public async Task<AddressDTO> EditAddressAsync(AddressDTO addressDTO)
+        {
+            var address = await _context.Addresses.FirstOrDefaultAsync(address => address.Id == addressDTO.Id);
+
+            if (address == null)
+                throw new DbUpdateException("Address was not found!");
+
+            if (addressDTO.Street == null)
+                throw new ArgumentNullException("Please enter street!");
+
+            address.CityId = addressDTO.CityId;
+            address.Street = addressDTO.Street;
+
+             _context.Addresses.Update(address);
+            await _context.SaveChangesAsync();
+
+            addressDTO.CountryName = address.City.Country.Name;
 
             return addressDTO;
         }
