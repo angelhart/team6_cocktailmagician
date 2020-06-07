@@ -1,5 +1,5 @@
 ﻿$(document).ready(function () {
-	$('#barsTable').DataTable({
+	$('#crawlersTable').DataTable({
 		processing: true, //progress bar
 		serverSide: true, //server side processing
 		filter: true, //disable search box
@@ -11,15 +11,6 @@
 		},
 		oLanguage: {
 			sProcessing: '<div class="spinner-border text-danger" role="status"></div>'
-		},
-		columnDefs: [{
-			orderable: false,
-			className: 'select-checkbox',
-			targets: 7
-		}],
-		select: {
-			style: 'os',
-			selector: 'td:first-child'
 		},
 		columns: [
 			{
@@ -76,57 +67,7 @@
 				orderable: true
 
 			},
-			{
-				// Edit button
-				render: function (data, type, full, meta) {
-					return '<a class="btn btn-info" href="/magician/ingredients/edit/' + full.id + '">Edit</a>';
-				},
-				orderable: false,
-				visible: false
-			},
-			{
-				// Delete button
-				render: function (data, type, full, meta) {
-					var checked = '';
-					if (full.isUnlisted) {
-						checked = 'checked';
-					}
-					return '<input type="checkbox" ' + checked + ' onMouseDown=DeleteData("' + full.id + '");> ';
-					//return '<a href="#" class="btn btn-danger" onclick=DeleteData("' + row.id + '","' + row.name + '"); >Delete</a>';
-				},
-				orderable: false
-			}
 		]
 	});
 });
 
-function DeleteData(id) {
-
-	if (confirm("Are you sure you want to delete this bar?")) {
-		Delete(id);
-	}
-	else {
-		return false;
-	}
-}
-
-
-function Delete(Id) {
-	var url = "bars/delete/";
-	var form = $('#__AjaxAntiForgeryForm');
-	var token = $('input[name="__RequestVerificationToken"]', form).val();
-
-	$.post(url,
-		{
-			Id: Id,
-			__RequestVerificationToken: token
-		},
-		function (data) {
-			if (data) {
-				oTable = $('#barsTable').DataTable();
-				oTable.draw();
-			} else {
-				alert("Something Went Wrong!");
-			}
-		});
-}  

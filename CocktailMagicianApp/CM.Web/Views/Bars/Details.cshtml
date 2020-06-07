@@ -22,7 +22,7 @@
 
 
 <div class="row">
-	<div class="col-sm-4 justify-content-center" >
+	<div class="col-sm-4 justify-content-center">
 		<h1>@Html.DisplayFor(model => model.Name)</h1>
 		<h4>@Html.DisplayFor(model => model.Country)</h4>
 		<h6>@Html.DisplayFor(model => model.City)</h6>
@@ -31,7 +31,7 @@
 			Rating
 			--------------------------------*@
 
-		@if (User.IsInRole("Member"))
+		@if (User.IsInRole("BarCrawler"))
 		{
 			<div class="rating-box">
 				<br />
@@ -96,9 +96,8 @@
 				<div class=" row">
 					@foreach (var cocktail in Model.Cocktails)
 					{
-						@*<a class="btn btn-secondary" asp-controller="Cocktails" area=" " asp-action="Details" asp-route-id="@cocktail.Id">@Html.DisplayFor(modelItem => cocktail.Name)</a>*@
 						<div class="col-sm-2">
-							<a class="card custom-card" asp-controller="Cocktails" area=" " asp-action="Details" asp-route-id="@cocktail.Id">
+							<a class="card custom-card" asp-area="Magician" asp-controller="Cocktails" asp-action="Details" asp-route-id="@cocktail.Id">
 								<img src="/images/DefaultCocktail.png" class="card-img-top" alt="...">
 								<div class="card-body">
 									<p class="card-text">@cocktail.Name</p>
@@ -111,30 +110,34 @@
 		</dl>
 	</div>
 
-	<form asp-controller="Bars"
-		  asp-action="AddComment">
-		<div class="card-body text-center">
-			<h3 class="comments-title">New Comment</h3>
-		</div>
-		<fieldset>
-			<div class="row">
-				<div class="col-sm-3 col-lg-2 hidden-xs">
-					<img width="150" class="rounded-circle g-mt-3 g-mr-15" src="~/images/DefaultUser.png" alt="Image Description">
-				</div>
-				<div class="form-group col-xs-12 col-sm-9 col-lg-10">
-					<input name="BarId" value="@Model.Id" hidden>
-					<textarea name="Text" class="form-control" placeholder="Your message" required="" rows="5"></textarea>
-				</div>
+	@if (User.IsInRole("BarCrawler"))
+	{
+		<form asp-controller="Bars"
+			  asp-action="AddComment">
+			<div class="card-body text-center">
+				<h3 class="comments-title">New Comment</h3>
 			</div>
-			<div class="float-right">
-				<button type="submit" value="Add Comment" class="btn btn-outline-secondary" .pull-right>Submit</button>
-			</div>
-		</fieldset>
+			<fieldset>
+				<div class="row">
+					<div class="col-sm-3 col-lg-2 hidden-xs">
+						<img width="150" class="rounded-circle g-mt-3 g-mr-15" src="~/images/DefaultUser.png" alt="Image Description">
+					</div>
+					<div class="form-group col-xs-12 col-sm-9 col-lg-10">
+						<input name="BarId" value="@Model.Id" hidden>
+						<textarea name="Text" class="form-control" placeholder="Your message" required="" rows="5"></textarea>
+					</div>
+				</div>
+				<div class="float-right">
+					<button type="submit" value="Add Comment" class="btn btn-outline-secondary" .pull-right>Submit</button>
+				</div>
+			</fieldset>
 
-	</form>
+		</form>
+	}
 	<div class="card-body text-center">
 		<h3 class="comments-title">@Html.DisplayNameFor(model => model.Comments) (@Html.DisplayFor(model => model.Comments.Count))</h3>
 	</div>
+
 	@foreach (var item in Model.Comments)
 	{
 		<div class="col-md-12">

@@ -1,20 +1,29 @@
 ﻿@model BarViewModel
 
 @{
-    ViewData["Title"] = "Edit";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Edit";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
+
+@section Styles{
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+
+}
+
 
 <h1>Edit</h1>
 
-<h4>Bar</h4>
+<h4>@Model.Name</h4>
 <hr />
-<div>
-	<a asp-controller="Bars" asp-action="ChangeAddress" asp-route-barId=" @Model.Id">Change Address</a>
-</div>
+@*<div>
+			<label> Address</label>
+			<p>@Model.FullAddress</p>
+			<span asp-validation-for="Name" class="text-danger"></span>
+		<a asp-controller="Addresses" asp-action="Edit" asp-route-addressId=" @Model.AddressId">Change Address</a>
+	</div>*@
 <div class="row">
-    <div class="col-md-4">
-		<form asp-action="Edit">
+	<div class="col-md-4">
+		<form asp-action="Edit" enctype="multipart/form-data">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 			<input type="hidden" asp-for="Id" />
 			<div class="form-group">
@@ -27,43 +36,57 @@
 				<input asp-for="Phone" class="form-control" />
 				<span asp-validation-for="Phone" class="text-danger"></span>
 			</div>
-			@*<div class="form-group">
-				<label asp-for="Country" class="control-label"></label>
-				<select asp-for="Country" class="form-control" asp-items="ViewBag.Country"></select>
-				<span asp-validation-for="Country" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="City" class="control-label"></label>
-				<select asp-for="City" class="form-control" asp-items="ViewBag.City"></select>
-				<span asp-validation-for="City" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Street" class="control-label"></label>
-				<input asp-for="Street" class="form-control" />
-				<span asp-validation-for="Street" class="text-danger"></span>
-			</div>*@
-			<div class="form-group">
-				<label asp-for="ImagePath" class="control-label"></label>
-				<input asp-for="ImagePath" class="form-control" />
-				<span asp-validation-for="ImagePath" class="text-danger"></span>
-			</div>
 			<div class="form-group">
 				<label asp-for="Details" class="control-label"></label>
 				<input asp-for="Details" class="form-control" />
 				<span asp-validation-for="Details" class="text-danger"></span>
 			</div>
+
+
+			<div class="form-group">
+				<label class="control-label">Upload new image (optional)</label>
+				<input id="fileUploadInput" asp-for="Image" type="file" class="file" accept="image/*" hidden>
+				<div class="input-group my-3">
+					<input type="text" class="form-control col-sm-12" disabled placeholder="New Image" id="file">
+					<div class="input-group-append">
+						<button type="button" class="browse btn btn-primary">Browse</button>
+					</div>
+					<span asp-validation-for="Image" class="text-danger"></span>
+				</div>
+				<div class="form-group">
+					<img src="https://placehold.it/80x80" id="preview" class="img-thumbnail">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<label asp-for="SelectedCocktails" class="control-label"></label>
+				<select multiple class="form-control selectpicker" data-live-search="true" asp-for="SelectedCocktails" asp-items="@(new SelectList(ViewBag.ListOfCocktails, "Id", "Name"))"><option value="">--Select--</option></select>
+				<span asp-validation-for="SelectedCocktails" class="text-danger"></span>
+			</div>
+
+			@*<div class="form-group">
+				<label asp-for="Cocktails" class="control-label"></label>
+				<select asp-for="Cocktails" asp-items="Model.AllCocktails" class="form-control selectpicker" data-live-search="true">
+				</select>
+				<span asp-validation-for="Cocktails" class="text-danger"></span>
+			</div>*@
+
 			<div class="form-group">
 				<input type="submit" value="Save" class="btn btn-primary" />
 			</div>
 		</form>
-    </div>
+	</div>
 </div>
 
 
 <div>
-    <a asp-action="Index">Back to List</a>
+	<a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+	<script src="~/js/UploadImage.js"></script>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
 }

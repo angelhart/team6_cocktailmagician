@@ -166,6 +166,7 @@ namespace CM.Services
             await _context.SaveChangesAsync();
 
             addressDTO.Id = address.Id;
+            addressDTO.CityName = address.City.Name;
 
             return addressDTO;
         }
@@ -183,6 +184,33 @@ namespace CM.Services
                 throw new ArgumentException();
 
             var addressDTO = this._addressMapper.CreateAddressDTO(address);
+
+            return addressDTO;
+        }
+
+        /// <summary>
+        /// Edits the Address of a bar.
+        /// </summary>
+        /// <param name="cityId">The Id of the city where the ne address will be.</param>
+        /// <param name="street">The street of the address.</param>
+        /// <returns></returns>
+        public async Task<AddressDTO> EditAddressAsync(AddressDTO addressDTO)
+        {
+            var address = await _context.Addresses.FirstOrDefaultAsync(address => address.Id == addressDTO.Id);
+
+            if (address == null)
+                throw new DbUpdateException("Address was not found!");
+
+            if (addressDTO.Street == null)
+                throw new ArgumentNullException("Please enter street!");
+
+            address.CityId = addressDTO.CityId;
+            address.Street = addressDTO.Street;
+
+             _context.Addresses.Update(address);
+            await _context.SaveChangesAsync();
+
+            addressDTO.CountryName = address.City.Country.Name;
 
             return addressDTO;
         }

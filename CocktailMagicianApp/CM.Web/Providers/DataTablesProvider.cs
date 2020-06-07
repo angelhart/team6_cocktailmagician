@@ -14,24 +14,22 @@ namespace CM.Web.Providers
 
         }
 
-        public DataTablesProvider(int draw, int recordsTotal, int recordsFiltered, ICollection<T> data, string role)
+        public DataTablesProvider(int draw, int recordsTotal, int recordsFiltered, ICollection<T> data)
         {
             this.Draw = draw;
             this.RecordsTotal = recordsTotal;
             this.RecordsFiltered = recordsFiltered;
             this.Data = data;
-            this.Role = role;
         }
 
         public int Draw { get; set; }
         public int RecordsTotal { get; set; }
         public int RecordsFiltered { get; set; }
         public ICollection<T> Data { get; set; }
-        public string Role { get; set; }
 
-        public static DataTablesProvider<T> CreateResponse(int draw, int recordsTotal, int recordsFiltered, ICollection<T> data, string role = "")
+        public static DataTablesProvider<T> CreateResponse(int draw, int recordsTotal, int recordsFiltered,ICollection<T> data)
         {
-            return new DataTablesProvider<T>(draw, recordsTotal, recordsFiltered, data, role);
+            return new DataTablesProvider<T>(draw, recordsTotal, recordsFiltered, data);
         }
     }
 }

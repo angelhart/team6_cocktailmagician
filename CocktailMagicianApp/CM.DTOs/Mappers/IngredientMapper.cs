@@ -11,7 +11,7 @@ namespace CM.DTOs.Mappers
     {
         public IngredientDTO CreateIngredientDTO(Ingredient ingredient)
         {
-            return new IngredientDTO
+            var ingredientDTO = new IngredientDTO
             {
                 Id = ingredient.Id,
                 Name = ingredient.Name,
@@ -20,6 +20,11 @@ namespace CM.DTOs.Mappers
                             .ToList(),
                 ImagePath = ingredient.ImagePath
             };
+
+            if (string.IsNullOrEmpty(ingredientDTO.ImagePath))
+                ingredientDTO.ImagePath = "/images/DefaultIngredients.png";
+
+            return ingredientDTO;
         }
 
         public CocktailDTO CreateCocktailDTO(CocktailIngredient ingredient)

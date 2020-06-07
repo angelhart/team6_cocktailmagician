@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using CM.Data;
-using CM.Models;
 using CM.Services.Contracts;
 using CM.DTOs.Mappers.Contracts;
 using Microsoft.AspNetCore.Hosting;

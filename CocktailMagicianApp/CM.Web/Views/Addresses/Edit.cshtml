@@ -1,4 +1,4 @@
-﻿@model CM.Models.Address
+﻿@model AddressViewModel
 
 @{
     ViewData["Title"] = "Edit";
@@ -11,28 +11,33 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="CityId" class="control-label"></label>
-                <select asp-for="CityId" class="form-control" asp-items="ViewBag.CityId"></select>
-                <span asp-validation-for="CityId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Street" class="control-label"></label>
-                <input asp-for="Street" class="form-control" />
-                <span asp-validation-for="Street" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="BarId" class="control-label"></label>
-                <select asp-for="BarId" class="form-control" asp-items="ViewBag.BarId"></select>
-                <span asp-validation-for="BarId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+		<form asp-action="Edit">
+			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+			<input type="hidden" asp-for="Id" />
+
+			<div class="form-group">
+				<label asp-for="CountryName" class="control-label"></label>
+				<text> @Model.CountryName
+				</text>
+			</div>
+			<div class="form-group">
+			</div>
+			<div class="form-group">
+				<label asp-for="CityName" class="control-label"></label>
+				<select asp-for="CityId" class="form-control" asp-items="@(new SelectList(string.Empty, "Id", "Name"))">
+					<option value="">--Select City--</option>
+				</select>
+				<span asp-validation-for="CityId" class="text-danger"></span>
+				<a asp-controller="Addresses" asp-action="CreateCity">Add new City</a>
+			</div>
+			<div class="form-group">
+				<label asp-for="Street" class="control-label"></label>
+				<input asp-for="Street" class="form-control" />
+				<span asp-validation-for="Street" class="text-danger"></span>
+			</div>
+
+
+		</form>
     </div>
 </div>
 

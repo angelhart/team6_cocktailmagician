@@ -47,12 +47,22 @@ namespace CM.Services
 			var filteredbars = sorteBars;
 
 			if (!String.IsNullOrEmpty(searchString))
-				filteredbars = bars.Where(bar => bar.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
-											|| bar.Address.City.Country.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
-											|| bar.Address.City.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
-											|| bar.Address.Street.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
+			{
+				double number;
+				if (Double.TryParse(searchString, out number))
+				{
+					filteredbars = bars.Where(bar => bar.AverageRating.Equals(number));
+				}
+				else
+				{
+					filteredbars = bars.Where(bar => bar.Name.Contains(searchString)
+													|| bar.FullAddress.Contains(searchString));
+				}
+			}
 
-			var dtos = await filteredbars.Select(bar => _barMapper.CreateBarDTO(bar)).ToListAsync();
+			var filteredbarsList = await filteredbars.ToListAsync();
+
+			var dtos = filteredbarsList.Select(bar => _barMapper.CreateBarDTO(bar)).ToList();
 
 			var pagedDtos = await PaginatedList<BarDTO>.CreateAsync(dtos, pageNumber, pageSize);
 
@@ -127,7 +137,12 @@ namespace CM.Services
 			bar.Name = barDTO.Name;
 			bar.Phone = barDTO.Phone;
 			bar.Details = barDTO.Details;
-			bar.ImagePath = barDTO.ImagePath;
+			if (barDTO.ImagePath != null)
+			{
+				bar.ImagePath = barDTO.ImagePath;
+			}
+
+			await UpdateCocktailsInBarAsync(bar.Id, barDTO.Cocktails);
 
 			_context.Update(bar);
 			await _context.SaveChangesAsync();
@@ -164,8 +179,9 @@ namespace CM.Services
 				await _context.Bars.AddAsync(bar);
 				await _context.SaveChangesAsync();
 
-				var address = await _addressServices.CreateAddressAsync(barDTO.Address);
-				bar.AddressID = address.Id;
+				var addressDTO = await _addressServices.CreateAddressAsync(barDTO.Address);
+				bar.AddressID = addressDTO.Id;
+				bar.FullAddress = $"{addressDTO.CityName}, {addressDTO.Street}";
 
 				var cocktails = barDTO.Cocktails.Select(sc =>
 				new BarCocktail
@@ -313,6 +329,22 @@ namespace CM.Services
 				_ => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(c => c.Name) :
 													   bars.OrderByDescending(c => c.Name),
 			};
+		}
+		private async Task UpdateCocktailsInBarAsync(Guid barId, ICollection<CocktailDTO> newCocktails)
+		{
+			var currentCocktails = _context.BarCocktails
+											 .Where(bc => bc.BarId == barId);
+
+			_context.RemoveRange(currentCocktails);
+
+			var cocktailsToAdd = newCocktails.Select(cocktailDTO => new BarCocktail
+			{
+				BarId = barId,
+				CocktailId = cocktailDTO.Id,
+			});
+
+			await _context.AddRangeAsync(cocktailsToAdd);
+			await _context.SaveChangesAsync();
 		}
 	}
 }
