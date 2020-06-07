@@ -11,13 +11,13 @@ using CM.DTOs.Mappers;
 using CM.Models;
 using CM.Services;
 using CM.Services.Contracts;
-using NToastNotify;
-using CM.Web.Middlewares;
 using CM.Services.Providers.Contracts;
 using CM.Services.Providers;
 using CM.Web.Providers.Contracts;
 using CM.Web.Providers.ViewModelMappers;
 using CM.Web.Providers;
+using NToastNotify;
+using CM.Web.Middlewares;
 
 namespace CM.Web
 {
@@ -58,6 +58,7 @@ namespace CM.Web
             services.AddScoped<IIngredientMapper, IngredientMapper>();
             services.AddScoped<IUserMapper, UserMapper>();
             services.AddScoped<ICommentViewMapper, CommentViewMapper>();
+            services.AddScoped<IRatingViewMapper, RatingViewMapper>();
 
             services.AddScoped<IAddressServices, AddressServices>();
             services.AddScoped<IAppUserServices, AppUserServices>();
@@ -80,6 +81,13 @@ namespace CM.Web
             //});
 
             services.AddMvc().AddNToastNotifyNoty();
+            services.AddScoped<IBarServices, BarServices>();
+            services.AddScoped<ICocktailServices, CocktailServices>();
+            services.AddScoped<IIngredientServices, IngredientServices>();
+
+            services.AddScoped<IIngredientViewMapper, IngredientViewMapper>();
+            services.AddScoped<ICocktailViewMapper, CocktailViewMapper>();
+
             services.AddScoped<IStorageProvider, AppStorageProvider>();
         }
 

@@ -20,7 +20,6 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CM.Web.Controllers
 {
-    [AllowAnonymous]
     public class CocktailsController : Controller
     {
         private const string ROOTSTORAGE = "\\images\\Cocktails";
@@ -60,13 +59,9 @@ namespace CM.Web.Controllers
         }
 
         // GET: Magician/Cocktails
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var permission = User.IsInRole("Magician");
-            var dtos = await _cocktailServices.PageCocktailsAsync(allowUnlisted: true);
-            var vms = dtos.Select(c => _cocktailViewMapper.CreateCocktailViewModel(c));
-
-            return View(vms);
+            return View();
         }
 
         [HttpPost]
@@ -84,12 +79,21 @@ namespace CM.Web.Controllers
                                 ["columns[" + Request.Form["order[0][column]"].FirstOrDefault() + "][name]"]
                                 .FirstOrDefault();
                 var sortOrder = Request.Form["order[0][dir]"].FirstOrDefault(x => x.Contains("desc"));
+                
+                // TODO: finalise implementation of rating search
+                var minRatingString = Request.Form["minRating"].FirstOrDefault();
+                double.TryParse(minRatingString, out double minRating);
+                var maxRatingString = Request.Form["maxRating"].FirstOrDefault();
+                double.TryParse(maxRatingString, out double maxRating);
 
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int pageNumber = start != null ? 1 + (int)Math.Ceiling(Convert.ToDouble(start) / pageSize) : 0;
                 int recordsTotal = await _cocktailServices.CountAllCocktailsAsync();
 
-                var dtos = await _cocktailServices.PageCocktailsAsync(searchString, sortBy, sortOrder, pageNumber, pageSize);
+                var permission = User.IsInRole("Magician");
+
+                var dtos = await _cocktailServices.PageCocktailsAsync(searchString, sortBy, sortOrder, pageNumber,
+                                                                      pageSize, permission);//, minRating, maxRating);
                 var vms = dtos.Select(d => _cocktailViewMapper.CreateCocktailViewModel(d)).ToList();
 
                 var recordsFiltered = dtos.SourceItems;
@@ -112,7 +116,9 @@ namespace CM.Web.Controllers
         {
             try
             {
-                var dto = await _cocktailServices.GetCocktailDetailsAsync(id, isAdmin: false);
+                var permission = User.IsInRole("Magician");
+
+                var dto = await _cocktailServices.GetCocktailDetailsAsync(id, isAdmin: permission);
 
                 var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
 

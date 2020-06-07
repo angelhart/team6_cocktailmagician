@@ -12,7 +12,13 @@ $(document).ready(function () {
         ajax: {
             url: '/cocktails/index',
             type: 'POST',
-            dataSrc: 'data'
+            dataSrc: 'data',
+            // send additional data for min/max rating
+            data: function (dtParms) {
+                dtParms.minRating = $('#min').val();
+                dtParms.maxRating = $('#max').val();
+                return dtParms;
+            }
         },
         drawCallback: function (settings) {
             // Here the response
@@ -36,7 +42,7 @@ $(document).ready(function () {
             },
             {
                 // Rating collumn
-                name: 'averageRating',
+                name: 'rating',
                 data: 'averageRating',
                 render: function (data, type, full, meta) {
                     return full.averageRating;

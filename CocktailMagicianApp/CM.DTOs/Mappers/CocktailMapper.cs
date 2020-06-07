@@ -40,7 +40,8 @@ namespace CM.DTOs.Mappers
             return new BarDTO
             {
                 Id = bar.BarId,
-                Name = bar.Bar?.Name
+                Name = bar.Bar?.Name,
+                ImagePath = bar.Bar?.ImagePath,
             };
         }
 

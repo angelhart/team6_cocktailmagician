@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="~/css/site.css" />
     @RenderSection("Styles", required: false)
 </head>
-<body class="mb-5"> <!-- Added MarginBottom-5 to body to resolve footer covering body -->
+<body class="mb-5">
+    <!-- Added MarginBottom-5 to body to resolve footer covering body -->
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -30,11 +31,14 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Bars" asp-action="Index">Bars</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Magician" asp-controller="Cocktails" asp-action="Index">Cocktails</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Cocktails" asp-action="Index">Cocktails</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Magician" asp-controller="Ingredients" asp-action="Index">Ingredients</a>
-                        </li>
+                        @if (User.IsInRole("Magician"))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="Magician" asp-controller="Ingredients" asp-action="Index">Ingredients</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -46,15 +50,15 @@
         </main>
     </div>
 
-	<footer class="border-top footer text-muted mb-md-auto">
-		<div class="container">
-			&copy; 2020 - CM.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-		</div>
-	</footer>
-	<script src="~/lib/jquery/dist/jquery.min.js"></script>
-	<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-	<script src="~/js/site.js" asp-append-version="true"></script>
-	@RenderSection("Scripts", required: false)
-	@await Component.InvokeAsync("NToastNotify")
+    <footer class="border-top footer text-muted mb-md-auto">
+        <div class="container">
+            &copy; 2020 - CM.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @RenderSection("Scripts", required: false)
+    @await Component.InvokeAsync("NToastNotify")
 </body>
 </html>

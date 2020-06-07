@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CM.Data.Migrations
 {
     [DbContext(typeof(CMContext))]
-    [Migration("20200521220903_barCoctailsUpdate")]
-    partial class barCoctailsUpdate
+    [Migration("20200607160741_Local")]
+    partial class Local
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -88,6 +88,22 @@ namespace CM.Data.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"),
+                            ConcurrencyStamp = "69695018-07b8-4e00-9ef8-4c270a4479e6",
+                            Name = "Magician",
+                            NormalizedName = "MAGICIAN"
+                        },
+                        new
+                        {
+                            Id = new Guid("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"),
+                            ConcurrencyStamp = "a8244420-0bdf-4bef-a6bd-446c1cf218e7",
+                            Name = "BarCrawler",
+                            NormalizedName = "BARCRAWLER"
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.AppUser", b =>
@@ -163,6 +179,32 @@ namespace CM.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "cd8cbd63-c78e-495e-b2c7-2574125418e3",
+                            EmailConfirmed = false,
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "testUser@test.com"
+                        },
+                        new
+                        {
+                            Id = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "fc08e685-8d3c-4511-9649-6e2fff424220",
+                            EmailConfirmed = false,
+                            IsDeleted = false,
+                            LockoutEnabled = false,
+                            PhoneNumberConfirmed = false,
+                            TwoFactorEnabled = false,
+                            UserName = "testUser1@test.com"
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.Bar", b =>
@@ -174,7 +216,13 @@ namespace CM.Data.Migrations
                     b.Property<Guid>("AddressID")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double?>("AverageRating")
+                        .HasColumnType("float");
+
                     b.Property<string>("Details")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FullAddress")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImagePath")
@@ -200,7 +248,10 @@ namespace CM.Data.Migrations
                         {
                             Id = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
                             AddressID = new Guid("73f2c4c2-78ae-45ab-b82c-b06a48271a6d"),
+                            AverageRating = 3.4300000000000002,
                             Details = "Weaving tradition with modernity, there’s something heart-warming about the story of Dante. When Linden Pride, Nathalie Hudson and Naren Young took over this Greenwich Village site 100 years after it first opened they could see the things that made this fading Italian café once great could be relevant again. At the heart of their mission was to renew the bar, while being authentic to its roots and appealing to the Greenwich Village community. So the classical décor was given a lift, and in came refined but wholesome Italian food, aperitivos and cocktails. There is a whole list of Negronis to make your way through, but that’s OK because Dante is an all-day restaurant-bar. The Garibaldi too is a must-order. Made with Campari and ‘fluffy’ orange juice, it has brought this once-dusty drink back to life. The measure of a bar is the experience of its customers – in hospitality, drinks and food Dante has the fundamentals down to a fine art, earning the deserved title of The World's Best Bar 2019, sponsored by Perrier.",
+                            FullAddress = "USA, New York, 79-81 MACDOUGAL ST",
+                            ImagePath = "\\images\\Bars\\DefaultBar.png",
                             IsUnlisted = false,
                             Name = "Dante",
                             Phone = "(212) 982-5275"
@@ -209,7 +260,10 @@ namespace CM.Data.Migrations
                         {
                             Id = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"),
                             AddressID = new Guid("4ecac9dc-31df-4b89-93b5-5550d2608ede"),
+                            AverageRating = 4.2800000000000002,
                             Details = "No matter the workings of the cocktail world around it, the Connaught Bar stays true to its principles – artful drinks and graceful service in a stylish setting. Under the watchful gaze of Ago Perrone, the hotel’s director of mixology, the bar moves forward with an effortless glide. Last year marked 10 years since designer David Collins unveiled the bar’s elegant Cubist interior and in celebration it launched its own gin, crafted in the building by none other than Perrone himself. It’s already the most called-for spirit on the showpiece trolley that clinks between the bar’s discerning guests, serving personalised Martinis. The latest cocktail menu, Vanguard, has upped the invention – Number 11 is an embellished Vesper served in Martini glasses hand-painted every day in house, while the Gate No.1 is a luscious blend of spirits, wines and jam. But of course, the Connaught Masterpieces isn’t a chapter easily overlooked. Along with the Dry Martini, the Bloody Mary is liquid perfection and the Mulatta Daisy is Perrone’s own classic, in and out of the bar. In 2019, Connaught Bar earns the title of The Best Bar in Europe, sponsored by Michter's.",
+                            FullAddress = "UK, London, Mayfair W1K 2AL",
+                            ImagePath = "\\images\\Bars\\DefaultBar.png",
                             IsUnlisted = false,
                             Name = "Connaught Bar",
                             Phone = "+44 (0)20 7499 7070"
@@ -250,10 +304,14 @@ namespace CM.Data.Migrations
 
             modelBuilder.Entity("CM.Models.BarComment", b =>
                 {
-                    b.Property<Guid>("BarId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AppUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("BarId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("CommentedOn")
@@ -264,9 +322,11 @@ namespace CM.Data.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasMaxLength(500);
 
-                    b.HasKey("BarId", "AppUserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("BarId");
 
                     b.ToTable("BarComments");
                 });
@@ -287,6 +347,20 @@ namespace CM.Data.Migrations
                     b.HasIndex("AppUserId");
 
                     b.ToTable("BarRatings");
+
+                    b.HasData(
+                        new
+                        {
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            AppUserId = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
+                            Score = 5
+                        },
+                        new
+                        {
+                            BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+                            AppUserId = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
+                            Score = 1
+                        });
                 });
 
             modelBuilder.Entity("CM.Models.City", b =>
@@ -353,18 +427,21 @@ namespace CM.Data.Migrations
                         new
                         {
                             Id = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"),
+                            ImagePath = "\\images\\Cocktails\\DefaultCocktail.png",
                             IsUnlisted = false,
                             Name = "Loch Lomond"
                         },
                         new
                         {
                             Id = new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"),
+                            ImagePath = "\\images\\Cocktails\\DefaultCocktail.png",
                             IsUnlisted = false,
                             Name = "Strawberry Lemonade"
                         },
                         new
                         {
                             Id = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"),
+                            ImagePath = "\\images\\Cocktails\\DefaultCocktail.png",
                             IsUnlisted = false,
                             Name = "Rum Milk Punch"
                         });
@@ -372,10 +449,14 @@ namespace CM.Data.Migrations
 
             modelBuilder.Entity("CM.Models.CocktailComment", b =>
                 {
-                    b.Property<Guid>("CocktailId")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("AppUserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("CocktailId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTimeOffset>("CommentedOn")
@@ -386,9 +467,11 @@ namespace CM.Data.Migrations
                         .HasColumnType("nvarchar(500)")
                         .HasMaxLength(500);
 
-                    b.HasKey("CocktailId", "AppUserId");
+                    b.HasKey("Id");
 
                     b.HasIndex("AppUserId");
+
+                    b.HasIndex("CocktailId");
 
                     b.ToTable("CocktailComments");
                 });
@@ -464,6 +547,9 @@ namespace CM.Data.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ImagePath")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
@@ -594,13 +680,13 @@ namespace CM.Data.Migrations
                     b.HasOne("CM.Models.Bar", "Bar")
                         .WithMany("Cocktails")
                         .HasForeignKey("BarId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("CM.Models.Cocktail", "Cocktail")
                         .WithMany("Bars")
                         .HasForeignKey("CocktailId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
