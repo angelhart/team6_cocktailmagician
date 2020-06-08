@@ -49,6 +49,8 @@ namespace CM.Services
                 CommentedOn = this._dateTimeProvider.GetDateTimeDateTimeOffset()
             };
 
+            newCommentDto.CommentedOn = newComment.CommentedOn;
+
             await _context.BarComments.AddAsync(newComment);
             await _context.SaveChangesAsync();
         }
