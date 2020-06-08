@@ -230,7 +230,7 @@ namespace CM.Web.Areas.Magician.Controllers
             catch (Exception ex)
             {
                 _toastNotification.AddErrorToastMessage(ex.Message);
-                return View();
+                return View(id);
             }
         }
     }

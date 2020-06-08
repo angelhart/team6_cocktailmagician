@@ -19,8 +19,8 @@
         </dd>
     </dl>
 
-    <form asp-action="Delete">
+    <form asp-action="Delete" asp-controller="Ingredients" asp-area="Magician">
         <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        <a asp-action="Index" asp-controller="Ingredients" asp-area="Magician" class="btn btn-secondary">Back to List</a>
     </form>
 </div>
