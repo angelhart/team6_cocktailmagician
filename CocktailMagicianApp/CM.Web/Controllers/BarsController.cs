@@ -130,7 +130,8 @@ namespace CM.Web.Controllers
 				Comments = barDTO.Comments.Select(barDTO => new BarCommentViewModel
 				{
 					Text = barDTO.Text,
-					UserName = barDTO.UserName
+					UserName = barDTO.UserName,
+					CommentedOn = barDTO.CommentedOn
 				}).ToList(),
 
 				Cocktails = barDTO.Cocktails.Select(cocktailDTO => new CocktailViewModel
