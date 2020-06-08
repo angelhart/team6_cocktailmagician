@@ -67,8 +67,8 @@ namespace CM.Web.Controllers
 				int recordsTotal = await _barServices.CountAllBarsAsync();
 				bool allowUnlisted = true;
 
-				//if (HttpContext.User.IsInRole("Magician"))
-				//	allowUnlisted = true;
+				if (HttpContext.User.IsInRole("Magician"))
+					allowUnlisted = true;
 
 				var dtos = await _barServices.GetAllBarsAsync(searchString, pageNumber, pageSize, sortBy, sortOrder, allowUnlisted);
 				var vms = dtos.Select(x => new BarIndexViewModel
