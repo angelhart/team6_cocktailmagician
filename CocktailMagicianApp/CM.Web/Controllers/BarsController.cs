@@ -105,7 +105,7 @@ namespace CM.Web.Controllers
 				Country = x.Address.CountryName,
 				City = x.Address.CityName,
 				Street = x.Address.Street,
-				AverageRating = Math.Round((double)x.AverageRating, 2),
+				AverageRating = x.AverageRating,
 				ImagePath = x.ImagePath,
 			});
 			return View(barsViewModel);
@@ -387,6 +387,32 @@ namespace CM.Web.Controllers
 			}
 		}
 
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> UpdateListing(Guid id)
+		{
+			try
+			{
+				var dto = await _barServices.ChangeListingAsync(id);
+				var barViewModel = new BarIndexViewModel
+				{
+					Id = dto.Id,
+					Name = dto.Name,
+					Country = dto.Address.CountryName,
+					City = dto.Address.CityName,
+					Street = dto.Address.Street,
+					AverageRating = dto.AverageRating,
+					ImagePath = dto.ImagePath,
+				};
+
+				return Ok(barViewModel);
+			}
+			catch (Exception ex)
+			{
+				_toastNotification.AddAlertToastMessage(ex.Message);
+				return RedirectToAction(nameof(Index));
+			}
+		}
 		private async Task<bool> BarExists(Guid id)
 		{
 			return await this._barServices.BarExists(id);
