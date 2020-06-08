@@ -43,7 +43,8 @@ namespace CM.Web.Providers
         {
             if (relativePath == null ||
                 relativePath.EndsWith("DefaultCocktail.png") ||
-                relativePath.EndsWith("DefaultIngredients.jpg"))
+                relativePath.EndsWith("DefaultIngredients.jpg")||
+                relativePath.EndsWith("DefaultBar.jpg"))
                 return;
 
             relativePath = "wwwroot" + relativePath;
