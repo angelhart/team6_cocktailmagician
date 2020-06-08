@@ -102,7 +102,7 @@
 
 function DeleteData(id) {
 
-	if (confirm("Are you sure you want to delete this bar?")) {
+	if (confirm("Are you sure you want change listing for this bar?")) {
 		Delete(id);
 	}
 	else {
@@ -112,7 +112,7 @@ function DeleteData(id) {
 
 
 function Delete(Id) {
-	var url = "bars/delete/";
+	var url = "bars/UpdateListing/";
 	var form = $('#__AjaxAntiForgeryForm');
 	var token = $('input[name="__RequestVerificationToken"]', form).val();
 

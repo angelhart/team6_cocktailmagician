@@ -294,6 +294,34 @@ namespace CM.Services
 			return await _context.Bars.CountAsync();
 		}
 
+		/// <summary>
+		/// Changes the unlisted state of a bar.
+		/// </summary>
+		/// <param name="barId">ID of the bar.</param>
+		/// <param name="newState">The new state for property.</param>
+		/// <param name="allowUnlisted">Checks if caller method is permited to retrieve unlisted cocktail.</param>
+		/// <returns></returns>
+	
+		public async Task<BarDTO> ChangeListingAsync(Guid barId)
+		{
+			var bar = await _context.Bars
+			.FirstOrDefaultAsync(bar => bar.Id == barId);
+
+			if (bar == null)
+			{
+				throw new ArgumentException("The Bar you were looking for was not found!");
+			}
+
+			bar.IsUnlisted = !bar.IsUnlisted;
+
+
+			_context.Update(bar);
+			await _context.SaveChangesAsync();
+
+			var barDTO = this._barMapper.CreateBarDTO(bar);
+
+			return barDTO;
+		}
 
 		private async Task<Bar> GetBarEntityWithCocktails(Guid barId)
 		{

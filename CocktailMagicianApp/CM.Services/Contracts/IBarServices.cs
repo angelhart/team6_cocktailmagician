@@ -18,5 +18,6 @@ namespace CM.Services.Contracts
 		Task<ICollection<BarDTO>> GetTopBarsAsync(int ammount = 3);
 		Task<bool> BarExists(Guid id);
 		Task<int> CountAllBarsAsync();
+		Task<BarDTO> ChangeListingAsync(Guid barId);
 	}
 }
