@@ -299,6 +299,12 @@ namespace CM.Web.Controllers
 		[ValidateAntiForgeryToken]
 		public async Task<IActionResult> AddRating([Bind("Score, BarId")] RateBarViewModel rateBarViewModel)
 		{
+			if (rateBarViewModel.Score == 0)
+			{
+				_toastNotification.AddErrorToastMessage($"Rating cannot be 0!");
+				return RedirectToAction(nameof(Details), new { id = rateBarViewModel.BarId });
+			}
+
 			if (ModelState.IsValid)
 			{
 				try
