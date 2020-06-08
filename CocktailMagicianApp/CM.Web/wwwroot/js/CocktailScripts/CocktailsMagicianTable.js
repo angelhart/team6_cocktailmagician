@@ -63,7 +63,7 @@ $(document).ready(function () {
                 render: function (data, type, row) {
                     var buttons = '';
                     for (i = 0; i < data.length; i++) {
-                        buttons += '<a style="margin: 0 2px;" class="btn btn-outline-secondary" href ="/ingredients/details/' + data[i].id + '">' + data[i].name + '</a>';
+                        buttons += '<a style="margin: 0 2px;" class="btn btn-outline-secondary" href ="/magician/ingredients/details/' + data[i].id + '">' + data[i].name + '</a>';
                     }
                     //console.log(buttons);
                     return buttons;
@@ -105,7 +105,7 @@ function Unlist(id, name, state) {
 
 
 function UnlistConfirmed(id, state) {
-    var url = "cocktails/UpdateListing/";
+    var url = "magician/cocktails/updatelisting/";
     var form = $('#__AjaxAntiForgeryForm');
     var token = $('input[name="__RequestVerificationToken"]', form).val();
 

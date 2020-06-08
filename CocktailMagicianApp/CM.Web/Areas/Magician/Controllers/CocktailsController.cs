@@ -14,6 +14,7 @@ using CM.Web.Providers;
 using CM.Web.Areas.Magician.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Formatters;
+using CM.Models;
 
 namespace CM.Web.Areas.Magician.Controllers
 {
@@ -234,7 +235,7 @@ namespace CM.Web.Areas.Magician.Controllers
                     }
 
                     var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
-                    return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index", "Cocktails", new { area = ""});
                 }
                 catch (Exception ex)
                 {
@@ -266,7 +267,7 @@ namespace CM.Web.Areas.Magician.Controllers
             catch (Exception ex)
             {
                 _toastNotification.AddAlertToastMessage(ex.Message);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Cocktails", new { area = "" });
             }
         }
 
@@ -281,12 +282,12 @@ namespace CM.Web.Areas.Magician.Controllers
 
                 _storageProvider.DeleteImage(dto.ImagePath);
 
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Cocktails", new { area = "" });
             }
             catch (Exception ex)
             {
                 _toastNotification.AddAlertToastMessage(ex.Message);
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", "Cocktails", new { area = "" });
             }
         }
 

@@ -9,6 +9,7 @@
     <meta charset="utf-8" />
     <link rel="stylesheet" href="~/css/site.css" />
     <link rel="stylesheet" href="~/css/StarRating.css" />
+    <link rel="stylesheet" href="~/css/CommentsSection.css" />
     <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
         a.custom-card,
@@ -194,7 +195,7 @@
         {
             <a asp-action="Edit" asp-controller="Cocktails" asp-area="Magician" asp-route-id="@Model.Id">Edit | </a>
         }
-        <a asp-action="Index">Back to List</a>
+        <a asp-action="Index" asp-controller="Cocktails" asp-area="">Back to List</a>
     </div>
 </body>
 
