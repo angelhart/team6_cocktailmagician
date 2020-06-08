@@ -63,7 +63,7 @@ $(document).ready(function () {
                 render: function (data, type, row) {
                     var buttons = '';
                     for (i = 0; i < data.length; i++) {
-                        buttons += '<a style="margin: 0 2px;" class="btn btn-outline-secondary" href ="/ingredients/details/' + data[i].id + '">' + data[i].name + '</a>';
+                        buttons += '<a style="margin: 0 2px;" class="btn btn-outline-secondary" href ="#">' + data[i].name + '</a>';
                     }
                     //console.log(buttons);
                     return buttons;
