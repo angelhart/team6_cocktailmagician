@@ -313,21 +313,21 @@ namespace CM.Services
 		{
 			return sortBy switch
 			{
-				"rating" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.AverageRating)
+				"averageRating" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.AverageRating)
 																	   .ThenBy(bar => bar.Name) :
-															  bars.OrderByDescending(c => c.AverageRating)
+															  bars.OrderByDescending(bar => bar.AverageRating)
 																	   .ThenBy(bar => bar.Name),
 				"country" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.Address.City.Country)
 																		.ThenBy(bar => bar.Name) :
-															bars.OrderByDescending(c => c.AverageRating)
-																		.ThenBy(c => c.Name),
+															  bars.OrderByDescending(bar => bar.Address.City.Country)
+																		.ThenBy(bar => bar.Name),
 				"city" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.Address.City)
 																		.ThenBy(bar => bar.Name) :
-															bars.OrderByDescending(c => c.AverageRating)
-																		.ThenBy(c => c.Name),
+															  bars.OrderByDescending(bar => bar.Address.City)
+																		.ThenBy(bar => bar.Name),
 
-				_ => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(c => c.Name) :
-													   bars.OrderByDescending(c => c.Name),
+				_ => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.Name) :
+													   bars.OrderByDescending(bar => bar.Name),
 			};
 		}
 		private async Task UpdateCocktailsInBarAsync(Guid barId, ICollection<CocktailDTO> newCocktails)
