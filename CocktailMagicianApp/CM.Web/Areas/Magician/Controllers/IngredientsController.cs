@@ -14,12 +14,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using NToastNotify;
 
 namespace CM.Web.Areas.Magician.Controllers
 {
     [Area("Magician")]
-    //[Authorize(Roles = (""))] // TODO: add roles
+    [Authorize(Roles = "Magician")]
     public class IngredientsController : Controller
     {
         private const string ROOTSTORAGE = "\\images\\Ingredients";
@@ -79,21 +80,37 @@ namespace CM.Web.Areas.Magician.Controllers
 
                 return Ok(output);
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 _toastNotification.AddErrorToastMessage(ex.Message);
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                return NotFound();
             }
         }
 
         // GET: IngredientsController/Details/5
         public async Task<ActionResult> Details(Guid id)
         {
-            var dto = await _ingredientServices.GetIngredientDetailsAsync(id);
+            try
+            {
+                var dto = await _ingredientServices.GetIngredientDetailsAsync(id);
 
-            var vm = _ingredientViewMapper.CreateIngredientViewModel(dto);
+                var vm = _ingredientViewMapper.CreateIngredientViewModel(dto);
 
-            return View(vm);
+                return View(vm);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _toastNotification.AddErrorToastMessage(ex.Message);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
         // GET: IngredientsController/Create
@@ -128,10 +145,14 @@ namespace CM.Web.Areas.Magician.Controllers
 
                     return RedirectToAction(nameof(Index));
                 }
-                catch (Exception ex)
+                catch (DbUpdateException ex)
                 {
                     _toastNotification.AddErrorToastMessage(ex.Message);
                     return RedirectToAction(nameof(Index));
+                }
+                catch (Exception)
+                {
+                    return NotFound();
                 }
             }
 
@@ -152,10 +173,14 @@ namespace CM.Web.Areas.Magician.Controllers
 
                 return View(vm);
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException ex)
             {
                 _toastNotification.AddErrorToastMessage(ex.Message);
                 return RedirectToAction(nameof(Index));
+            }
+            catch (Exception)
+            {
+                return NotFound();
             }
         }
 
@@ -188,10 +213,9 @@ namespace CM.Web.Areas.Magician.Controllers
 
                     return RedirectToAction(nameof(Details), new { id = vm.Id });
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    _toastNotification.AddErrorToastMessage(ex.Message);
-                    return View();
+                    return NotFound();
                 }
             }
 
@@ -204,11 +228,23 @@ namespace CM.Web.Areas.Magician.Controllers
         // GET: IngredientsController/Delete/5
         public async Task<ActionResult> Delete(Guid id)
         {
-            var dto = await _ingredientServices.GetIngredientDetailsAsync(id);
+            try
+            {
+                var dto = await _ingredientServices.GetIngredientDetailsAsync(id);
 
-            var vm = _ingredientViewMapper.CreateIngredientViewModel(dto);
+                var vm = _ingredientViewMapper.CreateIngredientViewModel(dto);
 
-            return View(vm);
+                return View(vm);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _toastNotification.AddErrorToastMessage(ex.Message);
+                return View(id);
+            }
+            catch (Exception)
+            {
+                return NotFound();
+            }
         }
 
         // POST: IngredientsController/Delete/5
@@ -227,10 +263,19 @@ namespace CM.Web.Areas.Magician.Controllers
                 return Ok(vm);
                 //return RedirectToAction(nameof(IndexTable));
             }
-            catch (Exception ex)
+            catch (KeyNotFoundException ex)
             {
                 _toastNotification.AddErrorToastMessage(ex.Message);
                 return View(id);
+            }
+            catch (InvalidOperationException ex)
+            {
+                _toastNotification.AddErrorToastMessage(ex.Message);
+                return View(id);
+            }
+            catch (Exception)
+            {
+                return NotFound();
             }
         }
     }

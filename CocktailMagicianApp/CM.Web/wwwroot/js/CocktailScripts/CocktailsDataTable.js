@@ -1,7 +1,4 @@
 $(document).ready(function () {
-    // -------------------------------------------
-    // Identical script, but for Admin style table
-    // \/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/\/
     $('#cocktailsTable').DataTable({
         processing: true, //progress bar
         serverSide: true, //server side processing
@@ -73,4 +70,13 @@ $(document).ready(function () {
         ]
     });
 
+    $('#cocktailsTable')
+        .on('error.dt', function (e, settings, techNote, message) {
+            console.log(settings);
+            //$('#cocktailsTable').DataTable().ajax.draw();
+        })
+        .DataTable();
 });
+
+$.fn.dataTable.ext.errMode = 'none';
+

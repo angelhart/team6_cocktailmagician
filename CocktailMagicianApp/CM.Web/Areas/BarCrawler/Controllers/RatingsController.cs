@@ -7,6 +7,7 @@ using CM.Models;
 using CM.Services.Contracts;
 using CM.Web.Areas.BarCrawler.Models;
 using CM.Web.Providers.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,8 @@ using NToastNotify;
 namespace CM.Web.Areas.BarCrawler.Controllers
 {
     [Area("BarCrawler")]
+    [Authorize(Roles = "BarCrawler,Magician")]
+
     public class RatingsController : Controller
     {
         private readonly IRatingServices _ratingServices;
@@ -43,17 +46,17 @@ namespace CM.Web.Areas.BarCrawler.Controllers
                     var dto = _ratingViewMapper.CreateCocktailRatingDTO(model);
                     dto = await _ratingServices.RateCocktailAsync(dto);
 
-                    _toastNotification.AddWarningToastMessage($"You rated this cocktail with {model.Score}");
+                    _toastNotification.AddSuccessToastMessage($"You rated this Bar with {model.Score} stars!");
                     return RedirectToAction("Details", "Cocktails", new { area = "", Id = model.EntityId });
                 }
                 catch (DbUpdateException)
                 {
-                    return RedirectToAction(nameof(UpdateCocktailRating), model);
-                }
-                catch (Exception ex)
-                {
-                    _toastNotification.AddErrorToastMessage(ex.Message);
+                    _toastNotification.AddErrorToastMessage("You already rated this bar!");
                     return RedirectToAction("Details", "Cocktails", new { area = "", Id = model.EntityId });
+                }
+                catch (Exception)
+                {
+                    return NotFound();
                 }
             }
 
@@ -67,14 +70,14 @@ namespace CM.Web.Areas.BarCrawler.Controllers
             return RedirectToAction("Details", "Cocktails", new { area = "", Id = model.EntityId });
         }
 
-        public async Task<ActionResult> UpdateCocktailRating(RatingViewModel model)
-        {
-            model.UserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var dto = _ratingViewMapper.CreateCocktailRatingDTO(model);
-            dto = await _ratingServices.EditCocktailRatingAsync(dto);
+        //public async Task<ActionResult> UpdateCocktailRating(RatingViewModel model)
+        //{
+        //    model.UserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+        //    var dto = _ratingViewMapper.CreateCocktailRatingDTO(model);
+        //    dto = await _ratingServices.EditCocktailRatingAsync(dto);
 
-            _toastNotification.AddWarningToastMessage($"You updated your rating for this cocktail to {model.Score}");
-            return RedirectToAction("Details", "Cocktails", new { area = "", Id = model.EntityId });
-        }
+        //    _toastNotification.AddWarningToastMessage($"You updated your rating for this cocktail to {model.Score}");
+        //    return RedirectToAction("Details", "Cocktails", new { area = "", Id = model.EntityId });
+        //}
     }
 }

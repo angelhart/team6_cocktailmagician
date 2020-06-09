@@ -8,7 +8,10 @@ namespace CM.Web.Areas.BarCrawler.Models
 {
     public class RatingViewModel
     {
+        [Required(ErrorMessage = ("No item ID provided."))]
         public Guid EntityId { get; set; }
+
+        [Required(ErrorMessage = ("No user ID provided."))]
         public Guid UserId { get; set; }
         public string UserName { get; set; }
 
