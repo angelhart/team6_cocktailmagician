@@ -38,7 +38,7 @@ namespace CM.Web.Controllers
 				int pageSize = length != null ? Convert.ToInt32(length) : 0;
 				int pageNumber = start != null ? (1 + ((int)Math.Ceiling(Convert.ToDouble(start) / pageSize))) : 0;
 				int recordsTotal = await _barServices.CountAllBarsAsync();
-				bool allowUnlisted = true;
+				bool allowUnlisted = false;
 
 				if (HttpContext.User.IsInRole("Magician"))
 					allowUnlisted = true;
