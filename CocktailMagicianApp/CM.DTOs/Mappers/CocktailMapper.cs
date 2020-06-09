@@ -23,6 +23,7 @@ namespace CM.DTOs.Mappers
                         .ToList(),
                 Comments = cocktail.Comments
                         .Select(c => CreateCocktailCommentDTO(c))
+                        .OrderByDescending(comment => comment.CommentedOn)
                         .ToList(),
                 Ingredients = cocktail.Ingredients
                         .Select(i => CreateIngredientDTO(i))
