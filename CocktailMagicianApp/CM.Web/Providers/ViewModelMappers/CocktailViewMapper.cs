@@ -3,8 +3,6 @@ using CM.Web.Areas.BarCrawler.Models;
 using CM.Web.Areas.Magician.Models;
 using CM.Web.Models;
 using CM.Web.Providers.Contracts;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
-using System;
 using System.Linq;
 
 namespace CM.Web.Providers.ViewModelMappers
@@ -70,6 +68,16 @@ namespace CM.Web.Providers.ViewModelMappers
                 Comments = dto.Comments
                               .Select(c => CreateCommentViewModel(c))
                               .ToList()
+            };
+        }
+
+        public CocktailViewModel CreateCocktailViewModel_Simple(CocktailDTO cocktailDTO)
+        {
+            return new CocktailViewModel
+            {
+                Id = cocktailDTO.Id,
+                Name = cocktailDTO.Name,
+                ImagePath = cocktailDTO.ImagePath
             };
         }
 
