@@ -16,7 +16,6 @@ using CM.Services.Providers;
 using CM.Web.Providers.Contracts;
 using CM.Web.Providers.ViewModelMappers;
 using CM.Web.Providers;
-using NToastNotify;
 using CM.Web.Middlewares;
 
 namespace CM.Web
@@ -36,17 +35,11 @@ namespace CM.Web
             services.AddDbContext<CMContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddDefaultIdentity<AppUser>(options => options.SignIn.RequireConfirmedAccount = false)
-            //    .AddEntityFrameworkStores<CMContext>();
 
             services.AddIdentity<AppUser, AppRole>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<CMContext>()
                 .AddDefaultUI() // Consider commenting out this as it was missing in master
                 .AddDefaultTokenProviders();
-
-            //services.AddControllers().AddNewtonsoftJson(options =>
-            //    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            //);
 
             services.AddControllersWithViews();
             services.AddRazorPages();
@@ -59,36 +52,22 @@ namespace CM.Web
             services.AddScoped<IUserMapper, UserMapper>();
             services.AddScoped<ICommentViewMapper, CommentViewMapper>();
             services.AddScoped<IRatingViewMapper, RatingViewMapper>();
+            services.AddScoped<IIngredientViewMapper, IngredientViewMapper>();
+            services.AddScoped<ICocktailViewMapper, CocktailViewMapper>();
+            services.AddScoped<IBarViewMapper, BarViewMapper>();
 
             services.AddScoped<IAddressServices, AddressServices>();
             services.AddScoped<IAppUserServices, AppUserServices>();
             services.AddScoped<IBarServices, BarServices>();
             services.AddScoped<ICocktailServices, CocktailServices>();
             services.AddScoped<IIngredientServices, IngredientServices>();
-
-            services.AddScoped<IIngredientViewMapper, IngredientViewMapper>();
-            services.AddScoped<ICocktailViewMapper, CocktailViewMapper>();
-
             services.AddScoped<IRatingServices, RatingServices>();
             services.AddScoped<ICommentServices, CommentServices>();
-            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
-
-            //services.AddMvc().AddFeatureFolders().AddNToastNotifyNoty(new NotyOptions
-            //{
-            //    ProgressBar = true,
-            //    Timeout = 5000,
-            //    Theme = "mint"
-            //});
-
-            services.AddMvc().AddNToastNotifyNoty();
-            services.AddScoped<IBarServices, BarServices>();
-            services.AddScoped<ICocktailServices, CocktailServices>();
-            services.AddScoped<IIngredientServices, IngredientServices>();
-
-            services.AddScoped<IIngredientViewMapper, IngredientViewMapper>();
-            services.AddScoped<ICocktailViewMapper, CocktailViewMapper>();
 
             services.AddScoped<IStorageProvider, AppStorageProvider>();
+            services.AddScoped<IDateTimeProvider, DateTimeProvider>();
+
+            services.AddMvc().AddNToastNotifyNoty();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

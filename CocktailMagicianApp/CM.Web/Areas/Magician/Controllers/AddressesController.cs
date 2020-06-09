@@ -5,15 +5,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using CM.Services.Contracts;
 using NToastNotify;
+using Microsoft.AspNetCore.Authorization;
 
 namespace CM.Web.Controllers
 {
-    public class AddressesController : Controller
+	[Area("Magician")]
+	[Authorize(Roles = "Magician")]
+
+	public class AddressesController : Controller
     {
         private readonly IAddressServices _addressServices;
         private readonly IToastNotification _toastNotification;
 
-        public AddressesController(IToastNotification toastNotification, IBarServices barServices, IAddressServices addressServices)
+        public AddressesController(IToastNotification toastNotification, IAddressServices addressServices)
         {
             _addressServices = addressServices ?? throw new ArgumentNullException(nameof(addressServices));
             _toastNotification = toastNotification ?? throw new ArgumentNullException(nameof(toastNotification));
@@ -32,9 +36,9 @@ namespace CM.Web.Controllers
 			{
                 await this._addressServices.CreateCountryAsync(countryName);
                 _toastNotification.AddSuccessToastMessage($"Country {countryName} was successfully created!");
-                return RedirectToAction(nameof(CreateCity));
-            }
-            catch (DbUpdateException)
+				return RedirectToAction(nameof(CreateCity));
+			}
+			catch (DbUpdateException)
 			{
                 _toastNotification.AddErrorToastMessage("A country with the same name already exists!");
                 return View(nameof(CreateCountry));
@@ -65,17 +69,17 @@ namespace CM.Web.Controllers
             {
                 await this._addressServices.CreateCityAsync(cityName, countryId);
                 _toastNotification.AddSuccessToastMessage($"City {cityName} was successfully created!");
-                return RedirectToAction("Create", "Bars", new { area = "" });
+                return RedirectToAction("Create", "Bars");
             }
             catch (DbUpdateException)
             {
                 _toastNotification.AddErrorToastMessage("A city with the same name already exists!");
-                return View(nameof(CreateCountry));
+                return View(nameof(CreateCity));
             }
             catch (Exception)
             {
                 _toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
-                return View(nameof(CreateCountry));
+                return View(nameof(CreateCity));
             }
         }
 

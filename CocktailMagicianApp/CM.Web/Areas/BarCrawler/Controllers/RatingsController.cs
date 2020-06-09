@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using CM.Models;
 using CM.Services.Contracts;
 using CM.Web.Areas.BarCrawler.Models;
 using CM.Web.Providers.Contracts;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
@@ -75,6 +71,40 @@ namespace CM.Web.Areas.BarCrawler.Controllers
 
             _toastNotification.AddWarningToastMessage($"You updated your rating for this cocktail to {model.Score}");
             return RedirectToAction("Details", "Cocktails", new { area = "", Id = model.EntityId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddBarRating(RatingViewModel rateBarViewModel)
+        {
+            if (rateBarViewModel.Score == 0)
+            {
+                _toastNotification.AddErrorToastMessage($"Rating cannot be 0!");
+                return RedirectToAction("Details", "Bars", rateBarViewModel.EntityId);
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    rateBarViewModel.UserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                    var dto = _ratingViewMapper.CreateBarRatingDTO(rateBarViewModel);
+                    await _ratingServices.RateBarAsync(dto);
+
+                    _toastNotification.AddSuccessToastMessage($"You rated this Bar with {rateBarViewModel.Score} stars!");
+                    return RedirectToAction("Details", "Bars", new { area = "", Id = rateBarViewModel.EntityId });
+                }
+                catch (InvalidOperationException)
+                {
+                    _toastNotification.AddErrorToastMessage("You already rated this bar!");
+                    return RedirectToAction("Details", "Bars", new { area = "", Id = rateBarViewModel.EntityId });
+                }
+                catch
+                {
+                    return NotFound();
+                }
+            }
+            return RedirectToAction("Details", "Bars", new { area = "", Id = rateBarViewModel.EntityId });
         }
     }
 }

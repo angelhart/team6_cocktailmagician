@@ -23,9 +23,9 @@
     </div>
 </div>
 
-@*<div>
-    <a asp-controller="Bars" asp-action="Create">Back to List</a>
-</div>*@
+<div>
+    <a asp-area="Magician" asp-controller="Bars" asp-action="Create">Back to List</a>
+</div>
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

@@ -20,66 +20,64 @@
 </head>
 
 <h1>World's Best Bars</h1>
-
-<p>
-	<a asp-action="Create">Create New Bar</a>
-</p>
-
-
 @if (User.IsInRole("Magician"))
 {
-	<table id="barsTable" class="display">
-		<!--hover order-column stripe-->
-		<thead>
-			<tr>
-				<th>Image</th>
-				<th>Name</th>
-				<th>Country</th>
-				<th>City</th>
-				<th>Address</th>
-				<th>Rating</th>
-				<th>Edit</th>
-				<th>Delete</th>
-			</tr>
-		</thead>
-	</table>
-}
-else
-{
-	<table id="crawlersTable" class="display">
-		<!--hover order-column stripe-->
-		<thead>
-			<tr>
-				<th>Image</th>
-				<th>Name</th>
-				<th>Country</th>
-				<th>City</th>
-				<th>Address</th>
-				<th>Rating</th>
-			</tr>
-		</thead>
-	</table>
+	<p>
+		<a asp-area="Magician" asp-controller="Bars" asp-action="Create">Create New Bar</a>
+	</p>
 }
 
-
-
-<div>
-	<a asp-action="Index">Back to List</a>
-</div>
-@section Scripts {
-
-	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-
-	<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
 	@if (User.IsInRole("Magician"))
 	{
-		<script src="~/js/BarScripts/BarsMagicianTable.js"></script>
+		<table id="barsTable" class="display">
+			<!--hover order-column stripe-->
+			<thead>
+				<tr>
+					<th>Image</th>
+					<th>Name</th>
+					<th>Country</th>
+					<th>City</th>
+					<th>Address</th>
+					<th>Rating</th>
+					<th>Edit</th>
+					<th>Delete</th>
+				</tr>
+			</thead>
+		</table>
 	}
 	else
 	{
-		<script src="~/js/BarScripts/BarsCrawlerTable.js"></script>
+		<table id="crawlersTable" class="display">
+			<!--hover order-column stripe-->
+			<thead>
+				<tr>
+					<th>Image</th>
+					<th>Name</th>
+					<th>Country</th>
+					<th>City</th>
+					<th>Address</th>
+					<th>Rating</th>
+				</tr>
+			</thead>
+		</table>
 	}
 
-	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-}
+
+	@section Scripts {
+
+		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+
+		<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.21/js/dataTables.bootstrap4.min.js"></script>
+		@if (User.IsInRole("Magician"))
+		{
+			<script src="~/js/BarScripts/BarsMagicianTable.js"></script>
+		}
+		else
+		{
+			<script src="~/js/BarScripts/BarsCrawlerTable.js"></script>
+		}
+
+		@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+	}
