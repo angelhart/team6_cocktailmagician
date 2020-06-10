@@ -24,7 +24,7 @@ namespace CM.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var barModels = await this._barServices.GetTopBarsAsync(5);
+            var barModels = await this._barServices.GetTopBarsAsync(3);
             var topRatedBarsModels = barModels.Select(barDTO => new TopRatedBarsViewModel
             {
                 Id = barDTO.Id,
@@ -35,7 +35,7 @@ namespace CM.Web.Controllers
                 AverageRating = barDTO.AverageRating,
             }).ToList();
 
-            var cocktailModels = await this._cocktailServices.GetTopCocktailsAsync(5);
+            var cocktailModels = await this._cocktailServices.GetTopCocktailsAsync(3);
             var topRatedCocktailsModels = cocktailModels.Select(cocktailDTO => new TopRatedCocktailsViewModel
             {
                 Id = cocktailDTO.Id,

@@ -15,16 +15,17 @@
 }
 
 <div class="text-center">
-	<h1 class="display-4">Welcome</h1>
 
 	<div class="text-md-center">
-		<h5 class="display-4">Top Rated Bars</h5>
+		<h2 class="display-4">Top Rated Bars</h2>
 		<br />
 
 		<div class="row">
 			@foreach (var item in Model.TopRatedBars)
 			{
-				<div class="col-sm-2">
+			<div class="col-sm-3">
+				<a asp-controller="Bars" area=" " asp-action="Details" asp-route-id="@item.Id">
+
 					<div class="card">
 						@if (string.IsNullOrEmpty(@item.ImagePath))
 						{
@@ -35,39 +36,42 @@
 							<img src="@item.ImagePath" class="card-img-top" alt="...">
 						}
 						<div class="card-body">
-
-							<a asp-controller="Bars" area=" " asp-action="Details" asp-route-id="@item.Id">
-								<h5 class="card-title">@item.Name @item.AverageRating</h5>
-								<p class="card-text">
-									<div class="font-weight-bold"></div> @item.Country
-									<div class="font-weight-bold"></div> @item.City
-							</a>
+							<h5 class="card-title">@item.Name</h5>
+							<h6 class="font-weight-bold">Average Rating - @item.AverageRating</h6>
+							<p class="card-text">
+								<div class="font-weight-bold"></div> @item.Country
+								<div class="font-weight-bold"></div> @item.City
 						</div>
 					</div>
-				</div>
+				</a>
+			</div>
 			}
 		</div>
 	</div>
-
+	<p>	</p>
 	<div class="text-md-center">
-		<h3 class="display-4">Top Rated Cocktails</h3>
+		
+		<h2 class="display-4"> Top Rated Cocktails</h2>
 		<br />
 
 		<div class="row">
 			@foreach (var item in Model.TopRatedCocktails)
 			{
-				<div class="col-sm-2">
+
+			<div class="col-sm-3">
+				<a class="card custom-card" asp-controller="Cocktails" area=" " asp-action="Details" asp-route-id="@item.Id">
+
 					<div class="card-body">
 
-						<a class="card custom-card" asp-controller="Cocktails" area=" " asp-action="Details" asp-route-id="@item.Id">
-							<img src="@item.ImagePath" class="card-img-top" alt="...">
-							<div class="card-body">
-								<h5 class="card-title">@item.Name @item.AverageRating</h5>
-								<p class="card-text">
-							</div>
-						</a>
+						<img src="@item.ImagePath" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">@item.Name</h5>
+							<h6 class="font-weight-bold">Average Rating - @item.AverageRating</h6>
+							<p class="card-text">
+						</div>
 					</div>
-				</div>
+				</a>
+			</div>
 			}
 		</div>
 	</div>

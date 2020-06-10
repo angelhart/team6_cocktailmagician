@@ -42,12 +42,12 @@ namespace CM.Web.Areas.BarCrawler.Controllers
                     var dto = _ratingViewMapper.CreateCocktailRatingDTO(model);
                     dto = await _ratingServices.RateCocktailAsync(dto);
 
-                    _toastNotification.AddSuccessToastMessage($"You rated this Bar with {model.Score} stars!");
+                    _toastNotification.AddSuccessToastMessage($"You rated this Cocktail with {model.Score} stars!");
                     return RedirectToAction("Details", "Cocktails", new { area = "", Id = model.EntityId });
                 }
                 catch (DbUpdateException)
                 {
-                    _toastNotification.AddErrorToastMessage("You already rated this bar!");
+                    _toastNotification.AddErrorToastMessage("You already rated this Cocktail!");
                     return RedirectToAction("Details", "Cocktails", new { area = "", Id = model.EntityId });
                 }
                 catch (Exception)
