@@ -206,8 +206,19 @@ namespace CM.ServicesTests
                     Id = Guid.Parse("de61e799-a312-4764-950a-dd7d97713412"),
                     Name = "Bar B",
                     IsUnlisted = true,
-                }
-            };
+                },
+
+				new Bar
+				{
+					Id = new Guid("0999e918-977c-44d5-a5cb-de9559ad822a"),
+					Name = "Test Bar10",
+					Phone = "+555 555 555",
+					Details = "Test Details",
+					AddressID = new Guid("dfaa43d9-d6d8-4a15-bda9-48823fa4b882"),
+					AverageRating = 5,
+					IsUnlisted = true,
+				},
+			};
 
 			var addresses = new List<Address>
 			{
