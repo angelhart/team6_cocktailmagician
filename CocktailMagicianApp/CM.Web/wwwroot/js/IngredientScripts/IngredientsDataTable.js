@@ -32,7 +32,7 @@ $(document).ready(function () {
                 // Thumbnail
                 // data: "imagePath",
                 render: function (url, type, full) {
-                    return '<img class="img-thumbnail" height="100" width="auto" src="' + full.imagePath + '"/>';
+                    return '<img height="100" width="auto" src="' + full.imagePath + '"/>'; //class="img-thumbnail" 
                 },
                 orderable: false
             },
@@ -65,7 +65,7 @@ $(document).ready(function () {
 });
 
 function DeleteData(id, name) {
-    if (confirm("Are you sure you want to delete ingredient " + name + "?")) {
+    if (confirm("Are you sure you want to delete ingredient " + decodeURIComponent(name) + "?")) {
         Delete(id);
     } else {
         return false;

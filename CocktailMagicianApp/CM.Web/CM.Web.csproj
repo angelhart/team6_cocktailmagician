@@ -14,6 +14,16 @@
     <EmbeddedResource Remove="Areas\BarCrawler\Data\**" />
     <EmbeddedResource Remove="Areas\Magician\Data\**" />
     <None Remove="Areas\BarCrawler\Data\**" />
+    <Compile Remove="Areas\BarCrawler\Views\**" />
+    <Compile Remove="Areas\Magician\Data\**" />
+    <Content Remove="Areas\BarCrawler\Data\**" />
+    <Content Remove="Areas\BarCrawler\Views\**" />
+    <Content Remove="Areas\Magician\Data\**" />
+    <EmbeddedResource Remove="Areas\BarCrawler\Data\**" />
+    <EmbeddedResource Remove="Areas\BarCrawler\Views\**" />
+    <EmbeddedResource Remove="Areas\Magician\Data\**" />
+    <None Remove="Areas\BarCrawler\Data\**" />
+    <None Remove="Areas\BarCrawler\Views\**" />
     <None Remove="Areas\Magician\Data\**" />
   </ItemGroup>
 

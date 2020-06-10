@@ -36,7 +36,9 @@ $(document).ready(function () {
                 // Thumbnail
                 // data: "imagePath",
                 render: function (url, type, full) {
-                    return '<a href="/cocktails/details/ ' + full.id + '"><img class="img-thumbnail" height="100" width="auto" src="' + full.imagePath + '"/>' + '</a >';
+                    return '<a href="/cocktails/details/ ' + full.id + '">' +
+                                '<img height="100" width="auto" src="' + full.imagePath + '"/>' + //class="img-thumbnail"
+                           '</a >';
                 },
                 orderable: false
             },
@@ -71,6 +73,14 @@ $(document).ready(function () {
                 orderable: false,
             },
             {
+                // Edit button
+                render: function (data, type, full, meta) {
+                    return '<a class="btn btn-info" href="/magician/cocktails/edit/' + full.id + '">Edit</a>';
+                },
+                orderable: false,
+                visible: true
+            },
+            {
                 // Unlist checkbox
                 render: function (data, type, full, meta) {
                     var checked = '';
@@ -78,14 +88,6 @@ $(document).ready(function () {
                         checked = 'checked';
                     }
                     return '<input type="checkbox" class="check-box" onMouseDown=Unlist("' + full.id + '","' + encodeURIComponent(full.name) + '","' + !full.isUnlisted + '"); ' + checked + '></input>';
-                },
-                orderable: false,
-                visible: true
-            },
-            {
-                // Edit button
-                render: function (data, type, full, meta) {
-                    return '<a class="btn btn-info" href="/magician/cocktails/edit/' + full.id + '">Edit</a>';
                 },
                 orderable: false,
                 visible: true

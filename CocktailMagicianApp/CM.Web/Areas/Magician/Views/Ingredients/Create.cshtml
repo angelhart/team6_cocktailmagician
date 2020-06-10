@@ -17,7 +17,7 @@
 </div>
 
 <div>
-    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    <a asp-action="Index" asp-controller="Ingredients" asp-area="Magician" class="btn btn-secondary">Back to List</a>
 </div>
 
 @section Scripts {
@@ -29,15 +29,4 @@
     <script src="~/js/UploadImage.js"></script>
 
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-
-    @*<script>
-            $.validator.unobtrusive.adapters.add('maxsize', ['maxfilesize'], function (options) {
-                        console.log(options);
-
-                var element = $(options.form).find('input#fileUploadInput');
-
-                options.rules['maxsize'] = [element, parseInt(options.params['file'])];
-                options.messages['maxsize'] = options.message;
-            });
-        </script>*@
 }
