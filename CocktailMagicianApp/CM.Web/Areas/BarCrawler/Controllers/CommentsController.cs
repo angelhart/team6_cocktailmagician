@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using CM.Models;
+using CM.DTOs;
 using CM.Services.Contracts;
 using CM.Services.Providers.Contracts;
 using CM.Web.Areas.BarCrawler.Models;
@@ -72,6 +70,33 @@ namespace CM.Web.Areas.BarCrawler.Controllers
                 }
             }
             return RedirectToAction("Details", "Cocktails", new { area = "", Id = model.EntityId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddBarComment(CommentViewModel barCommentViewModel)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var appUserId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+
+                    barCommentViewModel.UserId = appUserId;
+                    barCommentViewModel.UserName = HttpContext.User.Identity.Name;
+                    barCommentViewModel.CommentedOn = this._dateTimeProvider.GetDateTimeDateTimeOffset();
+                    var dto = _commentViewMapper.CreateBarCommentDTO(barCommentViewModel);
+                    await this._commentServices.AddBarCommentAsync(dto);
+
+                    _toastNotification.AddSuccessToastMessage("Your comment was successfully added.");
+                    return RedirectToAction("Details", "Bars", new { area = "", id = barCommentViewModel.EntityId });
+                }
+                catch
+                {
+                    throw new ArgumentException();
+                }
+            }
+            return View(barCommentViewModel);
         }
     }
 }

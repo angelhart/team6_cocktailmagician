@@ -5,6 +5,7 @@ namespace CM.Web.Providers.Contracts
 {
     public interface IRatingViewMapper
     {
-        CocktailRatingDTO CreateCocktailRatingDTO(RatingViewModel model);
+		BarRatingDTO CreateBarRatingDTO(RatingViewModel rateBarViewModel);
+		CocktailRatingDTO CreateCocktailRatingDTO(RatingViewModel model);
     }
 }

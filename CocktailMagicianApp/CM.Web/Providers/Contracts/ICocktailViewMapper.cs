@@ -10,5 +10,6 @@ namespace CM.Web.Providers.Contracts
         CocktailDTO CreateCocktailDTO(CocktailViewModel model);
         CocktailDTO CreateCocktailDTO(CocktailModifyViewModel model);
         CocktailModifyViewModel CreateCocktailModifyViewModel(CocktailDTO dto);
-    }
+		CocktailViewModel CreateCocktailViewModel_Simple(CocktailDTO cocktailDTO);
+	}
 }

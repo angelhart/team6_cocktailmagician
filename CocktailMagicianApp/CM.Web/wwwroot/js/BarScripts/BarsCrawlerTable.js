@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
 	$('#crawlersTable').DataTable({
+		order: [2, "asc"], // override default sort column and direction
 		processing: true, //progress bar
 		serverSide: true, //server side processing
 		filter: true, //disable search box

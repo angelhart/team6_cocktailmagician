@@ -93,21 +93,22 @@ namespace CM.Services
             return topBarsDTO;
         }
 
-        /// <summary>
-        /// Retrieves a specific bar by given Id.
-        /// </summary>
-        /// <param name="id">Guid representing Id.</param>
-        /// <returns>BarDTO</returns>
-        public async Task<BarDTO> GetBarAsync(Guid id)
-        {
-            var bar = await _context.Bars
-                        .Include(bar => bar.Address)
-                            .ThenInclude(a => a.City)
-                                .ThenInclude(c => c.Country)
-                        .Include(bar => bar.Cocktails)
-                            .ThenInclude(bc => bc.Cocktail)
-                            .Include(bar => bar.Comments)
-                        .FirstOrDefaultAsync(bar => bar.Id == id);
+		/// <summary>
+		/// Retrieves a specific bar by given Id.
+		/// </summary>
+		/// <param name="id">Guid representing Id.</param>
+		/// <returns>BarDTO</returns>
+		public async Task<BarDTO> GetBarAsync(Guid id)
+		{
+			var bar = await _context.Bars
+						.Include(bar => bar.Address)
+							.ThenInclude(a => a.City)
+								.ThenInclude(c => c.Country)
+						.Include(bar => bar.Cocktails)
+							.ThenInclude(bc => bc.Cocktail)
+						.Include(bar => bar.Comments)
+							.ThenInclude(comment => comment.AppUser)
+						.FirstOrDefaultAsync(bar => bar.Id == id);
 
             if (bar == null)
             {
@@ -143,7 +144,10 @@ namespace CM.Services
                 bar.ImagePath = barDTO.ImagePath;
             }
 
-            await UpdateCocktailsInBarAsync(bar.Id, barDTO.Cocktails);
+			if (barDTO.Cocktails == null || barDTO.Cocktails.Count == 0)
+				throw new ArgumentException("Choose cocktails!");
+
+			await UpdateCocktailsInBarAsync(bar.Id, barDTO.Cocktails);
 
             _context.Update(bar);
             await _context.SaveChangesAsync();
@@ -151,21 +155,27 @@ namespace CM.Services
             return barDTO;
         }
 
-        /// <summary>
-        /// Creates a new Bar.
-        /// </summary>
-        /// <param name="barDTO">The params needed to create a bar. </param>
-        /// <returns>BarDTO</returns>
-        public async Task<BarDTO> CreateBarAsync(BarDTO barDTO)
-        {
-            if (await _context.Bars.FirstOrDefaultAsync(bar => bar.Name == barDTO.Name) != null)
-                throw new DbUpdateException("Bar with the same name already exists!");
+		/// <summary>
+		/// Creates a new Bar.
+		/// </summary>
+		/// <param name="barDTO">The params needed to create a bar. </param>
+		/// <returns>BarDTO</returns>
+		public async Task<BarDTO> CreateBarAsync(BarDTO barDTO)
+		{
+			if (barDTO.Name == null)
+				throw new ArgumentNullException("Name cannot be null!");
 
-            if (barDTO.Name == null)
-                throw new ArgumentNullException("Name cannot be null!");
+			var barExisting = await _context.Bars
+							.Include(bar => bar.Address)
+								.ThenInclude(a => a.City)
+							.Where(bar => bar.Name == barDTO.Name && bar.Address.CityId == barDTO.Address.CityId)
+							.ToArrayAsync();
 
-            try
-            {
+			if (barExisting.Length > 0)
+				throw new DbUpdateException("Bar with the same name already exists in this City!");
+
+			try
+			{
 
                 var bar = new Bar
                 {

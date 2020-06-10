@@ -1,10 +1,6 @@
 ﻿using CM.DTOs;
 using CM.Web.Areas.BarCrawler.Models;
 using CM.Web.Providers.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CM.Web.Providers.ViewModelMappers
 {
@@ -20,5 +16,28 @@ namespace CM.Web.Providers.ViewModelMappers
                 CommentedOn = model.CommentedOn
             };
         }
+
+        public BarCommentDTO CreateBarCommentDTO(CommentViewModel model)
+        {
+            return new BarCommentDTO
+            {
+                BarId = model.EntityId,
+                Text = model.Text,
+                UserId = model.UserId,
+                CommentedOn = model.CommentedOn,
+                UserName = model.UserName
+            };
+        }
+
+        public CommentViewModel CreateBarCommentViewModel(BarCommentDTO barDTO)
+        {
+            return new CommentViewModel
+            {
+                Text = barDTO.Text,
+                UserName = barDTO.UserName,
+                CommentedOn = barDTO.CommentedOn
+            };
+        }
+
     }
 }
