@@ -16,7 +16,7 @@ namespace CM.Web.Middlewares
         {
             await this.next(httpContext);
 
-            if (httpContext.Response.StatusCode == 404)
+            if (httpContext.Response.StatusCode >= 400 && httpContext.Response.StatusCode < 500)
             {
                 httpContext.Response.Redirect("/Home/Missing");
             }

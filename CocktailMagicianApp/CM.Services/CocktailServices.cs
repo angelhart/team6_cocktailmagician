@@ -243,8 +243,8 @@ namespace CM.Services
                                     .Where(c => (!c.IsUnlisted || allowUnlisted)
                                                 && (c.Name.Contains(searchString)
                                                 || c.Ingredients.Any(ci => ci.Ingredient.Name.Contains(searchString))))
-                                    .Where(c => minRating == null || c.AverageRating > minRating)
-                                    .Where(c => maxRating == null || c.AverageRating > maxRating);
+                                    .Where(c => minRating == null || c.AverageRating >= minRating)
+                                    .Where(c => maxRating == null || c.AverageRating <= maxRating);
 
             cocktails = SortCocktails(cocktails, sortBy, sortOrder);
 

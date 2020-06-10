@@ -8,6 +8,7 @@ using CM.Services.Contracts;
 using CM.Services.Providers.Contracts;
 using CM.Web.Areas.BarCrawler.Models;
 using CM.Web.Providers.Contracts;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NToastNotify;
@@ -15,6 +16,8 @@ using NToastNotify;
 namespace CM.Web.Areas.BarCrawler.Controllers
 {
     [Area("BarCrawler")]
+    [Authorize(Roles = "BarCrawler,Magician")]
+
     public class CommentsController : Controller
     {
         private readonly ICommentServices _commentServices;
@@ -47,12 +50,17 @@ namespace CM.Web.Areas.BarCrawler.Controllers
                     var dto = _commentViewMapper.CreateCocktailCommentDTO(model);
                     dto = await _commentServices.AddCocktailCommentAsync(dto);
 
+                    _toastNotification.AddSuccessToastMessage("Your comment was successfully added.");
                     return RedirectToAction("Details", "Cocktails", new { Area = "", Id = model.EntityId });
                 }
-                catch (Exception ex)
+                catch (ArgumentNullException ex)
                 {
                     _toastNotification.AddErrorToastMessage(ex.Message);
                     return RedirectToAction("Details", "Cocktails", new { Area = "", Id = model.EntityId });
+                }
+                catch(Exception)
+                {
+                    return NotFound();
                 }
             }
 
@@ -60,7 +68,7 @@ namespace CM.Web.Areas.BarCrawler.Controllers
             {
                 foreach (var error in item.Errors)
                 {
-                    _toastNotification.AddWarningToastMessage(error.ErrorMessage);
+                    _toastNotification.AddErrorToastMessage(error.ErrorMessage);
                 }
             }
             return RedirectToAction("Details", "Cocktails", new { area = "", Id = model.EntityId });

@@ -1,4 +1,5 @@
 ﻿using CM.DTOs;
+using CM.Web.Areas.Magician.Models;
 using CM.Web.Models;
 
 namespace CM.Web.Providers.Contracts

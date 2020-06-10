@@ -364,10 +364,18 @@ namespace CM.Web.Controllers
 				}
 				catch
 				{
-					throw new ArgumentException();
+					return NotFound();
 				}
 			}
-			return View(barCommentViewModel);
+
+			foreach (var item in ModelState.Values)
+			{
+				foreach (var error in item.Errors)
+				{
+					_toastNotification.AddWarningToastMessage(error.ErrorMessage);
+				}
+			}
+			return RedirectToAction(nameof(Details), new { id = barCommentViewModel.BarId });
 		}
 
 		[HttpPost, ActionName("Delete")]
