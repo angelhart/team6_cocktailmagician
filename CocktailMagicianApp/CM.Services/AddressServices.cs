@@ -31,8 +31,8 @@ namespace CM.Services
         {
             var countriesDTO = await _context.Countries
                 .Include(country =>country.Cities)
-                .Select(country => this._addressMapper
-                .CreateCountryDTO(country))
+                .OrderBy(country => country.Name)
+                .Select(country => this._addressMapper.CreateCountryDTO(country))
                 .ToListAsync();
 
             return countriesDTO;
@@ -45,11 +45,11 @@ namespace CM.Services
         public async Task<ICollection<CityDTO>> GetCountryCitiesAsync(Guid countryId)
         {
             var citiesDTO = await  _context.Cities
-                     .Include(city => city.Country)
-                    .Where(city => city.CountryId == countryId)
-                    .Select(city => this._addressMapper
-                    .CreateCityDTO(city))
-                    .ToListAsync();
+                                               .Include(city => city.Country)
+                                           .Where(city => city.CountryId == countryId)
+                                           .OrderBy(city => city.Name)
+                                           .Select(city => this._addressMapper.CreateCityDTO(city))
+                                           .ToListAsync();
             
             return citiesDTO;
         }

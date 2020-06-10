@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using CM.Web.Providers.Contracts;
 using CM.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using CM.DTOs;
 
 namespace CM.Web.Areas.Magician.Controllers
 {
@@ -20,6 +21,8 @@ namespace CM.Web.Areas.Magician.Controllers
 
 	public class BarsController : Controller
 	{
+		private const string ROOTSTORAGE = "\\images\\Bars";
+
 		private readonly IBarServices _barServices;
 		private readonly IAddressServices _addressServices;
 		private readonly IAddressMapper _addressMapper;
@@ -29,10 +32,12 @@ namespace CM.Web.Areas.Magician.Controllers
 		private readonly IToastNotification _toastNotification;
 		private readonly IDateTimeProvider _dateTimeProvider;
 		private readonly ICocktailServices _cocktailServices;
-		private readonly IBarViewMapper _barViewMapper;
+        private readonly IStorageProvider _storageProvider;
+        private readonly IBarViewMapper _barViewMapper;
 
 		public BarsController(IAppUserServices appUserServices, IBarViewMapper barViewMapper, IBarServices barServices, IAddressServices addressServices, IAddressMapper addressMapper, IRatingServices ratingServices,
-			IToastNotification toastNotification, ICommentServices commentServices, IDateTimeProvider dateTimeProvider, ICocktailServices cocktailServices)
+			IToastNotification toastNotification, ICommentServices commentServices, IDateTimeProvider dateTimeProvider, ICocktailServices cocktailServices,
+			IStorageProvider storageProvider)
 		{
 			_barViewMapper = barViewMapper ?? throw new ArgumentNullException(nameof(barViewMapper));
 			_barServices = barServices ?? throw new ArgumentNullException(nameof(barServices));
@@ -44,6 +49,7 @@ namespace CM.Web.Areas.Magician.Controllers
 			_toastNotification = toastNotification ?? throw new ArgumentNullException(nameof(toastNotification));
 			_dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
 			_cocktailServices = cocktailServices ?? throw new ArgumentNullException(nameof(cocktailServices));
+            _storageProvider = storageProvider ?? throw new ArgumentNullException(nameof(storageProvider));
 		}
 
 		public async Task<IActionResult> Create()
@@ -68,10 +74,20 @@ namespace CM.Web.Areas.Magician.Controllers
 				try
 				{
 					var barDTO = this._barViewMapper.CreateBarDTO(barViewModel);
-					if (!string.IsNullOrEmpty(barViewModel.ImagePath))
-						barDTO.ImagePath = barViewModel.ImagePath;
+					barDTO.ImagePath = ROOTSTORAGE + "\\DefaultBar.png";
+
+					if (barViewModel.Image != null)
+					{
+						barDTO.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, barViewModel.Image.FileName, barViewModel.Name);
+					}
 
 					await this._barServices.CreateBarAsync(barDTO);
+
+					if (barViewModel.Image != null)
+					{
+						await _storageProvider.StoreImageAsync(barDTO.ImagePath, barViewModel.Image);
+					}
+
 					_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully created!");
 					return RedirectToAction("Index", "Bars", new { area = ""});
 				}
@@ -102,7 +118,7 @@ namespace CM.Web.Areas.Magician.Controllers
 
 				var selectedCocktails = barDTO.Cocktails.ToList();
 
-				ViewBag.selectListOfCocktails = new SelectList(listOfCocktails, "Id", "Name", barDTO.Cocktails.ToList());
+				ViewBag.selectListOfCocktails = new SelectList(listOfCocktails, nameof(CocktailDTO.Id), nameof(CocktailDTO.Name), barDTO.Cocktails.ToList());
 
 				return View(barViewModel);
 			}

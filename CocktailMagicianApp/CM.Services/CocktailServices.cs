@@ -283,7 +283,9 @@ namespace CM.Services
         /// <returns>Number of cocktails in database.</returns>
         public async Task<int> CountAllCocktailsAsync(bool countUnlisted = false)
         {
-            return await _context.Cocktails.CountAsync();
+            return await _context.Cocktails
+                                 .Where(c => !c.IsUnlisted || countUnlisted)
+                                 .CountAsync();
         }
     }
 }

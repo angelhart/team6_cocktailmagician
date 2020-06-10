@@ -5,6 +5,7 @@
 		serverSide: true, //server side processing
 		filter: true, //disable search box
 		orderMulti: false, //multiple column sort
+		order: [1, "asc"], // override default sort column and direction
 		ajax: {
 			url: '/bars/indextable',
 			type: 'POST',
@@ -80,7 +81,7 @@
 			{
 				// Edit button
 				render: function (data, type, full, meta) {
-					return '<a class="btn btn-info" href="magician/bars/edit/' + full.id + '">Edit</a>';
+					return '<a class="btn btn-info" href="/magician/bars/edit/' + full.id + '">Edit</a>';
 				},
 				orderable: false,
 				visible: true
