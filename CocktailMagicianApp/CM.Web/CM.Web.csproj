@@ -51,7 +51,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Areas\BarCrawler\Views\" />
     <Folder Include="wwwroot\images\Bars\" />
   </ItemGroup>
 

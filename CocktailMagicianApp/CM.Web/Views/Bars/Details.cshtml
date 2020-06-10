@@ -1,78 +1,88 @@
 ﻿@model BarViewModel
 
 @{
-    ViewData["Title"] = "Details";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+	ViewData["Title"] = "Details";
+	Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section Styles {
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="stylesheet" href="~/css/StarRating.css" />
-    <link rel="stylesheet" href="~/css/CommentsSection.css" />
-    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
-    <style>
-        a.custom-card,
-        a.custom-card:hover {
-            color: inherit;
-        }
-    </style>
+	<meta charset="utf-8" />
+	<link rel="stylesheet" href="~/css/site.css" />
+	<link rel="stylesheet" href="~/css/StarRating.css" />
+	<link rel="stylesheet" href="~/css/CommentsSection.css" />
+	<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN" crossorigin="anonymous">
+	<style>
+		a.custom-card,
+		a.custom-card:hover {
+			color: inherit;
+		}
+	</style>
+
+	<style>
+		.container {
+			background-image: url("~/images/Background_layout.png");
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-attachment: fixed;
+		}
+	</style>
+
 }
 
+<body background="~/images/Background_layout.png">
 
+	<div class="row">
+		<div class="col-sm-4 justify-content-center">
+			<h1>@Html.DisplayFor(model => model.Name)</h1>
+			<h4>@Html.DisplayFor(model => model.Country)</h4>
+			<h6>@Html.DisplayFor(model => model.City)</h6>
+			<p></p>
+			<label class="control-label"> Avg. Rating</label>
+			<h6>@Html.DisplayFor(model => model.AverageRating)</h6>
+			</p>
 
-<div class="row">
-	<div class="col-sm-4 justify-content-center">
-		<h1>@Html.DisplayFor(model => model.Name)</h1>
-		<h4>@Html.DisplayFor(model => model.Country)</h4>
-		<h6>@Html.DisplayFor(model => model.City)</h6>
-		<p></p>
-		<label class="control-label"> Avg. Rating</label>
-		<h6>@Html.DisplayFor(model => model.AverageRating)</h6>
-		</p>
+			@*------------------------------
+				Rating
+				--------------------------------*@
 
-		@*------------------------------
-		Rating
-		--------------------------------*@
-
-		@if (User.IsInRole("Crawler") || User.IsInRole("Magician"))
-		{
-			<div class="rating-box">
-				<br />
-				<form asp-area="BarCrawler"
-					  asp-controller="Ratings"
-					  asp-action="AddBarRating"
-					  method="post">
-
-					<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-					<div class="rating">
-						<span class="fa fa-star-o"></span>
-						<span class="fa fa-star-o"></span>
-						<span class="fa fa-star-o"></span>
-						<span class="fa fa-star-o"></span>
-						<span class="fa fa-star-o"></span>
-					</div>
+			@if (User.IsInRole("Crawler") || User.IsInRole("Magician"))
+			{
+				<div class="rating-box">
 					<br />
-					<div class="form-group">
-						<input name="Score" type="number" hidden id="rating-value" value="rating-value" />
-						<input name="EntityId" asp-for="@Model.Id" hidden />
-						<button type="submit" value="Submit Rating" class="btn btn-outline-dark">Submit</button>
-					</div>
-				</form>
-			</div>
-			<script src="~/js/StarRating.js"></script>
-		}
+					<form asp-area="BarCrawler"
+						  asp-controller="Ratings"
+						  asp-action="AddBarRating"
+						  method="post">
 
-		@*------------------------------
-		endOfRating
-		--------------------------------*@
+						<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+						<div class="rating">
+							<span class="fa fa-star-o"></span>
+							<span class="fa fa-star-o"></span>
+							<span class="fa fa-star-o"></span>
+							<span class="fa fa-star-o"></span>
+							<span class="fa fa-star-o"></span>
+						</div>
+						<br />
+						<div class="form-group">
+							<input name="Score" type="number" hidden id="rating-value" value="rating-value" />
+							<input name="EntityId" asp-for="@Model.Id" hidden />
+							<button type="submit" value="Submit Rating" class="btn btn-outline-dark">Submit</button>
+						</div>
+					</form>
+				</div>
+				<script src="~/js/StarRating.js"></script>
+			}
+
+			@*------------------------------
+				endOfRating
+				--------------------------------*@
+		</div>
+		<div class="d-block float-right">
+			<img class="d-block" width="auto" height="300" src="@Model.ImagePath">
+		</div>
 	</div>
-    <div class="d-block float-right">
-        <img class="d-block" width="auto" height="300" src="@Model.ImagePath">
-    </div>
-</div>
-<body>
+
 	<div>
 		<hr />
 		<dl class="row">

@@ -26,6 +26,9 @@ namespace CM.Services
         }
         public async Task<BarRatingDTO> RateBarAsync(BarRatingDTO barRatingDTO)
         {
+            if (barRatingDTO == null)
+                throw new ArgumentNullException("Rating cannot be null");
+
             var bar = await _context.Bars
                 .Include(bar => bar.Ratings)
                 .FirstOrDefaultAsync(bar => bar.Id == barRatingDTO.BarId) ?? throw new NullReferenceException();

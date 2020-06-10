@@ -177,215 +177,152 @@ namespace CM.Services
 			try
 			{
 
-                var bar = new Bar
-                {
-                    Id = Guid.NewGuid(),
-                    Name = barDTO.Name,
-                    Phone = barDTO.Phone,
-                    ImagePath = barDTO.ImagePath,
-                    Details = barDTO.Details,
-                };
+				var bar = new Bar
+				{
+					Id = Guid.NewGuid(),
+					Name = barDTO.Name,
+					Phone = barDTO.Phone,
+					ImagePath = barDTO.ImagePath,
+					Details = barDTO.Details,
+				};
 
-                barDTO.Address.BarId = bar.Id;
-                await _context.Bars.AddAsync(bar);
-                await _context.SaveChangesAsync();
+				barDTO.Address.BarId = bar.Id;
+				await _context.Bars.AddAsync(bar);
+				await _context.SaveChangesAsync();
 
-                var addressDTO = await _addressServices.CreateAddressAsync(barDTO.Address);
-                bar.AddressID = addressDTO.Id;
-                bar.FullAddress = $"{addressDTO.CityName}, {addressDTO.Street}";
+				var addressDTO = await _addressServices.CreateAddressAsync(barDTO.Address);
+				bar.AddressID = addressDTO.Id;
+				bar.FullAddress = $"{addressDTO.CityName}, {addressDTO.Street}";
 
-                var cocktails = barDTO.Cocktails.Select(sc =>
-                new BarCocktail
-                {
-                    BarId = bar.Id,
-                    CocktailId = sc.Id
-                });
+				var cocktails = barDTO.Cocktails.Select(sc =>
+				new BarCocktail
+				{
+					BarId = bar.Id,
+					CocktailId = sc.Id
+				});
 
-                foreach (var item in cocktails)
-                {
-                    await _context.BarCocktails.AddAsync(item);
-                }
+				foreach (var item in cocktails)
+				{
+					await _context.BarCocktails.AddAsync(item);
+				}
 
-                await _context.SaveChangesAsync();
+				await _context.SaveChangesAsync();
 
-                return barDTO;
-            }
-            catch (Exception)
-            {
-                throw new ArgumentException();
-            }
-        }
+				return barDTO;
+			}
+			catch (Exception)
+			{
+				throw new ArgumentException();
+			}
+		}
 
-        /// <summary>
-        /// Marks specified bar in the database as deleted.
-        /// </summary>
-        /// <param name="id">The Id of the bar that should be marked as deleted.</param>
-        /// <returns>BarDTO</returns>
-        public async Task DeleteBar(Guid id)
-        {
-            var bar = await _context.Bars
-                .FirstOrDefaultAsync(bar => bar.Id == id && bar.IsUnlisted == false) ?? throw new ArgumentNullException();
+		/// <summary>
+		/// Marks specified bar in the database as deleted.
+		/// </summary>
+		/// <param name="id">The Id of the bar that should be marked as deleted.</param>
+		/// <returns>BarDTO</returns>
+		public async Task DeleteBar(Guid id)
+		{
+			var bar = await _context.Bars
+				.FirstOrDefaultAsync(bar => bar.Id == id && bar.IsUnlisted == false) ?? throw new ArgumentNullException();
 
-            bar.IsUnlisted = true;
+			bar.IsUnlisted = true;
 
-            _context.Bars.Update(bar);
-            await _context.SaveChangesAsync();
-        }
+			_context.Bars.Update(bar);
+			await _context.SaveChangesAsync();
+		}
 
-        /// <summary>
-        /// Adds selected cocktail to specified bar.
-        /// </summary>
-        /// <param name="barId">The Id of the bar the cocktail should be added to.</param>
-        /// <param name="cocktailId">The Id of the cocktail that should be added.</param>
-        /// <returns></returns>
-        public async Task<BarDTO> AddCocktailToBar(Guid barId, Guid cocktailId)
-        {
-            var bar = await GetBarEntityWithCocktails(barId);
-            var cocktail = await GetCocktailEntity(cocktailId);
+		/// <summary>
+		/// Checks if a bar exists in the database by given Id.
+		/// </summary>
+		/// <param name="id">The Id of the bar to be checked.</param>
+		/// <returns></returns>
+		public async Task<bool> BarExists(Guid id)
+		{
+			return await _context.Bars.AnyAsync(e => e.Id == id);
+		}
 
-            bar.Cocktails.Add(new BarCocktail
-            {
-                BarId = bar.Id,
-                Bar = bar,
-                CocktailId = cocktail.Id,
-                Cocktail = cocktail
-            });
+		/// <summary>
+		/// Counts the bar records in the database.
+		/// </summary>
+		/// <param name="countUnlisted">Set to true to include unlisted bars</param>
+		/// <returns>Number of bars in database.</returns>
+		public async Task<int> CountAllBarsAsync(bool countUnlisted = false)
+		{
+			return await _context.Bars
+								 .Where(b => !b.IsUnlisted || countUnlisted)
+								 .CountAsync();
+		}
 
-            _context.Update(bar);
-            _context.SaveChanges();
 
-            var barDTO = await GetBarAsync(barId);
+		/// <summary>
+		/// Changes the unlisted state of a bar.
+		/// </summary>
+		/// <param name="barId">ID of the bar.</param>
+		/// <param name="newState">The new state for property.</param>
+		/// <param name="allowUnlisted">Checks if caller method is permited to retrieve unlisted cocktail.</param>
+		/// <returns></returns>
+		public async Task<BarDTO> ChangeListingAsync(Guid barId)
+		{
+			var bar = await _context.Bars
+			.FirstOrDefaultAsync(bar => bar.Id == barId);
 
-            return barDTO;
-        }
+			if (bar == null)
+			{
+				throw new ArgumentException("The Bar you were looking for was not found!");
+			}
 
-        /// <summary>
-        /// Removes selected cocktail from specified bar.
-        /// </summary>
-        /// <param name="barId">The Id of the bar the cocktail should be removed from.</param>
-        /// <param name="cocktailId">The Id of the cocktail that should be removed.</param>
-        /// <returns></returns>
-        public async Task<BarDTO> RemoveCocktailFromBar(Guid barId, Guid cocktailId)
-        {
-            var bar = await GetBarEntityWithCocktails(barId);
-            var cocktail = await GetCocktailEntity(cocktailId);
+			bar.IsUnlisted = !bar.IsUnlisted;
 
-            bar.Cocktails.Remove(new BarCocktail
-            {
-                BarId = bar.Id,
-                Bar = bar,
-                CocktailId = cocktail.Id,
-                Cocktail = cocktail
-            });
 
-            _context.Update(bar);
-            _context.SaveChanges();
+			_context.Update(bar);
+			await _context.SaveChangesAsync();
 
-            var barDTO = await GetBarAsync(barId);
+			var barDTO = this._barMapper.CreateBarDTO(bar);
 
-            return barDTO;
-        }
+			return barDTO;
+		}
 
-        /// <summary>
-        /// Checks if a bar exists in the database by given Id.
-        /// </summary>
-        /// <param name="id">The Id of the bar to be checked.</param>
-        /// <returns></returns>
-        public async Task<bool> BarExists(Guid id)
-        {
-            return await _context.Bars.AnyAsync(e => e.Id == id);
-        }
+		private IQueryable<Bar> SortBarsAsync(IQueryable<Bar> bars, string sortBy, string sortOrder)
+		{
+			return sortBy switch
+			{
+				"averageRating" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.AverageRating)
+																	   .ThenBy(bar => bar.Name) :
+															  bars.OrderByDescending(bar => bar.AverageRating)
+																	   .ThenBy(bar => bar.Name),
+				"country" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.Address.City.Country)
+																		.ThenBy(bar => bar.Name) :
+															  bars.OrderByDescending(bar => bar.Address.City.Country)
+																		.ThenBy(bar => bar.Name),
+				"city" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.Address.City)
+																		.ThenBy(bar => bar.Name) :
+															  bars.OrderByDescending(bar => bar.Address.City)
+																		.ThenBy(bar => bar.Name),
 
+				_ => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.Name) :
+													   bars.OrderByDescending(bar => bar.Name),
+			};
+		}
+		private async Task UpdateCocktailsInBarAsync(Guid barId, ICollection<CocktailDTO> newCocktails)
+		{
+			var currentCocktails = _context.BarCocktails
+											 .Where(bc => bc.BarId == barId);
+
+			_context.RemoveRange(currentCocktails);
+
+			var cocktailsToAdd = newCocktails.Select(cocktailDTO => new BarCocktail
+			{
+				BarId = barId,
+				CocktailId = cocktailDTO.Id,
+			});
+
+			await _context.AddRangeAsync(cocktailsToAdd);
+			await _context.SaveChangesAsync();
+		}
         /// <summary>
         /// Retrieves the Count of all Bar records in the database.
         /// </summary>
         /// <returns>Integer of all bars in the database.</returns>
-        public async Task<int> CountAllBarsAsync(bool countUnlisted = false)
-        {
-            return await _context.Bars
-                                 .Where(b => !b.IsUnlisted || countUnlisted)
-                                 .CountAsync();
-        }
-
-        /// <summary>
-        /// Changes the unlisted state of a bar.
-        /// </summary>
-        /// <param name="barId">ID of the bar.</param>
-        /// <param name="newState">The new state for property.</param>
-        /// <param name="allowUnlisted">Checks if caller method is permited to retrieve unlisted cocktail.</param>
-        /// <returns></returns>
-
-        public async Task<BarDTO> ChangeListingAsync(Guid barId)
-        {
-            var bar = await _context.Bars
-            .FirstOrDefaultAsync(bar => bar.Id == barId);
-
-            if (bar == null)
-            {
-                throw new ArgumentException("The Bar you were looking for was not found!");
-            }
-
-            bar.IsUnlisted = !bar.IsUnlisted;
-
-
-            _context.Update(bar);
-            await _context.SaveChangesAsync();
-
-            var barDTO = this._barMapper.CreateBarDTO(bar);
-
-            return barDTO;
-        }
-
-        private async Task<Bar> GetBarEntityWithCocktails(Guid barId)
-        {
-            return await _context.Bars
-                .Include(bar => bar.Cocktails)
-                .FirstOrDefaultAsync(bar => bar.Id == barId && bar.IsUnlisted == false) ?? throw new ArgumentNullException();
-
-        }
-
-        private async Task<Cocktail> GetCocktailEntity(Guid cocktailId)
-        {
-            return await _context.Cocktails
-                .FirstOrDefaultAsync(cocktail => cocktail.Id == cocktailId && cocktail.IsUnlisted == false) ?? throw new ArgumentNullException();
-        }
-
-        private IQueryable<Bar> SortBarsAsync(IQueryable<Bar> bars, string sortBy, string sortOrder)
-        {
-            return sortBy switch
-            {
-                "averageRating" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.AverageRating)
-                                                                       .ThenBy(bar => bar.Name) :
-                                                              bars.OrderByDescending(bar => bar.AverageRating)
-                                                                       .ThenBy(bar => bar.Name),
-                "country" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.Address.City.Country)
-                                                                        .ThenBy(bar => bar.Name) :
-                                                              bars.OrderByDescending(bar => bar.Address.City.Country)
-                                                                        .ThenBy(bar => bar.Name),
-                "city" => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.Address.City)
-                                                                        .ThenBy(bar => bar.Name) :
-                                                              bars.OrderByDescending(bar => bar.Address.City)
-                                                                        .ThenBy(bar => bar.Name),
-
-                _ => string.IsNullOrEmpty(sortOrder) ? bars.OrderBy(bar => bar.Name) :
-                                                       bars.OrderByDescending(bar => bar.Name),
-            };
-        }
-        private async Task UpdateCocktailsInBarAsync(Guid barId, ICollection<CocktailDTO> newCocktails)
-        {
-            var currentCocktails = _context.BarCocktails
-                                             .Where(bc => bc.BarId == barId);
-
-            _context.RemoveRange(currentCocktails);
-
-            var cocktailsToAdd = newCocktails.Select(cocktailDTO => new BarCocktail
-            {
-                BarId = barId,
-                CocktailId = cocktailDTO.Id,
-            });
-
-            await _context.AddRangeAsync(cocktailsToAdd);
-            await _context.SaveChangesAsync();
-        }
     }
 }
