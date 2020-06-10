@@ -91,14 +91,14 @@ namespace CM.Data.Migrations
                         new
                         {
                             Id = new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"),
-                            ConcurrencyStamp = "69695018-07b8-4e00-9ef8-4c270a4479e6",
+                            ConcurrencyStamp = "b3b76498-7db8-44d8-9036-57cf839049d3",
                             Name = "Magician",
                             NormalizedName = "MAGICIAN"
                         },
                         new
                         {
                             Id = new Guid("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"),
-                            ConcurrencyStamp = "a8244420-0bdf-4bef-a6bd-446c1cf218e7",
+                            ConcurrencyStamp = "b51edc11-8583-4509-822a-6e8db66e1e2e",
                             Name = "BarCrawler",
                             NormalizedName = "BARCRAWLER"
                         });
@@ -183,7 +183,7 @@ namespace CM.Data.Migrations
                         {
                             Id = new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "cd8cbd63-c78e-495e-b2c7-2574125418e3",
+                            ConcurrencyStamp = "40c4fe01-ffa3-43ab-9829-b1ee6e9ca84f",
                             EmailConfirmed = false,
                             IsDeleted = false,
                             LockoutEnabled = false,
@@ -195,7 +195,7 @@ namespace CM.Data.Migrations
                         {
                             Id = new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "fc08e685-8d3c-4511-9649-6e2fff424220",
+                            ConcurrencyStamp = "b2163f79-7a9c-4c90-9d46-e644a366f5e8",
                             EmailConfirmed = false,
                             IsDeleted = false,
                             LockoutEnabled = false,

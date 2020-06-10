@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CM.Data.Migrations
 {
-    public partial class initail : Migration
+    public partial class initital : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -419,8 +419,8 @@ namespace CM.Data.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"), "fa0675ff-efd2-4c26-b38a-1d9936f6d2ab", "Magician", "MAGICIAN" },
-                    { new Guid("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"), "dedf62d2-5298-4d59-8608-5ea62b5922b1", "BarCrawler", "BARCRAWLER" }
+                    { new Guid("a6dc0db8-408c-4aff-bf99-0d46efd31787"), "b3b76498-7db8-44d8-9036-57cf839049d3", "Magician", "MAGICIAN" },
+                    { new Guid("acde9ca2-de8c-45a0-ad81-3c3b05c8c90e"), "b51edc11-8583-4509-822a-6e8db66e1e2e", "BarCrawler", "BARCRAWLER" }
                 });
 
             migrationBuilder.InsertData(
@@ -428,8 +428,8 @@ namespace CM.Data.Migrations
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DeletedOn", "Email", "EmailConfirmed", "ImagePath", "IsDeleted", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
                 values: new object[,]
                 {
-                    { new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"), 0, "d609c4cb-7683-49d7-a6ec-8a072d8e91ce", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser@test.com" },
-                    { new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"), 0, "59ae2303-980d-4062-87b1-518b8a35143e", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser1@test.com" }
+                    { new Guid("98190af6-ba8e-44ff-8619-4d3b90040b5b"), 0, "40c4fe01-ffa3-43ab-9829-b1ee6e9ca84f", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser@test.com" },
+                    { new Guid("e355f8c4-ee01-4986-89bb-d1b56d17ae23"), 0, "b2163f79-7a9c-4c90-9d46-e644a366f5e8", null, null, false, null, false, false, null, null, null, null, null, false, null, false, "testUser1@test.com" }
                 });
 
             migrationBuilder.InsertData(
@@ -437,8 +437,8 @@ namespace CM.Data.Migrations
                 columns: new[] { "Id", "AddressID", "AverageRating", "Details", "FullAddress", "ImagePath", "IsUnlisted", "Name", "Phone" },
                 values: new object[,]
                 {
-                    { new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), new Guid("73f2c4c2-78ae-45ab-b82c-b06a48271a6d"), 3.4300000000000002, "Weaving tradition with modernity, there’s something heart-warming about the story of Dante. When Linden Pride, Nathalie Hudson and Naren Young took over this Greenwich Village site 100 years after it first opened they could see the things that made this fading Italian café once great could be relevant again. At the heart of their mission was to renew the bar, while being authentic to its roots and appealing to the Greenwich Village community. So the classical décor was given a lift, and in came refined but wholesome Italian food, aperitivos and cocktails. There is a whole list of Negronis to make your way through, but that’s OK because Dante is an all-day restaurant-bar. The Garibaldi too is a must-order. Made with Campari and ‘fluffy’ orange juice, it has brought this once-dusty drink back to life. The measure of a bar is the experience of its customers – in hospitality, drinks and food Dante has the fundamentals down to a fine art, earning the deserved title of The World's Best Bar 2019, sponsored by Perrier.", "USA, New York, 79-81 MACDOUGAL ST", "/images/9BDBF5E7-AD83-415C-B359-9FF5E2F0DEDD.jpg", false, "Dante", "(212) 982-5275" },
-                    { new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"), new Guid("4ecac9dc-31df-4b89-93b5-5550d2608ede"), 4.2800000000000002, "No matter the workings of the cocktail world around it, the Connaught Bar stays true to its principles – artful drinks and graceful service in a stylish setting. Under the watchful gaze of Ago Perrone, the hotel’s director of mixology, the bar moves forward with an effortless glide. Last year marked 10 years since designer David Collins unveiled the bar’s elegant Cubist interior and in celebration it launched its own gin, crafted in the building by none other than Perrone himself. It’s already the most called-for spirit on the showpiece trolley that clinks between the bar’s discerning guests, serving personalised Martinis. The latest cocktail menu, Vanguard, has upped the invention – Number 11 is an embellished Vesper served in Martini glasses hand-painted every day in house, while the Gate No.1 is a luscious blend of spirits, wines and jam. But of course, the Connaught Masterpieces isn’t a chapter easily overlooked. Along with the Dry Martini, the Bloody Mary is liquid perfection and the Mulatta Daisy is Perrone’s own classic, in and out of the bar. In 2019, Connaught Bar earns the title of The Best Bar in Europe, sponsored by Michter's.", "UK, London, Mayfair W1K 2AL", "/images/0899E918-977C-44D5-A5CB-DE9559AD822C-logo.png", false, "Connaught Bar", "+44 (0)20 7499 7070" }
+                    { new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"), new Guid("73f2c4c2-78ae-45ab-b82c-b06a48271a6d"), 3.4300000000000002, "Weaving tradition with modernity, there’s something heart-warming about the story of Dante. When Linden Pride, Nathalie Hudson and Naren Young took over this Greenwich Village site 100 years after it first opened they could see the things that made this fading Italian café once great could be relevant again. At the heart of their mission was to renew the bar, while being authentic to its roots and appealing to the Greenwich Village community. So the classical décor was given a lift, and in came refined but wholesome Italian food, aperitivos and cocktails. There is a whole list of Negronis to make your way through, but that’s OK because Dante is an all-day restaurant-bar. The Garibaldi too is a must-order. Made with Campari and ‘fluffy’ orange juice, it has brought this once-dusty drink back to life. The measure of a bar is the experience of its customers – in hospitality, drinks and food Dante has the fundamentals down to a fine art, earning the deserved title of The World's Best Bar 2019, sponsored by Perrier.", "USA, New York, 79-81 MACDOUGAL ST", "\\images\\Bars\\DefaultBar.png", false, "Dante", "(212) 982-5275" },
+                    { new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"), new Guid("4ecac9dc-31df-4b89-93b5-5550d2608ede"), 4.2800000000000002, "No matter the workings of the cocktail world around it, the Connaught Bar stays true to its principles – artful drinks and graceful service in a stylish setting. Under the watchful gaze of Ago Perrone, the hotel’s director of mixology, the bar moves forward with an effortless glide. Last year marked 10 years since designer David Collins unveiled the bar’s elegant Cubist interior and in celebration it launched its own gin, crafted in the building by none other than Perrone himself. It’s already the most called-for spirit on the showpiece trolley that clinks between the bar’s discerning guests, serving personalised Martinis. The latest cocktail menu, Vanguard, has upped the invention – Number 11 is an embellished Vesper served in Martini glasses hand-painted every day in house, while the Gate No.1 is a luscious blend of spirits, wines and jam. But of course, the Connaught Masterpieces isn’t a chapter easily overlooked. Along with the Dry Martini, the Bloody Mary is liquid perfection and the Mulatta Daisy is Perrone’s own classic, in and out of the bar. In 2019, Connaught Bar earns the title of The Best Bar in Europe, sponsored by Michter's.", "UK, London, Mayfair W1K 2AL", "\\images\\Bars\\DefaultBar.png", false, "Connaught Bar", "+44 (0)20 7499 7070" }
                 });
 
             migrationBuilder.InsertData(
@@ -446,9 +446,9 @@ namespace CM.Data.Migrations
                 columns: new[] { "Id", "AverageRating", "ImagePath", "IsUnlisted", "Name", "Recipe" },
                 values: new object[,]
                 {
-                    { new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"), null, null, false, "Loch Lomond", null },
-                    { new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"), null, null, false, "Strawberry Lemonade", null },
-                    { new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"), null, null, false, "Rum Milk Punch", null }
+                    { new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"), null, "\\images\\Cocktails\\DefaultCocktail.png", false, "Loch Lomond", null },
+                    { new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"), null, "\\images\\Cocktails\\DefaultCocktail.png", false, "Strawberry Lemonade", null },
+                    { new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"), null, "\\images\\Cocktails\\DefaultCocktail.png", false, "Rum Milk Punch", null }
                 });
 
             migrationBuilder.InsertData(

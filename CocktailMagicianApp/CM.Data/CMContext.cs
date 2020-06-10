@@ -42,9 +42,9 @@ namespace CM.Data
             builder.ApplyConfiguration(new CocktailCommentConfiguration());
             builder.ApplyConfiguration(new CocktailRatingConfiguration());
 
-            builder.Seed();
+			builder.Seed();
 
-            base.OnModelCreating(builder);
+			base.OnModelCreating(builder);
         }
     }
 }
