@@ -96,11 +96,11 @@ namespace CM.Web.Controllers
 //		try
 //		{
 
-					barViewModel.ImagePath = ROOTSTORAGE + "\\DefaultBar.png";
-					if (barViewModel.Image != null)
-					{
-						barViewModel.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, barViewModel.Image.FileName, barViewModel.Name);
-					}
+					//barViewModel.ImagePath = ROOTSTORAGE + "\\DefaultBar.png";
+					//if (barViewModel.Image != null)
+					//{
+					//	barViewModel.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, barViewModel.Image.FileName, barViewModel.Name);
+					//}
 
 //			var addressDTO = new AddressDTO
 //			{
@@ -125,19 +125,19 @@ namespace CM.Web.Controllers
 //			if (barViewModel.Image != null)
 //				await _storageProvider.StoreImageAsync(barViewModel.ImagePath, barViewModel.Image);
 
-					_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully created!");
-					return RedirectToAction(nameof(Index));
-				}
-				catch (Exception ex)
-				{
-					_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
-					_toastNotification.AddErrorToastMessage(ex.Message);
-					return RedirectToAction(nameof(Create));
-				}
-			}
-			_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
-			return View(barViewModel);
-		}
+		//			_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully created!");
+		//			return RedirectToAction(nameof(Index));
+		//		}
+		//		catch (Exception ex)
+		//		{
+		//			_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
+		//			_toastNotification.AddErrorToastMessage(ex.Message);
+		//			return RedirectToAction(nameof(Create));
+		//		}
+		//	}
+		//	_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
+		//	return View(barViewModel);
+		//}
 
 //public async Task<IActionResult> Edit(Guid id)
 //{

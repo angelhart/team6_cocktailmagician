@@ -81,7 +81,7 @@
 			{
 				// Edit button
 				render: function (data, type, full, meta) {
-					return '<a class="btn btn-info" href="magician/bars/edit/' + full.id + '">Edit</a>';
+					return '<a class="btn btn-info" href="/magician/bars/edit/' + full.id + '">Edit</a>';
 				},
 				orderable: false,
 				visible: true
