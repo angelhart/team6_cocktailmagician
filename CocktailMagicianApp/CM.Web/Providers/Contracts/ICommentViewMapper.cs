@@ -5,6 +5,8 @@ namespace CM.Web.Providers.Contracts
 {
     public interface ICommentViewMapper
     {
-        CocktailCommentDTO CreateCocktailCommentDTO(CommentViewModel model);
+		BarCommentDTO CreateBarCommentDTO(CommentViewModel model);
+		CommentViewModel CreateBarCommentViewModel(BarCommentDTO barDTO);
+		CocktailCommentDTO CreateCocktailCommentDTO(CommentViewModel model);
     }
 }

@@ -8,6 +8,12 @@
 
   <ItemGroup>
     <Compile Remove="Areas\BarCrawler\Data\**" />
+    <Compile Remove="Areas\Magician\Data\**" />
+    <Content Remove="Areas\BarCrawler\Data\**" />
+    <Content Remove="Areas\Magician\Data\**" />
+    <EmbeddedResource Remove="Areas\BarCrawler\Data\**" />
+    <EmbeddedResource Remove="Areas\Magician\Data\**" />
+    <None Remove="Areas\BarCrawler\Data\**" />
     <Compile Remove="Areas\BarCrawler\Views\**" />
     <Compile Remove="Areas\Magician\Data\**" />
     <Content Remove="Areas\BarCrawler\Data\**" />
@@ -45,6 +51,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Areas\BarCrawler\Views\" />
     <Folder Include="wwwroot\images\Bars\" />
   </ItemGroup>
 

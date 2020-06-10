@@ -9,12 +9,10 @@ namespace CM.DTOs.Mappers
     public class BarMapper : IBarMapper
     {
         private readonly IAddressMapper _addressMapper;
-        private readonly ICocktailMapper _cocktailMapper;
 
-        public BarMapper(IAddressMapper addressMapper, ICocktailMapper cocktailMapper)
+        public BarMapper(IAddressMapper addressMapper)
         {
             _addressMapper = addressMapper ?? throw new ArgumentNullException(nameof(addressMapper));
-            _cocktailMapper = cocktailMapper ?? throw new ArgumentNullException(nameof(cocktailMapper));
         }
 
 
@@ -34,10 +32,11 @@ namespace CM.DTOs.Mappers
                 IsUnlisted = bar.IsUnlisted,
 
                 Cocktails = bar.Cocktails
-                        .Select(bc => _cocktailMapper.CreateCocktailDTO(bc.Cocktail))
+                        .Select(bc => CreateCocktailDTO(bc.Cocktail))
                         .ToList(),
                 Comments = bar.Comments
                         .Select(barComment => CreateBarCommentDTO(barComment))
+                        .OrderByDescending(comment => comment.CommentedOn)
                         .ToList(),
             };
 
@@ -65,21 +64,9 @@ namespace CM.DTOs.Mappers
             return new BarRatingDTO
             {
                 AppUserId = rating.AppUserId,
-                AppUserName = rating.AppUser.UserName,
                 BarId = rating.BarId,
                 BarName = rating.Bar.Name,
                 Score = rating.Score
-            };
-        }
-
-        private BarCocktailDTO CreateBarCocktailDTO(BarCocktail bc)
-        {
-            return new BarCocktailDTO
-            {
-                BarId = bc.BarId,
-                Bar = bc.Bar?.Name,
-                CocktailId = bc.CocktailId,
-                Cocktail = bc.Cocktail?.Name
             };
         }
 
@@ -92,6 +79,24 @@ namespace CM.DTOs.Mappers
                 CommentedOn = newCommentDto.CommentedOn,
                 Text = newCommentDto.Text
             };
+        }
+
+        private CocktailDTO CreateCocktailDTO(Cocktail cocktail)
+        {
+            var cocktailDTO = new CocktailDTO
+            {
+                Id = cocktail.Id,
+                Name = cocktail.Name,
+                Recipe = cocktail.Recipe,
+                IsUnlisted = cocktail.IsUnlisted,
+                AverageRating = cocktail.AverageRating,
+                ImagePath = cocktail.ImagePath,
+            };
+
+            if (string.IsNullOrEmpty(cocktailDTO.ImagePath))
+                cocktailDTO.ImagePath = "/images/DefaultCocktail.png";
+
+            return cocktailDTO;
         }
     }
 }

@@ -11,7 +11,9 @@
 <hr />
 <div class="row">
 	<div class="col-md-4">
-		<form asp-action="Create" enctype="multipart/form-data">
+		<form asp-area="Magician"
+			  asp-controller="Bars"
+			  asp-action="Create" enctype="multipart/form-data">
 			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
 			<div class="form-group">
 				<label asp-for="Name" class="control-label"></label>
@@ -24,7 +26,7 @@
 					<option value="">--Select Country--</option>
 				</select>
 				<span asp-validation-for="CountryID" class="text-danger"></span>
-				<a asp-controller="Addresses" asp-action="CreateCountry">Add new Country</a>
+				<a asp-area="Magician" asp-controller="Addresses" asp-action="CreateCountry">Add new Country</a>
 			</div>
 			<div class="form-group">
 			</div>
@@ -34,7 +36,7 @@
 					<option value="">--Select City--</option>
 				</select>
 				<span asp-validation-for="CityID" class="text-danger"></span>
-				<a asp-controller="Addresses" asp-action="CreateCity">Add new City</a>
+				<a asp-area="Magician" asp-controller="Addresses" asp-action="CreateCity">Add new City</a>
 			</div>
 			<div class="form-group">
 				<label asp-for="Street" class="control-label"></label>
@@ -49,7 +51,7 @@
 
 			<div class="form-group">
 				<label asp-for="Details" class="control-label"></label>
-				<input asp-for="Details" class="form-control" />
+				<textarea asp-for="Details" class="form-control" rows="5"></textarea>
 				<span asp-validation-for="Details" class="text-danger"></span>
 			</div>
 			<div class="form-group">
@@ -68,7 +70,7 @@
 			</div>
 			<div class="form-group">
 				<label asp-for="SelectedCocktails" class="control-label"></label>
-				<select multiple class="form-control" asp-for="SelectedCocktails" asp-items="@(new SelectList(ViewBag.ListOfCocktails, "Id", "Name"))"><option value="">--Select--</option></select>
+				<select multiple class="form-control" asp-for="SelectedCocktails" asp-items="@(new SelectList(ViewBag.ListOfCocktails, "Id", "Name"))"></select>
 				<span asp-validation-for="SelectedCocktails" class="text-danger"></span>
 			</div>
 
@@ -81,7 +83,7 @@
 
 
 <div>
-	<a asp-action="Index">Back to List</a>
+	<a asp-area="" asp-controller="Bars" asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

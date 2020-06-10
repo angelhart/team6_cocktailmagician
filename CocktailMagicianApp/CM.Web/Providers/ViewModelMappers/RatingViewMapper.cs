@@ -1,10 +1,6 @@
 ﻿using CM.DTOs;
 using CM.Web.Areas.BarCrawler.Models;
 using CM.Web.Providers.Contracts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace CM.Web.Providers.ViewModelMappers
 {
@@ -17,6 +13,17 @@ namespace CM.Web.Providers.ViewModelMappers
                 CocktailId = model.EntityId,
                 AppUserId = model.UserId,
                 Score = model.Score,
+            };
+        }
+
+        public BarRatingDTO CreateBarRatingDTO(RatingViewModel rateBarViewModel)
+        {
+            return new BarRatingDTO
+            {
+                Score = rateBarViewModel.Score,
+                AppUserId = rateBarViewModel.UserId,
+                AppUserName = rateBarViewModel.UserName,
+                BarId = rateBarViewModel.EntityId
             };
         }
     }

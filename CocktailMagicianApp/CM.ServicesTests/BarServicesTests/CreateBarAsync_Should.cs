@@ -89,6 +89,14 @@ namespace CM.ServicesTests.BarServicesTests
 
 			var mockMapper = new Mock<IBarMapper>();
 			var mockMapperAddress = new Mock<IAddressServices>();
+			mockMapperAddress.Setup(x => x.CreateAddressAsync(It.IsAny<AddressDTO>()))
+							.ReturnsAsync(new AddressDTO
+							{
+								Id = new Guid("ff3a5da3-060e-4baa-99d9-372d5701d5f1"),
+								CityId = new Guid("320b050b-82f1-494c-9add-91ab28bf98dd"),
+								Street = "79-81 MACDOUGAL ST",
+								BarId = Guid.Parse("ff3a5da3-060e-4baa-99d9-372d5701d5f1")
+							});
 
 			//Act/Assert
 			using (var assertContext = new CMContext(options))
@@ -107,21 +115,44 @@ namespace CM.ServicesTests.BarServicesTests
 
 			var barDTO = new BarDTO
 			{
-				Name = "TestBar"
+				Name = "TestBar",
+				Address = new AddressDTO
+				{
+					CityId = new Guid("320b050b-82f1-494c-9add-91ab28bf98dd"),
+					Street = "79-81 MACDOUGAL ST",
+				},
 			};
 
+			var existingAddress = new Address
+			{
+				Id = new Guid("ff3a5da3-060e-4baa-99d9-372d5701d5f1"),
+				CityId = new Guid("320b050b-82f1-494c-9add-91ab28bf98dd"),
+				Street = "79-81 MACDOUGAL ST",
+				BarId = Guid.Parse("ff3a5da3-060e-4baa-99d9-372d5701d5f1")
+			};
 
 			var existingBar = new Bar
 			{
-				Name = "TestBar"
+				Id = Guid.Parse("ff3a5da3-060e-4baa-99d9-372d5701d5f1"),
+				Name = "TestBar",
+				Address = existingAddress
 			};
 
 			var mockMapper = new Mock<IBarMapper>();
 			var mockMapperAddress = new Mock<IAddressServices>();
+			mockMapperAddress.Setup(x => x.CreateAddressAsync(It.IsAny<AddressDTO>()))
+							.ReturnsAsync(new AddressDTO
+							{
+								Id = new Guid("ff3a5da3-060e-4baa-99d9-372d5701d5f1"),
+								CityId = new Guid("320b050b-82f1-494c-9add-91ab28bf98dd"),
+								Street = "79-81 MACDOUGAL ST",
+								BarId = Guid.Parse("ff3a5da3-060e-4baa-99d9-372d5701d5f1")
+							});
 
 			using (var arrangeContext = new CMContext(options))
 			{
 				await arrangeContext.Bars.AddAsync(existingBar);
+				await arrangeContext.Addresses.AddAsync(existingAddress);
 				await arrangeContext.SaveChangesAsync();
 			}
 
@@ -133,6 +164,5 @@ namespace CM.ServicesTests.BarServicesTests
 				await Assert.ThrowsExceptionAsync<DbUpdateException>(() => sut.CreateBarAsync(barDTO));
 			}
 		}
-
 	}
 }

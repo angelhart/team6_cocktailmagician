@@ -1,6 +1,6 @@
 ﻿$(document).ready(function () {
 	$("#CountryID").change(function () {
-		$.get("/Addresses/GetCountryCities", { countryID: $("#CountryID").val() })
+		$.get("/Magician/Addresses/GetCountryCities", { countryID: $("#CountryID").val() })
 			.done(function (data) {
 				$("#CityID").empty();
 				$.each(data, function (index, row) {

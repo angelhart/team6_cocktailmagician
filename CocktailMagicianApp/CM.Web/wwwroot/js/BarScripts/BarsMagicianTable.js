@@ -1,5 +1,6 @@
 ﻿$(document).ready(function () {
 	$('#barsTable').DataTable({
+		order: [2, "asc"], // override default sort column and direction
 		processing: true, //progress bar
 		serverSide: true, //server side processing
 		filter: true, //disable search box
@@ -79,7 +80,7 @@
 			{
 				// Edit button
 				render: function (data, type, full, meta) {
-					return '<a class="btn btn-info" href="bars/edit/' + full.id + '">Edit</a>';
+					return '<a class="btn btn-info" href="magician/bars/edit/' + full.id + '">Edit</a>';
 				},
 				orderable: false,
 				visible: true
@@ -102,7 +103,7 @@
 
 function DeleteData(id) {
 
-	if (confirm("Are you sure you want change listing for this bar?")) {
+	if (confirm("Are you sure you want to change listing for this bar?")) {
 		Delete(id);
 	}
 	else {

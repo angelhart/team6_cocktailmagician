@@ -105,7 +105,8 @@ namespace CM.Services
 								.ThenInclude(c => c.Country)
 						.Include(bar => bar.Cocktails)
 							.ThenInclude(bc => bc.Cocktail)
-							.Include(bar => bar.Comments)
+						.Include(bar => bar.Comments)
+							.ThenInclude(comment => comment.AppUser)
 						.FirstOrDefaultAsync(bar => bar.Id == id);
 
 			if (bar == null)
@@ -142,6 +143,9 @@ namespace CM.Services
 				bar.ImagePath = barDTO.ImagePath;
 			}
 
+			if (barDTO.Cocktails == null || barDTO.Cocktails.Count == 0)
+				throw new ArgumentException("Choose cocktails!");
+
 			await UpdateCocktailsInBarAsync(bar.Id, barDTO.Cocktails);
 
 			_context.Update(bar);
@@ -157,11 +161,17 @@ namespace CM.Services
 		/// <returns>BarDTO</returns>
 		public async Task<BarDTO> CreateBarAsync(BarDTO barDTO)
 		{
-			if (await _context.Bars.FirstOrDefaultAsync(bar => bar.Name == barDTO.Name) != null)
-				throw new DbUpdateException("Bar with the same name already exists!");
-
 			if (barDTO.Name == null)
 				throw new ArgumentNullException("Name cannot be null!");
+
+			var barExisting = await _context.Bars
+							.Include(bar => bar.Address)
+								.ThenInclude(a => a.City)
+							.Where(bar => bar.Name == barDTO.Name && bar.Address.CityId == barDTO.Address.CityId)
+							.ToArrayAsync();
+
+			if (barExisting.Length > 0)
+				throw new DbUpdateException("Bar with the same name already exists in this City!");
 
 			try
 			{
