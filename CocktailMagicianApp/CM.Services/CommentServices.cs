@@ -29,7 +29,6 @@ namespace CM.Services
             this._dateTimeProvider = dateTimeProvider;
         }
 
-        //TODO Test bar comments
 
         /// <summary>
         /// Adds new Comment to the collection of comments of a Bar.
@@ -54,61 +53,6 @@ namespace CM.Services
             await _context.BarComments.AddAsync(newComment);
             await _context.SaveChangesAsync();
         }
-
-        /// <summary>
-        /// Returns a comment by given Id.
-        /// </summary>
-        /// <param name="commentId">The Id of the comment.</param>
-        /// <returns>BarCommentDTO</returns>
-        public async Task<BarCommentDTO> GetBarCommentAsync(Guid commentId)
-        {
-            var comment = await _context.BarComments.FirstOrDefaultAsync(comment => comment.Id == commentId);
-
-            var outputDto = _barMapper.CreateBarCommentDTO(comment);
-
-            return outputDto;
-        }
-
-        /// <summary>
-        /// Edits the text of a comment by given Id.
-        /// </summary>
-        /// <param name="commentId">The Id of the comment that should be edited.</param>
-        /// <param name="text">The new text of the comment.</param>
-        /// <returns></returns>
-        public async Task<BarCommentDTO> EditBarCommentAsync(Guid commentId, string text)
-        {
-            var comment = await _context.BarComments.FirstOrDefaultAsync(comment => comment.Id == commentId);
-
-            if (text == null || comment == null)
-                throw new ArgumentNullException();
-
-            comment.Text = text;
-
-            _context.Update(comment);
-            await _context.SaveChangesAsync();
-
-            var outputDto = _barMapper.CreateBarCommentDTO(comment);
-
-            return outputDto;
-        }
-
-        /// <summary>
-        /// Deletes a comment by give Id.
-        /// </summary>
-        /// <param name="commentId">The Id of the comment that should be deleted.</param>
-        /// <returns></returns>
-        public async Task<BarCommentDTO> DeleteBarCommentAsync(Guid commentId)
-        {
-            var comment = await _context.BarComments.FirstOrDefaultAsync(comment => comment.Id == commentId);
-
-            _context.Remove(comment);
-            await _context.SaveChangesAsync();
-
-            var outputDto = _barMapper.CreateBarCommentDTO(comment);
-
-            return outputDto;
-        }
-
         private async Task<CocktailComment> GetCocktailCommentEntityAsync(Guid commentId)
         {
             var entry = await _context.CocktailComments.FindAsync(commentId);
@@ -118,7 +62,6 @@ namespace CM.Services
 
             return entry;
         }
-
 
 
         /// <summary>
@@ -199,3 +142,58 @@ namespace CM.Services
         }
     }
 }
+
+
+///// <summary>
+///// Returns a comment by given Id.
+///// </summary>
+///// <param name="commentId">The Id of the comment.</param>
+///// <returns>BarCommentDTO</returns>
+//public async Task<BarCommentDTO> GetBarCommentAsync(Guid commentId)
+//{
+//    var comment = await _context.BarComments.FirstOrDefaultAsync(comment => comment.Id == commentId);
+
+//    var outputDto = _barMapper.CreateBarCommentDTO(comment);
+
+//    return outputDto;
+//}
+
+///// <summary>
+///// Edits the text of a comment by given Id.
+///// </summary>
+///// <param name="commentId">The Id of the comment that should be edited.</param>
+///// <param name="text">The new text of the comment.</param>
+///// <returns></returns>
+//public async Task<BarCommentDTO> EditBarCommentAsync(Guid commentId, string text)
+//{
+//    var comment = await _context.BarComments.FirstOrDefaultAsync(comment => comment.Id == commentId);
+
+//    if (text == null || comment == null)
+//        throw new ArgumentNullException();
+
+//    comment.Text = text;
+
+//    _context.Update(comment);
+//    await _context.SaveChangesAsync();
+
+//    var outputDto = _barMapper.CreateBarCommentDTO(comment);
+
+//    return outputDto;
+//}
+
+///// <summary>
+///// Deletes a comment by give Id.
+///// </summary>
+///// <param name="commentId">The Id of the comment that should be deleted.</param>
+///// <returns></returns>
+//public async Task<BarCommentDTO> DeleteBarCommentAsync(Guid commentId)
+//{
+//    var comment = await _context.BarComments.FirstOrDefaultAsync(comment => comment.Id == commentId);
+
+//    _context.Remove(comment);
+//    await _context.SaveChangesAsync();
+
+//    var outputDto = _barMapper.CreateBarCommentDTO(comment);
+
+//    return outputDto;
+//}
