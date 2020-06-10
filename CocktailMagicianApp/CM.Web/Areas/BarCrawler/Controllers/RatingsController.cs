@@ -5,7 +5,6 @@ using CM.Services.Contracts;
 using CM.Web.Areas.BarCrawler.Models;
 using CM.Web.Providers.Contracts;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NToastNotify;
@@ -73,9 +72,9 @@ namespace CM.Web.Areas.BarCrawler.Controllers
         //    var dto = _ratingViewMapper.CreateCocktailRatingDTO(model);
         //    dto = await _ratingServices.EditCocktailRatingAsync(dto);
 
-            _toastNotification.AddWarningToastMessage($"You updated your rating for this cocktail to {model.Score}");
-            return RedirectToAction("Details", "Cocktails", new { area = "", Id = model.EntityId });
-        }
+        //    _toastNotification.AddWarningToastMessage($"You updated your rating for this cocktail to {model.Score}");
+        //    return RedirectToAction("Details", "Cocktails", new { area = "", Id = model.EntityId });
+        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -110,8 +109,5 @@ namespace CM.Web.Areas.BarCrawler.Controllers
             }
             return RedirectToAction("Details", "Bars", new { area = "", Id = rateBarViewModel.EntityId });
         }
-        //    _toastNotification.AddWarningToastMessage($"You updated your rating for this cocktail to {model.Score}");
-        //    return RedirectToAction("Details", "Cocktails", new { area = "", Id = model.EntityId });
-        //}
     }
 }
