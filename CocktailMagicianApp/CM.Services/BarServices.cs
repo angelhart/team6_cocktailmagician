@@ -167,10 +167,10 @@ namespace CM.Services
 			var barExisting = await _context.Bars
 							.Include(bar => bar.Address)
 								.ThenInclude(a => a.City)
-							.Where(bar => bar.Name == barDTO.Name && bar.Address.City.Id == barDTO.Address.CityId)
+							.Where(bar => bar.Name == barDTO.Name && bar.Address.CityId == barDTO.Address.CityId)
 							.ToArrayAsync();
 
-			if (barExisting != null)
+			if (barExisting.Length > 0)
 				throw new DbUpdateException("Bar with the same name already exists in this City!");
 
 			try
