@@ -64,11 +64,10 @@ namespace CM.Web.Controllers
 
 				int pageSize = length != null ? Convert.ToInt32(length) : 0;
 				int pageNumber = start != null ? (1 + ((int)Math.Ceiling(Convert.ToDouble(start) / pageSize))) : 0;
-				int recordsTotal = await _barServices.CountAllBarsAsync();
-				bool allowUnlisted = true;
 
-				if (HttpContext.User.IsInRole("Magician"))
-					allowUnlisted = true;
+				var allowUnlisted = User.IsInRole("Magician");
+
+				int recordsTotal = await _barServices.CountAllBarsAsync(allowUnlisted);
 
 				var dtos = await _barServices.GetAllBarsAsync(searchString, pageNumber, pageSize, sortBy, sortOrder, allowUnlisted);
 				var vms = dtos.Select(x => new BarIndexViewModel
@@ -167,6 +166,7 @@ namespace CM.Web.Controllers
 				try
 				{
 
+					barViewModel.ImagePath = ROOTSTORAGE + "\\DefaultBar.png";
 					if (barViewModel.Image != null)
 					{
 						barViewModel.ImagePath = _storageProvider.GenerateRelativePath(ROOTSTORAGE, barViewModel.Image.FileName, barViewModel.Name);
@@ -198,10 +198,11 @@ namespace CM.Web.Controllers
 					_toastNotification.AddSuccessToastMessage($"Bar {barDTO.Name} was successfully created!");
 					return RedirectToAction(nameof(Index));
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
 					_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
-					return View(barViewModel);
+					_toastNotification.AddErrorToastMessage(ex.Message);
+					return RedirectToAction(nameof(Create));
 				}
 			}
 			_toastNotification.AddErrorToastMessage("Oops! Something went wrong!");
