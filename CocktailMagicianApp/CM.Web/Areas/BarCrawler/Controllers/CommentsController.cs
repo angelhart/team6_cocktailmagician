@@ -14,7 +14,7 @@ using NToastNotify;
 namespace CM.Web.Areas.BarCrawler.Controllers
 {
     [Area("BarCrawler")]
-    [Authorize(Roles = "BarCrawler,Magician")]
+    [Authorize(Roles = "Crawler,Magician")]
 
     public class CommentsController : Controller
     {
