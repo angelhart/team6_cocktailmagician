@@ -24,7 +24,9 @@
 		<div class="row">
 			@foreach (var item in Model.TopRatedBars)
 			{
-				<div class="col-sm-2">
+			<div class="col-sm-4">
+				<a asp-controller="Bars" area=" " asp-action="Details" asp-route-id="@item.Id">
+
 					<div class="card">
 						@if (string.IsNullOrEmpty(@item.ImagePath))
 						{
@@ -56,18 +58,21 @@
 		<div class="row">
 			@foreach (var item in Model.TopRatedCocktails)
 			{
-				<div class="col-sm-2">
+
+			<div class="col-sm-4">
+				<a class="card custom-card" asp-controller="Cocktails" area=" " asp-action="Details" asp-route-id="@item.Id">
+
 					<div class="card-body">
 
-						<a class="card custom-card" asp-controller="Cocktails" area=" " asp-action="Details" asp-route-id="@item.Id">
-							<img src="@item.ImagePath" class="card-img-top" alt="...">
-							<div class="card-body">
-								<h5 class="card-title">@item.Name @item.AverageRating</h5>
-								<p class="card-text">
-							</div>
-						</a>
+						<img src="@item.ImagePath" class="card-img-top" alt="...">
+						<div class="card-body">
+							<h5 class="card-title">@item.Name</h5>
+							<h6 class="font-weight-bold">Average Rating - @item.AverageRating</h6>
+							<p class="card-text">
+						</div>
 					</div>
-				</div>
+				</a>
+			</div>
 			}
 		</div>
 	</div>

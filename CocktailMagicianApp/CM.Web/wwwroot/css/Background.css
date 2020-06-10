@@ -1,0 +1,13 @@
+﻿/*body {
+    background-image: url("/images/Background_layout.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}*/
+
+body {
+    background: url("/images/Background_layout.png") no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    background-size: cover;
+    -o-background-size: cover;
+}
