@@ -5,6 +5,7 @@
 		serverSide: true, //server side processing
 		filter: true, //disable search box
 		orderMulti: false, //multiple column sort
+		order: [1, "asc"], // override default sort column and direction
 		ajax: {
 			url: '/bars/indextable',
 			type: 'POST',

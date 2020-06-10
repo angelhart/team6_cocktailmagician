@@ -1,98 +1,103 @@
 ﻿@model BarViewModel
 
 @{
-	ViewData["Title"] = "Create";
-	Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section Styles{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 }
 
 <h3>Create new Bar</h3>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 
 <hr />
 <div class="row">
-	<div class="col-md-4">
-		<form asp-area="Magician"
-			  asp-controller="Bars"
-			  asp-action="Create" enctype="multipart/form-data">
-			<div asp-validation-summary="ModelOnly" class="text-danger"></div>
-			<div class="form-group">
-				<label asp-for="Name" class="control-label"></label>
-				<input asp-for="Name" class="form-control" />
-				<span asp-validation-for="Name" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Country" class="control-label"></label>
-				<select asp-for="CountryID" class="form-control" asp-items="@(new SelectList(ViewBag.ListOfCountries, "Id", "Name"))">
-					<option value="">--Select Country--</option>
-				</select>
-				<span asp-validation-for="CountryID" class="text-danger"></span>
-				<a asp-area="Magician" asp-controller="Addresses" asp-action="CreateCountry">Add new Country</a>
-			</div>
-			<div class="form-group">
-			</div>
-			<div class="form-group">
-				<label asp-for="City" class="control-label"></label>
-				<select asp-for="CityID" class="form-control" asp-items="@(new SelectList(string.Empty, "Id", "Name"))">
-					<option value="">--Select City--</option>
-				</select>
-				<span asp-validation-for="CityID" class="text-danger"></span>
-				<a asp-area="Magician" asp-controller="Addresses" asp-action="CreateCity">Add new City</a>
-			</div>
-			<div class="form-group">
-				<label asp-for="Street" class="control-label"></label>
-				<input asp-for="Street" class="form-control" />
-				<span asp-validation-for="Street" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label asp-for="Phone" class="control-label"></label>
-				<input asp-for="Phone" class="form-control" />
-				<span asp-validation-for="Phone" class="text-danger"></span>
-			</div>
+    <div class="col-md-4">
+        <form asp-area="Magician"
+              asp-controller="Bars"
+              asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Country" class="control-label"></label>
+                <select asp-for="CountryID" class="form-control" asp-items="@(new SelectList(ViewBag.ListOfCountries, "Id", "Name"))">
+                    <option value="">--Select Country--</option>
+                </select>
+                <span asp-validation-for="CountryID" class="text-danger"></span>
+                <a asp-area="Magician" asp-controller="Addresses" asp-action="CreateCountry">Add new Country</a>
+            </div>
+            <div class="form-group">
+            </div>
+            <div class="form-group">
+                <label asp-for="City" class="control-label"></label>
+                <select asp-for="CityID" class="form-control" asp-items="@(new SelectList(string.Empty, "Id", "Name"))">
+                    <option value="">--Select City--</option>
+                </select>
+                <span asp-validation-for="CityID" class="text-danger"></span>
+                <a asp-area="Magician" asp-controller="Addresses" asp-action="CreateCity">Add new City</a>
+            </div>
+            <div class="form-group">
+                <label asp-for="Street" class="control-label"></label>
+                <input asp-for="Street" class="form-control" />
+                <span asp-validation-for="Street" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
 
-			<div class="form-group">
-				<label asp-for="Details" class="control-label"></label>
-				<textarea asp-for="Details" class="form-control" rows="5"></textarea>
-				<span asp-validation-for="Details" class="text-danger"></span>
-			</div>
-			<div class="form-group">
-				<label class="control-label">Upload new image (optional)</label>
-				<input id="fileUploadInput" asp-for="Image" type="file" class="file" accept="image/*" hidden>
-				<div class="input-group my-3">
-					<input type="text" class="form-control col-sm-12" disabled placeholder="New Image" id="file">
-					<div class="input-group-append">
-						<button type="button" class="browse btn btn-primary">Browse</button>
-					</div>
-					<span asp-validation-for="Image" class="text-danger"></span>
-				</div>
-				<div class="form-group">
-					<img src="https://placehold.it/80x80" id="preview" class="img-thumbnail">
-				</div>
-			</div>
-			<div class="form-group">
-				<label asp-for="SelectedCocktails" class="control-label"></label>
-				<select multiple class="form-control" asp-for="SelectedCocktails" asp-items="@(new SelectList(ViewBag.ListOfCocktails, "Id", "Name"))"></select>
-				<span asp-validation-for="SelectedCocktails" class="text-danger"></span>
-			</div>
+            <div class="form-group">
+                <label asp-for="Details" class="control-label"></label>
+                <textarea asp-for="Details" class="form-control" rows="5"></textarea>
+                <span asp-validation-for="Details" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Upload new image (optional)</label>
+                <input id="fileUploadInput" asp-for="Image" type="file" class="file" accept="image/*" hidden>
+                <div class="input-group my-3">
+                    <input type="text" class="form-control col-sm-12" disabled placeholder="New Image" id="file">
+                    <div class="input-group-append">
+                        <button type="button" class="browse btn btn-primary">Browse</button>
+                    </div>
+                    <span asp-validation-for="Image" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <img src="https://placehold.it/80x80" id="preview" class="img-thumbnail">
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedCocktails" class="control-label"></label>
+                <select asp-for="SelectedCocktails" asp-items="@(new SelectList(ViewBag.ListOfCocktails, "Id", "Name"))" class="form-control selectpicker" data-live-search="true"></select>
+                <span asp-validation-for="SelectedCocktails" class="text-danger"></span>
+            </div>
 
-			<div class="form-group">
-				<input type="submit" value="Create" class="btn btn-primary" />
-			</div>
-		</form>
-	</div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
 </div>
 
 
 <div>
-	<a asp-area="" asp-controller="Bars" asp-action="Index">Back to List</a>
+    <a asp-area="" asp-controller="Bars" asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {
-	@{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-	<script type="text/javascript" src="~/js/DependentDropdown.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="~/js/UploadImage.js"></script>
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script type="text/javascript" src="~/js/DependentDropdown.js"></script>
+    @*<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>*@
+    <script src="~/js/UploadImage.js"></script>
 
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
 
 }
 

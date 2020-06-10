@@ -15,7 +15,7 @@ namespace CM.Services.Contracts
 		Task<PaginatedList<BarDTO>> GetAllBarsAsync(string searchString = "", int pageNumber = 1, int pageSize = 10, string sortBy = "", string sortOrder = "", bool allowUnlisted = false);
 		Task<ICollection<BarDTO>> GetTopBarsAsync(int ammount = 3);
 		Task<bool> BarExists(Guid id);
-		Task<int> CountAllBarsAsync();
+		Task<int> CountAllBarsAsync(bool countUnlisted = false);
 		Task<BarDTO> ChangeListingAsync(Guid barId);
 	}
 }

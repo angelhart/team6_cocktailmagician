@@ -87,9 +87,10 @@ namespace CM.Web.Controllers
 
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int pageNumber = start != null ? 1 + (int)Math.Ceiling(Convert.ToDouble(start) / pageSize) : 0;
-                int recordsTotal = await _cocktailServices.CountAllCocktailsAsync();
-
+                
                 var permission = User.IsInRole("Magician");
+                
+                int recordsTotal = await _cocktailServices.CountAllCocktailsAsync(permission);
 
                 var dtos = await _cocktailServices.PageCocktailsAsync(searchString, sortBy, sortOrder, pageNumber,
                                                                       pageSize, permission, minRating, maxRating);
