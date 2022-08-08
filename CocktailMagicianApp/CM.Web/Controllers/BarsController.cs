@@ -64,6 +64,14 @@ namespace CM.Web.Controllers
 			return View(barsViewModel);
 		}
 
+		public async Task<IActionResult> MenuIndex()
+		{
+			var bars = await this._barServices.GetBarsWithCocktailsAsync();
+			var barsViewModel = bars.Select(x => this._barViewMapper.CreateBarMenuViewModel(x));
+
+			return View(barsViewModel);
+		}
+
 		public async Task<IActionResult> Details(Guid id)
 		{
 			var barDTO = await this._barServices.GetBarAsync(id);

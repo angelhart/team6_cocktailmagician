@@ -136,18 +136,35 @@ namespace CM.Data.Seeder
 				{
 					BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
 					CocktailId = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"),
+					Price = 1.23f
+				},
+
+				new BarCocktail
+				{
+					BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
+					CocktailId = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"),
+					Price = 1.34f
 				},
 
 				new BarCocktail
 				{
 					BarId = new Guid("9bdbf5e7-ad83-415c-b359-9ff5e2f0dedd"),
 					CocktailId = new Guid("347e304b-03cd-414f-91b2-faed4fdb86e9"),
+					Price = 2.34f
+				},
+
+				new BarCocktail
+				{
+					BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"),
+					CocktailId = new Guid("a3fd2a00-52c4-4293-a184-6f448d008015"),
+					Price = 4.56f
 				},
 
 				new BarCocktail
 				{
 					BarId = new Guid("0899e918-977c-44d5-a5cb-de9559ad822c"),
 					CocktailId = new Guid("3f088822-fa2c-45f1-aa96-067f07aa04ea"),
+					Price = 3.45f
 				});
 
 			modelBuilder.Entity<AppRole>().HasData(

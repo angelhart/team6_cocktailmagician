@@ -77,7 +77,8 @@ namespace CM.Web.Providers.ViewModelMappers
             {
                 Id = cocktailDTO.Id,
                 Name = cocktailDTO.Name,
-                ImagePath = cocktailDTO.ImagePath
+                ImagePath = cocktailDTO.ImagePath,
+                Price = cocktailDTO.Price
             };
         }
 

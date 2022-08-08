@@ -9,6 +9,7 @@ namespace CM.DTOs.Mappers.Contracts
     {
 		BarCommentDTO CreateBarCommentDTO(BarComment barComment);
         BarDTO CreateBarDTO(Bar bar);
+        BarDTO CreateBarMenuDTO(Bar bar);
         BarRatingDTO CreateBarRatingDTO(BarRating rating);
     }
 }

@@ -9,5 +9,7 @@ namespace CM.Models
 
 		public Guid CocktailId { get; set; }
 		public Cocktail Cocktail { get; set; }
-	}
+
+        public float Price { get; set; }
+    }
 }

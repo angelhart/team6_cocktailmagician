@@ -35,5 +35,7 @@ namespace CM.Web.Models
 
         [DisplayName("See what people are saying about it:")]
         public ICollection<CommentViewModel> Comments { get; set; } = new List<CommentViewModel>();
+
+        public float Price { get; set; }
     }
 }

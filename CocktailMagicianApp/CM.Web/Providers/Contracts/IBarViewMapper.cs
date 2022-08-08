@@ -8,6 +8,7 @@ namespace CM.Web.Providers.Contracts
 		BarDTO CreateBarDTO(BarViewModel barViewModel);
 		BarDTO CreateBarDTO_simple(BarViewModel barViewModel);
 		BarIndexViewModel CreateBarIndexViewModel(BarDTO barDTO);
-		BarViewModel CreateBarViewModel(BarDTO barDTO);
+        BarMenuViewModel CreateBarMenuViewModel(BarDTO barDTO);
+        BarViewModel CreateBarViewModel(BarDTO barDTO);
 	}
 }

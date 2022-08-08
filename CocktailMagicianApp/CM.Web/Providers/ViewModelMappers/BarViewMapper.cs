@@ -50,6 +50,16 @@ namespace CM.Web.Providers.ViewModelMappers
 			};
 		}
 
+		public BarMenuViewModel CreateBarMenuViewModel(BarDTO barDTO)
+		{
+			return new BarMenuViewModel
+			{
+				Id = barDTO.Id,
+				Name = barDTO.Name,
+				Cocktails = barDTO.Cocktails.Select(cocktailDTO => this._cocktailViewMapper.CreateCocktailViewModel_Simple(cocktailDTO)).ToList()
+			};
+		}
+
 		public BarDTO CreateBarDTO(BarViewModel barViewModel)
 		{
 			var addressDTO = CreateAddressDTO(barViewModel);

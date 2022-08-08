@@ -1,0 +1,57 @@
+﻿@using (Html.BeginForm(null, null, FormMethod.Post, new { id = "__AjaxAntiForgeryForm" }))
+{
+    @Html.AntiForgeryToken()
+}
+
+@model IEnumerable<BarMenuViewModel>
+
+@{
+    ViewData["Title"] = "Bar menues";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@section Styles {
+}
+
+<h1>Bar Menues</h1>
+@if (User.IsInRole("Magician"))
+{
+    <p>
+        <a asp-area="Magician" asp-controller="Bars" asp-action="Create">Create New Bar</a>
+    </p>
+}
+
+<table id="menuTable" class="table table-bordered">
+    <!--hover order-column stripe-->
+    <thead>
+        <tr>
+            <th>@Html.DisplayNameFor(bar => bar.Name)</th>
+            <th>@Html.DisplayNameFor(bar => bar.Cocktails)</th>
+        </tr>
+        
+        @foreach (var bar in Model)
+        {
+            <tr>
+                <td>@bar.Name</td>
+                <td class="container">
+                    <div class="row">
+                    @foreach (var cocktail in bar.Cocktails)
+                    {
+                        <div class="col-sm-2">
+                        @if (string.IsNullOrEmpty(cocktail.ImagePath))
+						{
+							<img src="/images/DefaultBar.png" class="img-fluid" title="@cocktail.Name">
+						}
+						else
+						{
+							<img src="@cocktail.ImagePath" class="img-fluid" title="@cocktail.Name">
+						}
+                        @cocktail.Price
+                        @*<div class="dt-body-center dt-center">@cocktail.Price</div>*@
+                        </div>
+                    }
+                    </div>
+                </td>
+            </tr>
+        }
+    </thead>
+</table>

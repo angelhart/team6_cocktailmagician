@@ -21,5 +21,6 @@ namespace CM.DTOs
         public ICollection<CocktailCommentDTO> Comments { get; set; }
         public double? AverageRating { get; set; }
         public bool IsUnlisted { get; set; }
+        public float Price { get; internal set; }
     }
 }

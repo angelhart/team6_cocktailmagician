@@ -46,6 +46,31 @@ namespace CM.DTOs.Mappers
             return barDTO;
         }
 
+        public BarDTO CreateBarMenuDTO(Bar bar)
+        {
+            var barDTO = new BarDTO
+            {
+                Id = bar.Id,
+                Name = bar.Name,
+                AverageRating = bar.AverageRating,
+                ImagePath = bar.ImagePath,
+
+                FullAddress = bar.FullAddress,
+                Phone = bar.Phone,
+                Details = bar.Details,
+                IsUnlisted = bar.IsUnlisted,
+
+                Cocktails = bar.Cocktails
+                        .Select(bc => CreateCocktailDTO(bc))
+                        .ToList()
+            };
+
+            if (string.IsNullOrEmpty(barDTO.ImagePath))
+                barDTO.ImagePath = "/images/DefaultBar.png";
+
+            return barDTO;
+        }
+
         public BarCommentDTO CreateBarCommentDTO(BarComment barComment)
         {
             return new BarCommentDTO
@@ -91,6 +116,26 @@ namespace CM.DTOs.Mappers
                 IsUnlisted = cocktail.IsUnlisted,
                 AverageRating = cocktail.AverageRating,
                 ImagePath = cocktail.ImagePath,
+            };
+
+            if (string.IsNullOrEmpty(cocktailDTO.ImagePath))
+                cocktailDTO.ImagePath = "/images/DefaultCocktail.png";
+
+            return cocktailDTO;
+        }
+
+        private CocktailDTO CreateCocktailDTO(BarCocktail barCocktail)
+        {
+            var cocktail = barCocktail.Cocktail;
+            var cocktailDTO = new CocktailDTO
+            {
+                Id = cocktail.Id,
+                Name = cocktail.Name,
+                Recipe = cocktail.Recipe,
+                IsUnlisted = cocktail.IsUnlisted,
+                AverageRating = cocktail.AverageRating,
+                ImagePath = cocktail.ImagePath,
+                Price = barCocktail.Price
             };
 
             if (string.IsNullOrEmpty(cocktailDTO.ImagePath))
