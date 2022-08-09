@@ -99,5 +99,5 @@ namespace CM.Web.Providers.ViewModelMappers
 				Street = barViewModel.Street,
 			};
 		}
-	}
+    }
 }

@@ -145,6 +145,25 @@ namespace CM.Services
         }
 
         /// <summary>
+        /// Retrieves a collection of bars and their prices for a specific cocktail.
+        /// </summary>
+        /// <returns>ICollection</returns>
+        public async Task<CocktailPricesDTO> GetCocktailBarPrices(Guid cocktailId, bool allowUnlisted = false)
+        {
+            var cocktail = await GetCocktailAsync(cocktailId, allowUnlisted);
+
+            cocktail.Bars = await _context.BarCocktails
+                                          .Include(bc => bc.Bar)
+                                          .Where(bc => bc.CocktailId == cocktailId
+                                                     && (!bc.Bar.IsUnlisted || allowUnlisted))
+                                          .ToListAsync();
+
+            CocktailPricesDTO dto = _cocktailMapper.CreateCocktailPricesDTO(cocktail);
+
+            return dto;
+        }
+
+        /// <summary>
         /// Updates existing cocktail information.
         /// </summary>
         /// <param name="cocktailId">ID of the cocktail.</param>

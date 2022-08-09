@@ -23,5 +23,6 @@ namespace CM.Web.Models
 
         [Required(ErrorMessage = ("List of Cocktails is required."))]
         public Guid [] SelectedCocktails { get; set; }
+        public float Price { get; internal set; }
     }
 }

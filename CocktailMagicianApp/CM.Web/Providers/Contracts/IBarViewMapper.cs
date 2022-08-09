@@ -10,5 +10,5 @@ namespace CM.Web.Providers.Contracts
 		BarIndexViewModel CreateBarIndexViewModel(BarDTO barDTO);
         BarMenuViewModel CreateBarMenuViewModel(BarDTO barDTO);
         BarViewModel CreateBarViewModel(BarDTO barDTO);
-	}
+    }
 }

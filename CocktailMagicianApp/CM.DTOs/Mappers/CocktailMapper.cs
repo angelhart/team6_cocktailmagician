@@ -81,5 +81,29 @@ namespace CM.DTOs.Mappers
                 Score = rating.Score
             };
         }
+
+        public CocktailPricesDTO CreateCocktailPricesDTO(Cocktail cocktail)
+        {
+            return new CocktailPricesDTO
+            {
+                Id = cocktail.Id,
+                Name = cocktail.Name,
+                ImagePath = cocktail.ImagePath,
+                BarPrices = cocktail.Bars.Select(bc => CreateBarPriceDTO(bc))
+                                         .ToList()
+            };
+        }
+
+        public BarPriceDTO CreateBarPriceDTO(BarCocktail barCocktail)
+        {
+            return new BarPriceDTO
+            {
+                Id = barCocktail.BarId,
+                Name = barCocktail.Bar.Name,
+                ImagePath = barCocktail.Bar.ImagePath,
+                Price = barCocktail.Price,
+                IsUnlisted = barCocktail.Bar.IsUnlisted
+            };
+        }
     }
 }

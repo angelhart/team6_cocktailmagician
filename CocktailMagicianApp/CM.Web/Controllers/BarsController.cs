@@ -64,9 +64,13 @@ namespace CM.Web.Controllers
 			return View(barsViewModel);
 		}
 
-		public async Task<IActionResult> MenuIndex()
+        public async Task<IActionResult> MenuIndex(int? id)
 		{
-			var bars = await this._barServices.GetBarsWithCocktailsAsync();
+			int page = id ?? 1;
+			var bars = await this._barServices.GetBarsWithCocktailsAsync(pageNumber: page, allowUnlisted: User.IsInRole("Magician"));
+			ViewData.Add(nameof(bars.HasNextPage), bars.HasNextPage);
+			ViewData.Add(nameof(bars.HasPreviousPage), bars.HasPreviousPage);
+			ViewData.Add(nameof(bars.PageNumber), bars.PageNumber);
 			var barsViewModel = bars.Select(x => this._barViewMapper.CreateBarMenuViewModel(x));
 
 			return View(barsViewModel);

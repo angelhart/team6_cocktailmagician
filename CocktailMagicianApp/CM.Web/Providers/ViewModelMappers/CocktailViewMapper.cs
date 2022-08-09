@@ -3,6 +3,7 @@ using CM.Web.Areas.BarCrawler.Models;
 using CM.Web.Areas.Magician.Models;
 using CM.Web.Models;
 using CM.Web.Providers.Contracts;
+using System;
 using System.Linq;
 
 namespace CM.Web.Providers.ViewModelMappers
@@ -127,6 +128,24 @@ namespace CM.Web.Providers.ViewModelMappers
                 Id = dto.Id,
                 Name = dto.Name,
                 ImagePath = dto.ImagePath
+            };
+        }
+
+        public CocktailMenuViewModel CreateCocktailMenuViewModel(CocktailPricesDTO dto)
+        {
+            return new CocktailMenuViewModel
+            {
+                Id = dto.Id,
+                Name = dto.Name,
+                ImagePath = dto.ImagePath,
+                BarPrices = dto.BarPrices.Select(bp => new BarViewModel
+                                                       {
+                                                           Id = bp.Id,
+                                                           Name = bp.Name,
+                                                           ImagePath = bp.ImagePath,
+                                                           Price = bp.Price
+                                                       })
+                                         .ToList()
             };
         }
     }

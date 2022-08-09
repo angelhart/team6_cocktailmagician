@@ -121,24 +121,6 @@ namespace CM.Services
         }
 
         /// <summary>
-        /// Retrieves a collection of all bars that offer specific cocktail.
-        /// </summary>
-        /// <returns>ICollection</returns>
-        public IQueryable<Bar> GetBarsByCocktail(Guid targetCocktailId, bool allowUnlisted = false)
-        {
-            if (targetCocktailId.Equals(Guid.Empty))
-            {
-                throw new ArgumentException("No cocktail id specified!");
-            }
-            var bars = _context.Bars
-                            .Include(bar => bar.Cocktails)
-                                .ThenInclude(c => c.Cocktail)
-                            .Where(bar => bar.Cocktails.Any(x => x.CocktailId == targetCocktailId)
-                                          && (!bar.IsUnlisted || allowUnlisted));
-            return bars;
-        }
-
-        /// <summary>
         /// Retrieves a collection of all bars in the database.
         /// </summary>
         /// <returns>ICollection</returns>

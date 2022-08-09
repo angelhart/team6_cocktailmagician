@@ -4,59 +4,48 @@
     @Html.AntiForgeryToken()
 }
 
-@model IEnumerable<BarMenuViewModel>
+@model CocktailMenuViewModel
 
 @{
-    ViewData["Title"] = "Bar menues";
+    ViewData["Title"] = $"Where to find {Model.Name}";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @section Styles {
 }
 
-<h1>Bar Menues</h1>
-@if (User.IsInRole("Magician"))
-{
-    <p>
-        <a asp-area="Magician" asp-controller="Bars" asp-action="Create">Create New Bar</a>
-    </p>
-}
+<h1>Where to find @Model.Name:</h1>
 
 <table id="menuTable" class="table table-bordered">
     <!--hover order-column stripe-->
     <thead>
         <tr>
-            <th>@Html.DisplayNameFor(bar => bar.Name)</th>
-            <th>@Html.DisplayNameFor(bar => bar.Cocktails)</th>
+            <th>@Html.DisplayNameFor(vm => vm.ImagePath)</th>
+            <th>@Html.DisplayNameFor(vm => vm.Name)</th>
+            <th>@Html.DisplayNameFor(vm => vm.BarPrices)</th>
         </tr>
 
-        @foreach (var bar in Model)
+        @foreach (var bar in Model.BarPrices)
         {
             <tr>
-                <td>@bar.Name</td>
-                <td class="container">
-                    <div class="row">
-                        @foreach (var cocktail in bar.Cocktails)
-                        {
-                            <div class="col-sm-2">
-                                @if (string.IsNullOrEmpty(cocktail.ImagePath))
+                <td>
+                    <div class="col-sm-2">
+                                @if (string.IsNullOrEmpty(bar.ImagePath))
                                 {
-                                    <img src="/images/DefaultBar.png" class="img-fluid" title="@cocktail.Name">
+                                    <img src="/images/DefaultBar.png" class="img-fluid" title="@bar.Name">
                                 }
                                 else
                                 {
-                                    <img src="@cocktail.ImagePath" class="img-fluid" title="@cocktail.Name">
+                                    <img src="@bar.ImagePath" class="img-fluid" title="@bar.Name">
                                 }
-                                @cocktail.Price
-                                @*<div class="dt-body-center dt-center">@cocktail.Price</div>*@
                             </div>
-                        }
-                    </div>
                 </td>
+                <td>@bar.Name</td>
+                <td>@bar.Price</td>
             </tr>
         }
     </thead>
 </table>
-@{
+@*@{
     int.TryParse(ViewData["PageNumber"].ToString(), out int currentPage);
     if (ViewData["HasPreviousPage"].ToString() == "true")
     {
@@ -74,4 +63,4 @@
     {
         <button type="button" class="btn btn-outline-secondary disabled">Next</button>
     }
-}
+}*@

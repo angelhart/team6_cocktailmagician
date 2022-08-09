@@ -87,9 +87,9 @@ namespace CM.Web.Controllers
 
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int pageNumber = start != null ? 1 + (int)Math.Ceiling(Convert.ToDouble(start) / pageSize) : 0;
-                
+
                 var permission = User.IsInRole("Magician");
-                
+
                 int recordsTotal = await _cocktailServices.CountAllCocktailsAsync(permission);
 
                 var dtos = await _cocktailServices.PageCocktailsAsync(searchString, sortBy, sortOrder, pageNumber,
@@ -125,6 +125,34 @@ namespace CM.Web.Controllers
                 var vm = _cocktailViewMapper.CreateCocktailViewModel(dto);
 
                 // TODO: Comments
+
+                return View(vm);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                _toastNotification.AddErrorToastMessage(ex.Message);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                _toastNotification.AddErrorToastMessage(ex.Message);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _toastNotification.AddErrorToastMessage(ex.Message);
+                return NotFound();
+            }
+        }
+
+        public async Task<IActionResult> Prices(Guid id)
+        {
+            try
+            {
+                var permission = User.IsInRole("Magician");
+                var dto = await _cocktailServices.GetCocktailBarPrices(id, allowUnlisted: permission);
+
+                CocktailMenuViewModel vm = _cocktailViewMapper.CreateCocktailMenuViewModel(dto);
 
                 return View(vm);
             }
