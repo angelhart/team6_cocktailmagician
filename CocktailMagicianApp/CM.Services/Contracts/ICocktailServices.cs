@@ -25,6 +25,6 @@ namespace CM.Services.Contracts
         Task<CocktailDTO> UpdateCocktailAsync(CocktailDTO dto);
         Task<CocktailDTO> DeleteAsync(Guid id);
         Task<int> CountAllCocktailsAsync(bool countUnlisted = false);
-        Task<CocktailPricesDTO> GetCocktailBarPrices(Guid cocktailId, bool allowUnlisted = false);
+        Task<CocktailPricesDTO> GetCocktailBarPrices(Guid cocktailId, bool allowUnlisted = false, string sortOrder = null);
     }
 }

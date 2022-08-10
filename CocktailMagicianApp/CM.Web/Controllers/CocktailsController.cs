@@ -145,12 +145,12 @@ namespace CM.Web.Controllers
             }
         }
 
-        public async Task<IActionResult> Prices(Guid id)
+        public async Task<IActionResult> Prices(Guid id, string sort)
         {
             try
             {
                 var permission = User.IsInRole("Magician");
-                var dto = await _cocktailServices.GetCocktailBarPrices(id, allowUnlisted: permission);
+                var dto = await _cocktailServices.GetCocktailBarPrices(id, sortOrder: sort, allowUnlisted: permission);
 
                 CocktailMenuViewModel vm = _cocktailViewMapper.CreateCocktailMenuViewModel(dto);
 

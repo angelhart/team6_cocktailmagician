@@ -148,15 +148,22 @@ namespace CM.Services
         /// Retrieves a collection of bars and their prices for a specific cocktail.
         /// </summary>
         /// <returns>ICollection</returns>
-        public async Task<CocktailPricesDTO> GetCocktailBarPrices(Guid cocktailId, bool allowUnlisted = false)
+        public async Task<CocktailPricesDTO> GetCocktailBarPrices(Guid cocktailId, bool allowUnlisted = false, string sortOrder = null)
         {
             var cocktail = await GetCocktailAsync(cocktailId, allowUnlisted);
 
-            cocktail.Bars = await _context.BarCocktails
-                                          .Include(bc => bc.Bar)
-                                          .Where(bc => bc.CocktailId == cocktailId
-                                                     && (!bc.Bar.IsUnlisted || allowUnlisted))
-                                          .ToListAsync();
+            var bars = _context.BarCocktails
+                                    .Include(bc => bc.Bar)
+                                    .Where(bc => bc.CocktailId == cocktailId
+                                               && (!bc.Bar.IsUnlisted || allowUnlisted));
+
+            if (!string.IsNullOrEmpty(sortOrder))
+            {
+                bars = sortOrder == "asc" ? bars.OrderBy(b => b.Price)
+                                          : bars.OrderByDescending(b => b.Price);
+            }
+
+            cocktail.Bars = await bars.ToListAsync();
 
             CocktailPricesDTO dto = _cocktailMapper.CreateCocktailPricesDTO(cocktail);
 
